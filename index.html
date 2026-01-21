@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUTU 鋁圖 - 訂購系統</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="brand">LUTU 鋁圖</div>
+            <nav class="nav-tabs">
+                <button class="nav-item active" onclick="switchSeries('20')">20 系列</button>
+                <button class="nav-item" onclick="switchSeries('30')">30 系列</button>
+                <button class="nav-item" onclick="switchSeries('40')">40 系列</button>
+                <div class="separator"></div>
+                <button class="nav-item project-tab" onclick="switchView('projects')">專案範例教學</button>
+                <button class="nav-item custom-tab" onclick="switchView('custom')">客製成品</button>
+                <button class="nav-item about-tab" onclick="switchView('about')">關於我們</button>
+            </nav>
+
+            <div class="separator"></div>
+            <div id="hot-sales-container" style="padding:10px; color:white;">
+                <!-- Hot Sales Content will be injected here -->
+            </div>
+
+            <div class="social-links">
+                <a href="https://line.me/ti/p/~herald8283" target="_blank" class="social-icon"
+                    title="Line ID: herald8283"><i class="fab fa-line"></i></a>
+                <a href="#" class="social-icon" title="Threads"><i class="fa-brands fa-threads"></i></a>
+                <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="mailto:lutu@herald-alu.com" class="social-icon" title="Email: lutu@herald-alu.com"><i
+                        class="fas fa-envelope"></i></a>
+            </div>
+            <!-- Height Visualization Removed -->
+        </aside>
+        <main class="main-content">
+            <div id="view-product" class="content-view">
+                <header class="page-header">
+                    <h2 id="page-title">20 系列選購</h2>
+                </header>
+                <section id="aluminum-section" class="section-block">
+                    <div id="series-desc-container" class="series-desc-container"></div>
+                    <div class="section-title">鋁擠型規格選擇 (點擊圖片選取)</div>
+                    <div id="aluminum-grid" class="aluminum-grid-container">
+                        <p class="loading-text">載入中...</p>
+                    </div>
+                    <div id="aluminum-input-area" class="input-panel hidden">
+                        <div class="input-top-row">
+                            <div class="selected-info">
+                                已選擇：<span id="selected-profile-name" class="highlight-text"></span>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" id="profile-len" placeholder="長度 (至少10cm)" min="10">
+                                <input type="number" id="profile-qty" placeholder="數量" min="1" value="1">
+                                <button class="btn-add" onclick="addProfileToCart()">加入清單</button>
+                            </div>
+                        </div>
+                        <div id="current-specs-list" class="specs-list-container"></div>
+                    </div>
+                </section>
+                <hr class="divider">
+                <section class="section-block">
+                    <div class="section-title">配件選購</div>
+                    <div id="accessories-list" class="accessories-container"></div>
+                    <div id="accessories-panel" class="input-panel hidden" style="margin-top:20px;">
+                        <div class="input-top-row"
+                            style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 5px;">
+                            <div class="selected-info">
+                                已選配件清單
+                            </div>
+                        </div>
+                        <div id="selected-accessories-list" class="specs-list-container"
+                            style="border-top: none; margin-top: 0;"></div>
+                    </div>
+                </section>
+            </div>
+            <div id="view-projects" class="content-view hidden">
+                <header class="page-header">
+                    <h2>專案範例教學</h2>
+                </header>
+                <div id="projects-container" class="projects-list"></div>
+            </div>
+            <div id="view-custom" class="content-view hidden">
+                <header class="page-header">
+                    <h2>客製成品</h2>
+                </header>
+                <div id="custom-cases-container" class="custom-cases-list">
+                    <p class="loading-text">載入中...</p>
+                </div>
+            </div>
+            <div id="view-about" class="content-view hidden">
+                <header class="page-header">
+                    <h2>關於我們</h2>
+                </header>
+                <div class="about-content">
+                    <h3>LUTU 鋁圖</h3>
+                    <p>我們致力於提供高品質的鋁擠型材料與配件，協助您輕鬆完成各種專案。</p>
+                    <div style="margin-top:20px;">
+                        <p><strong>聯絡方式：</strong></p>
+                        <p><i class="fab fa-line"></i> Line ID: herald8283</p>
+                        <p><i class="fas fa-envelope"></i> Email: lutu@herald-alu.com</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <button class="floating-cart-btn" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i> 詢價單 <span id="cart-count">0</span>
+    </button>
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <div class="cart-title">🛒 訂購清單</div>
+            <div class="close-cart" onclick="toggleCart()">×</div>
+        </div>
+        <div class="cart-scroll-wrapper">
+            <div class="cart-body" id="cart-items"></div>
+            <div class="cart-footer">
+                <div class="total-row">
+                    <span>預估總額</span>
+                    <span style="color:#e74c3c;">NT$<span id="cart-total">0</span></span>
+                </div>
+                <form id="order-form">
+                    <input type="text" name="name" placeholder="您的姓名" required>
+                    <input type="tel" name="phone" placeholder="連絡電話" required>
+                    <input type="email" name="email" placeholder="電子信箱 (接收報價單)" required>
+                    <input type="text" name="address" placeholder="配送地址" required>
+                    <select name="delivery"
+                        style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; margin-bottom: 10px;">
+                        <option value="宅配">宅配寄送</option>
+                        <option value="自取">公司自取</option>
+                    </select>
+                    <textarea name="note" placeholder="備註 (選填)" rows="2"></textarea>
+                    <button type="submit" id="btn-submit" class="btn-submit">送出訂單</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" onclick="event.stopPropagation()">
+        <button class="close-lightbox" onclick="closeLightbox()">×</button>
+    </div>
+
+    <!-- Mobile Floating Hot Sales Button -->
+    <button class="floating-hot-btn" onclick="toggleHotSalesSidebar()">
+        <i class="fas fa-fire" style="margin-right:5px;"></i> 熱銷排行
+    </button>
+
+    <!-- Mobile Hot Sales Modal -->
+    <!-- Mobile Hot Sales Sidebar (Replaces Modal) -->
+    <div id="hot-sales-sidebar" class="hot-sales-sidebar">
+        <div class="cart-header">
+            <div class="cart-title"><i class="fas fa-crown" style="color:#ffd700; margin-right:5px;"></i> 熱銷排行</div>
+            <div class="close-cart" onclick="toggleHotSalesSidebar()">×</div>
+        </div>
+        <div class="cart-scroll-wrapper">
+            <div class="cart-body" id="hot-sales-mobile-body">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,2153 @@
+:root {
+    --primary: #1a1a1a;
+    /* Sidebar: Black */
+    --accent: #BDE0F5;
+    /* Default Accent */
+    --bg: #77858c;
+    /* Main BG: Original Blue-Gray */
+    --white: #ffffff;
+    --border: #dcdcdc;
+    --text-dark: #333333;
+}
+
+html {
+    font-size: 16px;
+    /* Increased base size for better readability */
+}
+
+body {
+    font-family: "Noto Sans TC", sans-serif;
+    margin: 0;
+    background: var(--bg);
+    color: var(--white);
+    /* Default text white for dark bg */
+    overflow-x: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Reduced styling for lighter feel */
+.sidebar {
+    width: 200px;
+    background: var(--primary);
+    border-right: 1px solid var(--border);
+    padding: 15px;
+    /* Reduced vertical padding */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    /* Enable scrolling */
+    overflow-x: hidden;
+}
+
+/* Custom Scrollbar for Sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: var(--white);
+}
+
+.nav-item {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 8px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: 0.2s;
+    color: var(--white);
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-item.active {
+    background: var(--accent) !important;
+    color: var(--primary) !important;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.project-tab.active {
+    background: var(--white) !important;
+    color: var(--primary) !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.separator {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 10px 0;
+}
+
+.social-links {
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.social-icon {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    transition: 0.2s;
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    color: var(--white);
+    transform: translateY(-3px);
+}
+
+.project-tab.active,
+.about-tab.active,
+.custom-tab.active {
+    background: var(--white) !important;
+    color: var(--primary) !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: var(--white);
+    /* Title white */
+    border-left: 5px solid var(--accent);
+    padding-left: 10px;
+}
+
+#page-title {
+    font-size: 2.5rem;
+    /* Enlarged Series Title */
+    font-weight: bold;
+    color: var(--white);
+    margin: 0;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px dashed #ccc;
+    margin: 30px 0;
+}
+
+/* 1. 鋁材與專案列表 (4欄位) */
+.aluminum-grid-container,
+.projects-grid {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: repeat(4, 280px);
+    /* 強制 4 欄 */
+    justify-content: start;
+    width: 100%;
+}
+
+.profile-card,
+.project-card,
+.acc-card {
+    /* Added acc-card to shared dark text color rule */
+    background: white;
+    color: #37474f;
+    /* Card text Dark Blue-Gray */
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: 0.2s;
+    width: 280px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    height: 100%;
+    padding: 15px;
+    /* 圓角內縮風格 */
+    overflow: hidden;
+}
+
+.profile-card:hover,
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card.selected {
+    border-color: var(--accent);
+    background: #fff;
+}
+
+.profile-img,
+.project-cover {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #fcfcfc;
+    border-radius: 8px;
+    /* 圖片圓角 */
+    border: 1px solid #f0f0f0;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: 0.3s;
+    mix-blend-mode: multiply;
+}
+
+.profile-card:hover .profile-img img {
+    /* No scale on hover or slight scale */
+    transform: scale(1.05);
+}
+
+.profile-card>div:not(.profile-img) {
+    padding: 0;
+}
+
+.profile-card>small {
+    padding: 0;
+    display: block;
+    margin-top: 5px;
+}
+
+.project-body {
+    padding: 15px 0 0 0;
+    text-align: center;
+}
+
+/* 2. 配件區塊 (4欄位) */
+.accessories-container {
+    display: grid;
+    grid-template-columns: repeat(4, 280px);
+    justify-content: start;
+    gap: 25px;
+    width: 100%;
+    padding-bottom: 50px;
+}
+
+.acc-card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border);
+    width: 280px;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.acc-images {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.acc-img-wrapper {
+    width: 50%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    background: #fcfcfc;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+    cursor: zoom-in;
+    overflow: hidden;
+}
+
+.acc-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.img-label {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-size: 0.8rem;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 10;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.acc-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2px;
+    /* Reduced from 10px */
+    gap: 10px;
+    min-height: 40px;
+}
+
+.acc-info>div:first-child {
+    font-size: 0.85rem;
+    font-weight: bold;
+    line-height: 1.4;
+    text-align: left;
+    color: #333;
+    flex: 1;
+}
+
+.acc-info>div:last-child {
+    font-size: 1rem;
+    white-space: nowrap;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* 3. 輸入框面板 (對齊4欄) */
+.input-panel {
+    background: white;
+    color: var(--text-dark);
+    /* Ensure text is dark inside white panel */
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid var(--accent);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    /* Fill available space up to max-width */
+    max-width: 1195px;
+    /* Exact match for 4-column grid (280*4 + 25*3) */
+    box-sizing: border-box;
+}
+
+.input-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.selected-info {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.highlight-text {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-left: 5px;
+}
+
+/* ★★★ 重點修復區：強制定義輸入框與按鈕樣式 ★★★ */
+/* 規格的輸入框與按鈕 */
+.input-group {
+    display: flex;
+    gap: 10px;
+    width: auto;
+    align-items: center;
+}
+
+.input-group input {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    /* 加深邊框 */
+    border-radius: 6px;
+    width: 110px;
+    background: #fff;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    /* 微微內陰影 */
+}
+
+#profile-len {
+    width: 120px;
+}
+
+/* Wider for length */
+#profile-qty {
+    width: 60px;
+}
+
+/* Narrower for quantity */
+.btn-add {
+    background: var(--accent) !important;
+    /* 強制背景色 */
+    color: var(--primary) !important;
+    font-weight: bold;
+    border: 1px solid transparent;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+.btn-add:hover {
+    filter: brightness(0.95);
+    transform: translateY(-1px);
+}
+
+/* 配件的輸入框 */
+.acc-controls {
+    display: flex;
+    gap: 5px;
+    margin-top: auto;
+    width: 100%;
+}
+
+.acc-controls input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc !important;
+    /* 強制顯示邊框 */
+    border-radius: 6px;
+    text-align: center;
+    background: #fdfdfd;
+    font-size: 1rem;
+}
+
+.acc-controls input:focus,
+.input-group input:focus {
+    border-color: var(--accent) !important;
+    background: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(189, 224, 245, 0.3);
+}
+
+/* 尺寸列表 */
+.specs-list-container {
+    width: 100%;
+    margin-top: 5px;
+    border-top: 1px dashed #eee;
+    padding-top: 10px;
+}
+
+.spec-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: #f8f9fa;
+    padding: 8px 15px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border: 1px solid #eee;
+    animation: fadeIn 0.3s ease;
+    gap: 40px;
+}
+
+.spec-row:hover {
+    background: #f0f4f8;
+}
+
+.spec-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: bold;
+    color: #555;
+}
+
+.spec-edit input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.spec-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-mini-del {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.btn-mini-del:hover {
+    color: #d63031;
+    transform: scale(1.2);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 4. 購物車 UI */
+.floating-cart-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+.floating-cart-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    /* Adjusted */
+    width: 300px;
+    /* Reduced from 400px */
+    height: 100%;
+    background: white;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+    transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-sidebar.open {
+    right: 0;
+}
+
+.cart-header {
+    padding: 20px 25px;
+    background: var(--white);
+    color: var(--text-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.cart-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.close-cart {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #999;
+    transition: 0.2s;
+}
+
+.close-cart:hover {
+    color: #333;
+}
+
+.cart-scroll-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-body {
+    flex: 0 0 auto;
+    /* Allow content to determine height */
+    padding: 20px;
+    background: #fcfcfc;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    transition: 0.2s;
+}
+
+.cart-item:hover {
+    border-color: var(--accent);
+}
+
+.cart-item-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    background: #f8f8f8;
+    border: 1px solid #eee;
+    object-fit: contain;
+    margin-right: 15px;
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-title {
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 3px;
+}
+
+.cart-item-spec {
+    font-size: 0.8rem;
+    color: #888;
+    background: #eee;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.cart-item-price {
+    font-weight: bold;
+    color: var(--primary);
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+.cart-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.cart-qty-badge {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: bold;
+}
+
+.btn-remove {
+    background: transparent;
+    border: none;
+    color: #ff6b6b;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+    transition: 0.2s;
+}
+
+.btn-remove:hover {
+    color: #e74c3c;
+    transform: scale(1.1);
+}
+
+.cart-footer {
+    padding: 20px 25px;
+    background: white;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#order-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#order-form input,
+#order-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: #f9f9f9;
+    box-sizing: border-box;
+    transition: 0.2s;
+}
+
+#order-form input:focus,
+#order-form textarea:focus {
+    background: white;
+    border-color: var(--accent);
+    outline: none;
+}
+
+.btn-submit {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: #5a666b;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 5px;
+}
+
+.close-lightbox {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.project-body {
+    padding: 10px 0 0 0;
+    text-align: center;
+}
+
+.step-viewer {
+    display: none;
+}
+
+/* RWD */
+@media (max-width: 1250px) {
+
+    .aluminum-grid-container,
+    .accessories-container {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
+    .input-panel {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 10px;
+        border-bottom: 1px solid var(--border);
+        border-right: none;
+        height: auto;
+    }
+
+    .nav-item {
+        flex: 0 0 auto;
+        width: auto;
+        margin-right: 10px;
+        margin-bottom: 0;
+    }
+
+    .cart-sidebar {
+        width: 100%;
+        right: -100%;
+    }
+
+    .accessories-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        /* Smaller gap for mobile */
+    }
+
+    /* Force 2 columns for aluminum grid as well if not already */
+    .aluminum-grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .acc-card {
+        width: 100%;
+    }
+
+    .input-top-row {
+        justify-content: space-between;
+    }
+
+    .input-group {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+}
+
+.about-content {
+    background: var(--primary);
+    color: var(--white);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.about-content h3 {
+    margin-top: 0;
+    color: var(--white);
+}
+
+.about-content p {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* 5. 客製成品 (Custom Cases) & 專案範例 (Projects) Shared Layout */
+.custom-cases-list,
+.projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.series-desc-container {
+    margin-bottom: 20px;
+    color: var(--white);
+    line-height: 1.6;
+    font-size: 1.1rem;
+    padding: 0 5px;
+}
+
+.profile-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.custom-case-row,
+.project-row {
+    display: flex;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border);
+    gap: 25px;
+    align-items: stretch;
+}
+
+/* Column 1: Info (Name, Desc, PDF) */
+/* Column 1: Info (Name, Desc, PDF) */
+/* Column 1: Info (Name, Desc, PDF) */
+.case-info,
+.project-info {
+    flex: 0 0 25%;
+    width: 25%;
+    /* Explicit width to prevent shrinking */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.case-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.case-desc {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    white-space: pre-line;
+}
+
+.btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    /* Center buttons horizontally */
+    margin-top: auto;
+    /* Push group to bottom */
+}
+
+.btn-pdf,
+.btn-yt {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    /* Reduced gap */
+    color: white;
+    text-decoration: none;
+    padding: 6px 16px;
+    /* Smaller padding */
+    border-radius: 50px;
+    /* More rounded? or just keep 6px but smaller. User said "smaller". Let's keep radius 6px but small padding */
+    border-radius: 6px;
+    font-weight: bold;
+    align-self: center;
+    /* Center in flex container */
+    transition: 0.2s;
+    font-size: 0.85rem;
+    /* Smaller font */
+    width: auto;
+    /* Not full width */
+    min-width: 120px;
+    /* Minimum width for consistency */
+    justify-content: center;
+    margin-top: auto;
+    /* Push to bottom if in flex col */
+}
+
+.btn-pdf {
+    background: #e74c3c;
+}
+
+.btn-pdf:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+}
+
+.btn-yt {
+    background: #c4302b;
+}
+
+/* YouTube Red */
+.btn-yt:hover {
+    background: #9e2622;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(196, 48, 43, 0.3);
+}
+
+/* Column 2: Material Image */
+/* Column 2: Material Image */
+.case-material,
+.project-scene {
+    flex: 0 0 25%;
+    width: 25%;
+    /* Explicit width */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* For floating label */
+}
+
+.case-col-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.material-img,
+.scene-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    cursor: zoom-in;
+}
+
+.scene-img {
+    object-fit: cover;
+}
+
+/* Column 3: Collage (3 images) */
+.case-collage {
+    flex: 1;
+    /* Take remaining space */
+    display: flex;
+    gap: 10px;
+}
+
+.collage-left {
+    flex: 8;
+    /* Geometric alignment: Width 8 -> Height 16 (2x squares) */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.collage-right {
+    flex: 9;
+    /* Geometric alignment: Width 9 -> Height 16 (9:16 vertical) */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.collage-item {
+    display: flex;
+    flex-direction: column;
+    /* height: 100%; Removed to allow aspect-ratio to dictate height */
+    overflow: hidden;
+    width: 100%;
+    /* Ensure width fills container */
+}
+
+/* Front & Side Views: 1:1 Square */
+.collage-left .collage-item {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    /* Allow auto height based on width */
+}
+
+/* Common Floating Label Style */
+.collage-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0;
+    /* No margin needed for absolute */
+    font-weight: bold;
+    text-align: left;
+    position: absolute;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 3px 8px;
+    border-radius: 4px;
+    top: 10px;
+    left: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Wait, existing label was outside. If I make it absolute, it overlaps image.
+   User just said "Lock 1:1". Usually this implies the *image* area is 1:1.
+   If label is outside, the "item" component is 1:1 + label height.
+   Let's keep label outside for now but ensure the IMAGE container is 1:1.
+   Actually, applying aspect-ratio to the wrapper including label makes the image shorter.
+   Better: Apply aspect-ratio to the IMAGE wrapper or the image itself?
+   The user said "Image follows screen".
+   I'll apply aspect-ratio to `.collage-img` (or its wrapper if I made one, but here img is direct child of item).
+   Actually, `collage-item` contains label + img.
+   Let's wrap the image in a div if needed, or just set aspect-ratio on img.
+   But `collage-item` has `flex-direction: column`.
+   If I set aspect-ratio on `collage-item`, the label takes space.
+   I will set aspect-ratio on the **Image** element itself.
+*/
+/* Reset collage-item to be auto height */
+.collage-item {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Labels overlay or outside? Current design is outside.
+   If I lock image to 1:1, the item height is 1:1 width + label height.
+   This works.
+*/
+.collage-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* Front/Side Images: 1:1 */
+.collage-left .collage-img {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    object-fit: cover;
+    height: auto;
+    /* Let aspect ratio drive height */
+}
+
+/* Client Photo: 9:16 */
+.collage-right .collage-img {
+    aspect-ratio: 9 / 16;
+    width: 100%;
+    object-fit: cover;
+    height: auto;
+}
+
+.collage-img {
+    width: 100%;
+    /* flex: 1; Removed flex to allow aspect-ratio */
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    cursor: zoom-in;
+    background: #f9f9f9;
+}
+
+/* RWD for Custom Cases & Projects */
+@media (max-width: 1100px) {
+
+    .custom-case-row,
+    .project-row {
+        flex-direction: column;
+    }
+
+    .case-info,
+    .project-info,
+    .case-material,
+    .project-scene,
+    .case-collage,
+    .project-visuals,
+    .project-steps {
+        flex: auto;
+        width: 100%;
+    }
+
+    .case-collage {
+        flex-direction: column;
+        /* Stack vertically on tablet/zoomed desktop */
+        height: auto;
+        gap: 15px;
+    }
+
+    .collage-left {
+        flex-direction: row;
+        /* Keep front/side side-by-side inside the stack? 
+           User said "Right half sort downwards".
+           The collage itself is the right half.
+           Inside the collage, we have 3 images.
+           If we stack the collage container, do we stack the 2 inner blocks?
+           Yes, standard stack is safer.
+        */
+        width: 100%;
+    }
+
+    .collage-left,
+    .collage-right {
+        width: 100%;
+        height: auto;
+    }
+
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+        height: auto;
+    }
+}
+
+/* Move Mobile Vertical Stack Logic Here */
+@media (max-width: 768px) {
+
+    /* ... existing 768px rules ... */
+    .case-collage {
+        flex-direction: column;
+        height: auto;
+        gap: 15px;
+    }
+
+    .collage-left,
+    .collage-right {
+        width: 100%;
+        height: auto;
+    }
+
+    .collage-left {
+        flex-direction: column;
+    }
+
+    .collage-left .collage-item {
+        height: 300px;
+    }
+
+    /* Ensure steps grid is auto height on mobile too */
+    /* Ensure steps grid is auto height on mobile too */
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+        height: auto;
+    }
+}
+
+/* New Project Layout specific styles (Teaching Mode) */
+.project-scene.full-height {
+    height: auto;
+    /* Allow it to stretch */
+}
+
+.scene-img,
+.scene-img-vertical {
+    width: 100%;
+    object-fit: contain;
+    /* Default */
+    border-radius: 6px;
+    border: 1px solid #eee;
+    cursor: zoom-in;
+    background: #fdfdfd;
+}
+
+.scene-img-vertical {
+    height: 100%;
+    object-fit: cover;
+    /* Fill the vertical space */
+}
+
+/* Old .project-visuals is deprecated in JS but cleared here just in case */
+.project-visuals {
+    display: none;
+}
+
+/* Project Steps Container */
+.project-steps {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* Ensure column layout */
+    gap: 10px;
+    height: 100%;
+    position: relative;
+    /* For floating label */
+}
+
+.info-complete-img {
+    position: relative;
+    /* For floating label */
+    margin-top: 15px;
+    /* Adjust spacing */
+}
+
+.step-item {
+    position: relative;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.step-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: zoom-in;
+}
+
+.step-lbl {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 0.8rem;
+    padding: 4px;
+    text-align: center;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+/* Material Text Content Style */
+.material-text-content {
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 15px;
+    /* Increase top padding if needed, but absolute label covers */
+    padding-top: 40px;
+    /* Make space for label */
+    height: 100%;
+    /* Fill container */
+    overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #555;
+    white-space: pre-wrap;
+    text-align: left;
+}
+
+/* Series Description Style */
+.series-desc-container {
+    background: #fdfdfd;
+    border-left: 4px solid var(--accent);
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-radius: 4px;
+    color: #555;
+    line-height: 1.6;
+    font-size: 1rem;
+    white-space: pre-line;
+    max-width: 1195px;
+    /* Exact match with grid */
+    width: 100%;
+    /* Fill space */
+}
+
+/* 3-Part Quantity Control (New) */
+.acc-controls {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    margin-top: 5px;
+    /* Closer to text */
+    gap: 5px;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+}
+
+/* Button & Input Flex Split */
+.btn-qty,
+.input-qty-no-arrow {
+    flex: 1 1 0px;
+    height: 28px;
+    /* Slightly smaller */
+    box-sizing: border-box;
+    /* Crucial for equal height */
+    padding: 0;
+    /* Remove default padding */
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+    text-align: center;
+    border-radius: 4px;
+    line-height: normal;
+    /* Reset line-height */
+}
+
+.btn-qty {
+    /* Background handled by inline style */
+    cursor: pointer;
+    font-weight: bold;
+    color: #555;
+    transition: opacity 0.2s;
+}
+
+.btn-qty:hover {
+    opacity: 0.8;
+}
+
+.btn-qty:active {
+    opacity: 0.6;
+}
+
+.input-qty-no-arrow {
+    background: #fff;
+    border: 1px solid #ddd;
+    /* Full border */
+    color: #333;
+}
+
+/* Hide Spinners */
+.input-qty-no-arrow::-webkit-outer-spin-button,
+.input-qty-no-arrow::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input-qty-no-arrow[type=number] {
+    -moz-appearance: textfield;
+    /* Firefox */
+    appearance: textfield;
+    /* Standard */
+    -webkit-appearance: textfield;
+    /* Chrome/Safari */
+}
+
+/* Selection Area Layout (2 Columns) */
+.selection-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+    /* Equal height */
+}
+
+.selection-left {
+    flex: 1;
+    /* Takes majority of space */
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+}
+
+/* Height Visualization - Reset for Main Content */
+.vis-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 250px;
+    /* Fixed width for right column */
+    /* Height will stretch via flex */
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    position: relative;
+    gap: 20px;
+    margin: 0;
+    /* No external margins needed */
+}
+
+.vis-scale-labels {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #ccc;
+    padding: 5px 0;
+    pointer-events: none;
+}
+
+.vis-human {
+    height: 56%;
+    /* 170cm / 300cm */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    color: #95a5a6;
+    z-index: 1;
+}
+
+.vis-human i {
+    font-size: 5rem;
+    line-height: 1;
+}
+
+.human-label {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    color: #999;
+}
+
+.vis-bar-wrapper {
+    height: 100%;
+    width: 40px;
+    /* Thicker bar */
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 4px;
+}
+
+/* Mobile Stack */
+@media (max-width: 900px) {
+    .selection-wrapper {
+        flex-direction: column;
+    }
+
+    .vis-container {
+        width: 100%;
+        height: 250px;
+        /* Fixed height when stacked */
+    }
+}
+
+.vis-bar {
+    width: 100%;
+    height: 0%;
+    background: var(--accent);
+    /* Matches series color */
+    border-radius: 4px;
+    transition: height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+}
+
+.vis-val {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.vis-bar-wrapper:hover .vis-val,
+.vis-bar.active .vis-val {
+    opacity: 1;
+}
+
+/* Responsive adjustment for input row */
+@media (max-width: 768px) {
+    .input-top-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .vis-container {
+        width: 100%;
+        height: 200px;
+        margin-left: 0;
+    }
+}
+
+/* Series Color Themes */
+body.series-20 {
+    --accent: #BDE0F5;
+    /* Blue */
+}
+
+body.series-30 {
+    --accent: #F5C2A5;
+    /* User: Pink Orange */
+}
+
+body.series-40 {
+    --accent: #B7E0A1;
+    /* User: Green */
+}
+
+/* =========================================
+   Project Page Specific Overrides
+   ========================================= */
+
+/* 1. Scene Column: 9:16 Portrait Ratio */
+.project-row .project-scene {
+    /* Keep width 25% but ensure image follows ratio */
+}
+
+.project-row .scene-img-vertical,
+.project-row .project-scene iframe {
+    aspect-ratio: 9 / 16 !important;
+    width: 100%;
+    height: auto !important;
+    /* Allow height to scale by width */
+    object-fit: cover;
+}
+
+/* 2. Steps Column: 1:1 Equal Grid */
+/* Override the 8:9 flex split from Custom Cases */
+.project-row .collage-left,
+.project-row .collage-right {
+    flex: 1 !important;
+    /* Equal width columns */
+}
+
+/* Force all step images to be Square 1:1 */
+.project-row .collage-img {
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover;
+}
+
+/* 3. Left Info Column Alignment */
+.project-row .project-info {
+    justify-content: flex-start;
+    /* Stack from top */
+    gap: 20px;
+}
+
+.project-row .info-complete-img {
+    margin-top: auto;
+    /* Push to bottom of info section if needed, or just flow naturally */
+}
+
+/* Ensure complete image is not too tall */
+.project-row .info-complete-img img {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+/* FORCE OVERRIDE: Remove Series Description Card Style */
+.series-desc-container {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 5px !important;
+    color: var(--white) !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 20px !important;
+}
+
+/* =========================================
+   RWD (Mobile Responsive)
+   Only affects screens smaller than 1000px
+   Desktop view remains UNCHANGED.
+   ========================================= */
+@media (max-width: 1000px) {
+    .app-container {
+        flex-direction: column;
+        height: auto;
+        /* Allow scroll on mobile */
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        flex-direction: row;
+        align-items: center;
+        overflow-x: auto;
+        /* Horizontal scroll for nav */
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .sidebar .brand {
+        margin-bottom: 0;
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+
+    .nav-tabs {
+        display: flex;
+        gap: 10px;
+        flex: 1;
+    }
+
+    .nav-item {
+        width: auto;
+        white-space: nowrap;
+        margin-bottom: 0;
+        padding: 8px 15px;
+    }
+
+    .separator {
+        display: none;
+    }
+
+    .social-links {
+        display: none;
+        /* Hide social on mobile top bar to save space */
+    }
+
+    .main-content {
+        padding: 15px;
+    }
+
+    /* Grid becomes flexible */
+    .aluminum-grid-container,
+    .projects-grid,
+    .accessories-container {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 15px;
+        justify-content: center;
+    }
+
+    /* Adjust Card Size for Mobile */
+    .profile-card,
+    .project-card,
+    .acc-card {
+        width: 100%;
+        /* Fill the grid cell */
+    }
+
+    .input-panel {
+        padding: 15px;
+    }
+
+    .input-top-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Project Row Stack */
+    .project-row,
+    .custom-case-row {
+        flex-direction: column;
+    }
+
+
+    .case-info,
+    .project-info {
+        width: 100%;
+        flex: auto;
+    }
+
+    /* Hide Hot Sales on Mobile to prevent layout issues in top nav */
+    #hot-sales-container {
+        display: none !important;
+    }
+}
+
+/* Hot Sales Sidebar (Compact) */
+.hot-sales-title {
+    font-size: 0.95rem;
+    /* Smaller title */
+    font-weight: bold;
+    margin-bottom: 8px;
+    /* Reduced margin */
+    color: #ffd700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hot-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* Reduced gap */
+    padding: 6px 8px;
+    /* Reduced padding */
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 3px;
+    /* Reduced margin */
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.hot-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+}
+
+.hot-rank {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    color: #333;
+}
+
+.rank-1 {
+    background: #FFD700;
+    box-shadow: 0 0 5px #ffd700;
+}
+
+/* Gold */
+.rank-2 {
+    background: #C0C0C0;
+}
+
+/* Silver */
+.rank-3 {
+    background: #CD7F32;
+}
+
+/* Bronze */
+
+.hot-name {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Highlight Effect for Hot Sales */
+@keyframes highlightPulse {
+    0% {
+        transform: scale(1);
+        border-color: transparent;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    }
+
+    50% {
+        transform: scale(1.05);
+        border-color: #e74c3c;
+        box-shadow: 0 0 20px rgba(231, 76, 60, 0.6);
+    }
+
+    100% {
+        transform: scale(1);
+        border-color: transparent;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
+
+.highlight-effect {
+    animation: highlightPulse 1.5s ease-in-out infinite;
+    z-index: 10;
+    position: relative;
+    border: 2px solid #e74c3c !important;
+    /* Visual confirmation */
+}
+
+
+/* =========================================
+   Mobile Hot Sales Floating & Modal
+   ========================================= */
+
+/* Default Hidden on Desktop */
+.floating-hot-btn {
+    display: none;
+}
+
+/* Modal Overlay & Bottom Sheet */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: flex-end;
+    /* Align bottom for sheet */
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-bottom-sheet {
+    width: 100%;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-overlay.active .modal-bottom-sheet {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Mobile Floating Button Style (Matches Cart but Gold Pill) */
+@media (max-width: 768px) {
+    .floating-hot-btn {
+        display: flex;
+        /* Visible on Mobile */
+        position: fixed;
+        bottom: 90px;
+        /* Above cart button */
+        right: 30px;
+        /* Aligned with cart button */
+        background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
+        /* Golden Gradient */
+        color: white;
+        /* White Text */
+        border: none;
+        padding: 12px 20px;
+        border-radius: 50px;
+        /* Pill Shape (like Inquiry) */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        z-index: 1900;
+        font-weight: bold;
+        align-items: center;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.2s;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .floating-hot-btn:active {
+        transform: scale(0.95);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .floating-hot-btn i {
+        color: white;
+        margin-right: 8px;
+    }
+}
+
+/* Rank Badge Overlay */
+.rank-badge-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 24px;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px 0 6px 0;
+    /* Corner styling */
+    z-index: 5;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Desktop Sidebar Hot Card */
+.desktop-hot-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.desktop-hot-card {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    /* Semi-transparent white */
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.desktop-hot-card:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+}
+
+.desktop-hot-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    background: #fff;
+    object-fit: contain;
+    margin-right: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.desktop-hot-name {
+    font-size: 0.85rem;
+    color: #fff;
+    line-height: 1.2;
+}
+
+/* Reuse Rank Colors */
+.rank-1 {
+    background: linear-gradient(135deg, #FFD700, #FDB931);
+}
+
+/* Gold */
+.rank-2 {
+    background: linear-gradient(135deg, #C0C0C0, #E0E0E0);
+}
+
+/* Silver */
+.rank-3 {
+    background: linear-gradient(135deg, #CD7F32, #D2691E);
+}
+
+/* Bronze */
+
+/* Mobile Hot Grid Layout */
+.mobile-hot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Mobile Hot Card V2 */
+.mobile-hot-card-v2 {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.mobile-hot-card-v2:active {
+    transform: scale(0.98);
+    border-color: #ffd700;
+}
+
+.mobile-hot-rank-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: #333;
+    font-weight: bold;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Colors handled by .rank-N classes */
+}
+
+.mobile-hot-img {
+    width: 100%;
+    max-width: 100%;
+    /* Force constraint */
+    display: block;
+    aspect-ratio: 1/1;
+    object-fit: contain;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    background: #fdfdfd;
+}
+
+.mobile-hot-name-v2 {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    width: 100%;
+}
+
+.mobile-hot-series-v2 {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+/* =========================================
+   NEW Hot Sales Sidebar (Replaces Modal)
+   ========================================= */
+
+.hot-sales-sidebar {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 300px;
+    height: 100%;
+    background: white;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+    transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+}
+
+.hot-sales-sidebar.open {
+    right: 0;
+}
+
+@media (max-width: 768px) {
+    .hot-sales-sidebar {
+        width: 100%;
+        right: -100%;
+    }
+
+    .hot-sales-sidebar.open {
+        right: 0;
+    }
+
+    .floating-hot-btn {
+        z-index: 1900;
+        /* Ensure below sidebar */
+    }
+}
+
+/* Model Badge in Selected List */
+.model-badge {
+    background: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-right: 8px;
+    display: inline-block;
+}
+
+/* Force Case Description Alignment */
+.case-desc {
+    text-align: left !important;
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
