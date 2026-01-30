@@ -13,10 +13,18 @@
     <!-- 頂部橫幅輪播 -->
     <div class="top-banner" id="topBanner">
         <div class="banner-content">
-            <i class="banner-icon fas fa-bolt"></i>
-            <span class="banner-text" id="bannerText">✨ 精密切割 ±0.1cm | 智慧排版零浪費 | 專業品質保證</span>
-            <a href="#" class="banner-cta" onclick="event.preventDefault(); toggleCart();">立即詢價 →</a>
+            <i class="banner-icon fas fa-crown"></i>
+            <span class="banner-text" id="bannerText">🏆 工業級鋁擠型專家 | 超過1000+專案實績</span>
+            <a href="#" class="banner-cta" onclick="event.preventDefault(); toggleCart();">查看案例 →</a>
         </div>
+
+        <!-- 進度指示器 -->
+        <div class="banner-indicators" id="bannerIndicators">
+            <span class="indicator active" data-index="0"></span>
+            <span class="indicator" data-index="1"></span>
+            <span class="indicator" data-index="2"></span>
+        </div>
+
         <button class="banner-close" onclick="closeBanner()" title="關閉橫幅">
             <i class="fas fa-times"></i>
         </button>

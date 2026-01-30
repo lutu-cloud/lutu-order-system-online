@@ -1078,3 +1078,121 @@ window.switchSeries = function (series) {
 
     renderSeries(series);
 };
+
+// ========================================
+// 頂部橫幅控制
+// ========================================
+
+// 橫幅內容陣列（自動輪播）
+const bannerMessages = [
+    { icon: 'fas fa-crown', text: '🏆 工業級鋁擠型專家 | 超過1000+專案實績', cta: '查看案例' },
+    { icon: 'fas fa-truck', text: '🚚 快速交貨 | 全台配送 | 支援自取服務', cta: '了解更多' },
+    { icon: 'fas fa-headset', text: '💬 專業諮詢團隊 | Line即時回覆 | 客製化服務', cta: '聯絡我們' }
+];
+
+let currentBannerIndex = 0;
+let bannerInterval;
+
+// 初始化橫幅
+function initBanner() {
+    // 檢查是否已關閉過橫幅（使用 localStorage）
+    if (localStorage.getItem('bannerClosed') === 'true') {
+        closeBanner();
+        return;
+    }
+
+    console.log('✅ 橫幅初始化成功！自動輪播已啟動（每5秒切換）');
+
+    // 開始輪播
+    bannerInterval = setInterval(rotateBanner, 5000); // 每5秒切換
+
+    // 添加指示器點擊事件
+    const indicators = document.querySelectorAll('.indicator');
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', function () {
+            currentBannerIndex = index;
+            updateBannerContent();
+            // 重置輪播計時器
+            clearInterval(bannerInterval);
+            bannerInterval = setInterval(rotateBanner, 5000);
+        });
+    });
+}
+
+// 輪播橫幅內容
+function rotateBanner() {
+    currentBannerIndex = (currentBannerIndex + 1) % bannerMessages.length;
+    updateBannerContent();
+}
+
+// 更新橫幅內容
+function updateBannerContent() {
+    const message = bannerMessages[currentBannerIndex];
+    const iconEl = document.querySelector('.banner-icon');
+    const textEl = document.getElementById('bannerText');
+    const ctaEl = document.querySelector('.banner-cta');
+
+    // 控制台顯示當前播放訊息
+    console.log(`🎯 橫幅輪播 [${currentBannerIndex + 1}/4]: ${message.text.substring(0, 30)}...`);
+
+    if (iconEl && textEl && ctaEl) {
+        // 淡出效果
+        textEl.style.opacity = '0';
+        textEl.style.transition = 'opacity 0.2s ease';
+
+        setTimeout(() => {
+            iconEl.className = `banner-icon ${message.icon}`;
+            textEl.textContent = message.text;
+            ctaEl.textContent = `${message.cta} →`;
+            textEl.style.opacity = '1';
+        }, 200);
+    }
+
+    // 更新指示器
+    updateIndicators();
+}
+
+// 更新指示器狀態
+function updateIndicators() {
+    const indicators = document.querySelectorAll('.indicator');
+    indicators.forEach((indicator, index) => {
+        if (index === currentBannerIndex) {
+            indicator.classList.add('active');
+        } else {
+            indicator.classList.remove('active');
+        }
+    });
+}
+
+// 關閉橫幅
+function closeBanner() {
+    const banner = document.getElementById('topBanner');
+    if (banner) {
+        banner.classList.add('hidden');
+        document.body.classList.add('banner-hidden');
+
+        // 停止輪播
+        if (bannerInterval) {
+            clearInterval(bannerInterval);
+        }
+
+        // 記住用戶選擇（7天內不再顯示）
+        localStorage.setItem('bannerClosed', 'true');
+        localStorage.setItem('bannerClosedTime', Date.now());
+    }
+}
+
+// 頁面載入時初始化橫幅
+window.addEventListener('DOMContentLoaded', function () {
+    // 檢查關閉時間，7天後重新顯示
+    const closedTime = localStorage.getItem('bannerClosedTime');
+    if (closedTime) {
+        const daysPassed = (Date.now() - parseInt(closedTime)) / (1000 * 60 * 60 * 24);
+        if (daysPassed >= 7) {
+            localStorage.removeItem('bannerClosed');
+            localStorage.removeItem('bannerClosedTime');
+        }
+    }
+
+    initBanner();
+});
