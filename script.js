@@ -126,7 +126,16 @@ async function initData() {
                     desc: row[8]
                 };
             }).filter(function (p) {
-                return p && p.name && p.status !== '下架';
+                // 過濾條件：
+                // 1. 商品存在且有名稱
+                // 2. 不是下架商品
+                // 3. 【新增】排除後台庫存行（名稱以 20-, 30-, 40- 開頭的）
+                if (!p || !p.name || p.status === '下架') return false;
+
+                // 排除後台庫存行
+                if (p.name.match(/^(20|30|40)-/)) return false;
+
+                return true;
             });
         }
 
@@ -622,11 +631,18 @@ window.selectProfile = function (name) {
 };
 
 window.addProfileToCart = function () {
-    let len = document.getElementById('profile-len').value;
-    let qty = document.getElementById('profile-qty').value;
+    let len = parseFloat(document.getElementById('profile-len').value);
+    let qty = parseInt(document.getElementById('profile-qty').value);
 
     if (!len || len < 10 || !qty || qty < 1) { alert("長度需至少 10 公分，且數量需大於 0"); return; }
-    addToCart(selectedProfile, parseInt(qty), parseInt(len));
+
+    // 驗證長度為 0.1 的倍數（避免浮點數精度問題）
+    if (Math.round(len * 10) / 10 !== len) {
+        alert("長度只能精確到 0.1 公分");
+        return;
+    }
+
+    addToCart(selectedProfile, qty, len);
     renderSpecList();
     document.getElementById('profile-len').value = '';
 };
@@ -658,7 +674,7 @@ function renderSpecList() {
             <div class="spec-row" style="background:${rowBg}; border-color:${color}40;">
                 <div class="spec-info">
                     <span class="model-badge" style="color:${color};">${item.name}</span>
-                    <span>長度 ${item.len} cm</span>
+                    <span>長度 ${item.len.toFixed(1)} cm</span>
                     <span style="color:#aaa;"></span>
                     <span style="color:#e74c3c; font-weight:bold;">NT$${Math.round(item.price * item.len * item.qty)}</span>
                 </div>
@@ -763,7 +779,7 @@ function renderCart() {
             let item = cart[i];
             let sub = (item.type === '鋁材' && item.unit === 'cm') ? item.price * item.len * item.qty : item.price * item.qty;
             total += sub;
-            let specText = (item.len > 0) ? `長度 ${item.len}cm` : '標準規格';
+            let specText = (item.len > 0) ? `長度 ${item.len.toFixed(1)}cm` : '標準規格';
 
             html += `
             <div class="cart-item">
@@ -831,6 +847,9 @@ document.getElementById('order-form').addEventListener('submit', function (e) {
     let btn = document.getElementById('btn-submit');
     btn.disabled = true; btn.innerText = "傳送中...";
 
+    // 觸發載入動畫
+    triggerLoadingAnimation();
+
     let formData = new FormData(e.target);
     let payload = { customer: Object.fromEntries(formData.entries()), items: cart, totalEst: document.getElementById('cart-total').innerText };
 
@@ -845,15 +864,21 @@ document.getElementById('order-form').addEventListener('submit', function (e) {
         .then(function () {
             // With no-cors, we get an opaque response, we can't read JSON.
             // But if it didn't throw network error, it's sent.
-            alert("訂單已送出！(請確認 Line 或 Email 是否收到通知)");
-            cart = [];
-            renderCart();
-            renderSpecList();
-            toggleCart();
-            e.target.reset();
+
+            // 等待動畫完成後才顯示成功訊息
+            setTimeout(function () {
+                hideLoadingAnimation();
+                alert("訂單已送出！(請確認 Line 或 Email 是否收到通知)");
+                cart = [];
+                renderCart();
+                renderSpecList();
+                toggleCart();
+                e.target.reset();
+            }, 6000); // 動畫總時長6秒
         })
         .catch(function (err) {
             console.error(err);
+            hideLoadingAnimation();
             alert("發送失敗，請稍後再試或使用截圖傳送。");
         })
         .finally(function () {
@@ -861,6 +886,58 @@ document.getElementById('order-form').addEventListener('submit', function (e) {
             btn.innerText = "送出訂單";
         });
 });
+
+// 載入動畫觸發函數
+function triggerLoadingAnimation() {
+    const overlay = document.getElementById('loadingOverlay');
+    const progressText = document.getElementById('progressText');
+
+    // 顯示覆蓋層
+    overlay.classList.add('active');
+
+    // 重置所有步驟
+    document.querySelectorAll('.factory-step, .connection-line').forEach(el => {
+        el.classList.remove('active');
+    });
+
+    // 步驟1：派單中
+    setTimeout(() => {
+        document.getElementById('fStep1').classList.add('active');
+        progressText.textContent = '正在派單處理中...';
+    }, 300);
+
+    // 連接線1 + 步驟2：精密裁切
+    setTimeout(() => {
+        document.getElementById('line1').classList.add('active');
+        document.getElementById('fStep2').classList.add('active');
+        progressText.textContent = '正在進行精密裁切...';
+    }, 1500);
+
+    // 連接線2 + 步驟3：QA/QC
+    setTimeout(() => {
+        document.getElementById('line2').classList.add('active');
+        document.getElementById('fStep3').classList.add('active');
+        progressText.textContent = 'QA/QC 品質檢驗中...';
+    }, 2700);
+
+    // 連接線3 + 步驟4：包裝出貨
+    setTimeout(() => {
+        document.getElementById('line3').classList.add('active');
+        document.getElementById('fStep4').classList.add('active');
+        progressText.textContent = '正在包裝準備出貨...';
+    }, 3900);
+
+    // 完成動畫
+    setTimeout(() => {
+        progressText.textContent = '✅ 訂單提交成功！';
+    }, 5100);
+}
+
+// 隱藏載入動畫
+function hideLoadingAnimation() {
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.remove('active');
+}
 
 function renderProjects() {
     let container = document.getElementById('projects-container');

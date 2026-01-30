@@ -57,7 +57,7 @@
                                 已選擇：<span id="selected-profile-name" class="highlight-text"></span>
                             </div>
                             <div class="input-group">
-                                <input type="number" id="profile-len" placeholder="長度 (至少10cm)" min="10">
+                                <input type="number" id="profile-len" placeholder="長度 (至少10cm)" min="10" step="0.1">
                                 <input type="number" id="profile-qty" placeholder="數量" min="1" value="1">
                                 <button class="btn-add" onclick="addProfileToCart()">加入清單</button>
                             </div>
@@ -163,6 +163,43 @@
             <div class="cart-body" id="hot-sales-mobile-body">
                 <!-- Content injected by JS -->
             </div>
+        </div>
+    </div>
+
+    <!-- 訂單提交載入動畫覆蓋層 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-title">正在處理您的訂單...</div>
+
+            <div class="factory-animation">
+                <!-- 工廠步驟 -->
+                <div class="factory-step f-step-1 step-1" id="fStep1">
+                    <div class="icon">📄</div>
+                    <div class="label">派單中</div>
+                </div>
+
+                <div class="factory-step f-step-2 step-2" id="fStep2">
+                    <div class="icon">✂️</div>
+                    <div class="label">精密裁切</div>
+                </div>
+
+                <div class="factory-step f-step-3 step-3" id="fStep3">
+                    <div class="icon">✅</div>
+                    <div class="label">QA/QC</div>
+                </div>
+
+                <div class="factory-step f-step-4 step-4" id="fStep4">
+                    <div class="icon">📦</div>
+                    <div class="label">包裝出貨</div>
+                </div>
+
+                <!-- 連接線 -->
+                <div class="connection-line line-1" id="line1"></div>
+                <div class="connection-line line-2" id="line2"></div>
+                <div class="connection-line line-3" id="line3"></div>
+            </div>
+
+            <div class="progress-text" id="progressText">正在處理您的訂單...</div>
         </div>
     </div>
 
