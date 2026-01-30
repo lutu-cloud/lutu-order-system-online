@@ -1085,9 +1085,9 @@ window.switchSeries = function (series) {
 
 // 橫幅內容陣列（自動輪播）
 const bannerMessages = [
-    { icon: 'fas fa-crown', text: '🏆 工業級鋁擠型專家 | 超過1000+專案實績', cta: '查看案例' },
-    { icon: 'fas fa-truck', text: '🚚 快速交貨 | 全台配送 | 支援自取服務', cta: '了解更多' },
-    { icon: 'fas fa-headset', text: '💬 專業諮詢團隊 | Line即時回覆 | 客製化服務', cta: '聯絡我們' }
+    { icon: 'fas fa-crown', text: '🏆 工業級鋁擠型專家 | 超過1000+專案實績' },
+    { icon: 'fas fa-truck', text: '🚚 快速交貨 | 全台配送 | 支援自取服務' },
+    { icon: 'fas fa-headset', text: '💬 專業諮詢團隊 | Line即時回覆 | 客製化服務' }
 ];
 
 let currentBannerIndex = 0;
@@ -1130,12 +1130,11 @@ function updateBannerContent() {
     const message = bannerMessages[currentBannerIndex];
     const iconEl = document.querySelector('.banner-icon');
     const textEl = document.getElementById('bannerText');
-    const ctaEl = document.querySelector('.banner-cta');
 
     // 控制台顯示當前播放訊息
-    console.log(`🎯 橫幅輪播 [${currentBannerIndex + 1}/4]: ${message.text.substring(0, 30)}...`);
+    console.log(`🎯 橫幅輪播 [${currentBannerIndex + 1}/3]: ${message.text}`);
 
-    if (iconEl && textEl && ctaEl) {
+    if (iconEl && textEl) {
         // 淡出效果
         textEl.style.opacity = '0';
         textEl.style.transition = 'opacity 0.2s ease';
@@ -1143,7 +1142,6 @@ function updateBannerContent() {
         setTimeout(() => {
             iconEl.className = `banner-icon ${message.icon}`;
             textEl.textContent = message.text;
-            ctaEl.textContent = `${message.cta} →`;
             textEl.style.opacity = '1';
         }, 200);
     }
