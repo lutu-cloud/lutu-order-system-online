@@ -1861,9 +1861,6 @@ body.series-40 {
    ========================================= */
 
 /* 1. Scene Column: 9:16 Portrait Ratio */
-.project-row .project-scene {
-    /* Keep width 25% but ensure image follows ratio */
-}
 
 .project-row .scene-img-vertical,
 .project-row .project-scene iframe {
@@ -1922,7 +1919,7 @@ body.series-40 {
    Only affects screens smaller than 1000px
    Desktop view remains UNCHANGED.
    ========================================= */
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
     .app-container {
         flex-direction: column;
         height: auto;
@@ -1933,31 +1930,46 @@ body.series-40 {
         width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--border);
-        flex-direction: row;
+        flex-direction: column;
+        /* Stack Brand and Nav */
         align-items: center;
-        overflow-x: auto;
-        /* Horizontal scroll for nav */
-        padding: 10px;
+        padding: 15px 10px;
         box-sizing: border-box;
+        overflow-x: hidden;
+        /* Prevent horizontal scroll */
+        height: auto;
     }
 
     .sidebar .brand {
-        margin-bottom: 0;
-        margin-right: 20px;
-        white-space: nowrap;
+        margin-bottom: 15px;
+        margin-right: 0;
+        text-align: center;
+        width: 100%;
     }
 
     .nav-tabs {
-        display: flex;
-        gap: 10px;
-        flex: 1;
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        /* Force 3 columns */
+        gap: 8px !important;
+        width: 100% !important;
+        padding: 0 5px !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
     }
 
     .nav-item {
-        width: auto;
-        white-space: nowrap;
-        margin-bottom: 0;
-        padding: 8px 15px;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        margin-bottom: 0 !important;
+        padding: 10px 4px !important;
+        font-size: 0.85rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 8px !important;
     }
 
     .separator {
@@ -1970,14 +1982,20 @@ body.series-40 {
     }
 
     .main-content {
-        padding: 15px;
+        padding: 15px !important;
     }
 
-    /* Grid becomes flexible */
+    #page-title {
+        font-size: 1.8rem !important;
+        /* Smaller title on mobile */
+        margin-bottom: 15px !important;
+    }
+
+    /* Grid becomes flexible - Single Column for Mobile */
     .aluminum-grid-container,
     .projects-grid,
     .accessories-container {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: 1fr;
         gap: 15px;
         justify-content: center;
     }
@@ -2852,4 +2870,34 @@ body.banner-hidden {
 
 .page-header h2 {
     margin: 0;
+}
+
+/* Image Fix for Mobile: Ensure original aspect ratio */
+@media (max-width: 1200px) {
+
+    /* Project Scene Images */
+    .scene-img-vertical {
+        width: 100% !important;
+        height: auto !important;
+        object-fit: cover !important;
+        /* 或者不設 object-fit，讓寬度決定高度 */
+        max-height: none !important;
+        /* 移除高度限制，讓它滿版 */
+        min-height: 200px;
+    }
+
+    /* Custom Case Collage Images */
+    .collage-img {
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        /* 移除高度限制 */
+        object-fit: cover !important;
+    }
+
+    /* Reset container heights if necessary */
+    .collage-item {
+        height: auto !important;
+        display: block !important;
+    }
 }

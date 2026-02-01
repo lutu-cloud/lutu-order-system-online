@@ -1070,7 +1070,7 @@ function renderProjects() {
         } else {
             // Render Image from Scene Column (Default)
             let finalImg = (sceneVal) ? 'assets/' + sceneVal : 'https://placehold.co/300x500?text=Scene';
-            sceneContent = `<img src="${finalImg}" class="scene-img-vertical" style="width:100%; height:100%; object-fit:cover; border-radius:6px; border:1px solid #eee;" onclick="showLightbox(this.src)">`;
+            sceneContent = `<img src="${finalImg}" class="scene-img-vertical" style="width:100%; height:100%; object-fit:contain; border-radius:6px; border:1px solid #eee;" onclick="showLightbox(this.src)">`;
         }
 
         // Helper to format Description (Robust Trim)
