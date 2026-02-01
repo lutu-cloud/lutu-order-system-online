@@ -1,4 +1,5 @@
 // Hardcoded Data (Restored)
+const API_URL = "https://script.google.com/macros/s/AKfycbxEn0_QHCdDmA24QNrXOfFVg2lSlvdt9R7opPpLmOrxEZGxm0L7t73CWneKlaHHo8ZV/exec";
 const rawData = {
     products: [
         ["產品主分類", "產品類型", "產品名稱", "單價", "圖片名稱(鋁材圖配件2D圖)", "圖片名稱(配件3D圖)", "單位", "狀態", "規格描述"],
@@ -81,7 +82,7 @@ let customCases = [];
 let cart = [];
 let currentSeries = '20';
 let selectedProfile = null;
-const API_URL = "https://script.google.com/macros/s/AKfycbxEn0_QHCdDmA24QNrXOfFVg2lSlvdt9R7opPpLmOrxEZGxm0L7t73CWneKlaHHo8ZV/exec";
+
 
 // Global Hot Sales Data
 const hotProfilesData = [
@@ -421,7 +422,8 @@ window.switchView = function (view) {
     document.getElementById('view-about').classList.add('hidden');
     document.getElementById('view-custom').classList.add('hidden');
 
-    document.documentElement.style.setProperty('--accent', '#77858c');
+    // Remove series classes by default for non-product views (so background becomes white)
+    document.body.classList.remove('series-20', 'series-30', 'series-40');
 
     if (view === 'projects') {
         document.querySelector('.project-tab').classList.add('active');
@@ -437,6 +439,14 @@ window.switchView = function (view) {
     } else {
         // Default: Product View (e.g. view === 'product')
         document.getElementById('view-product').classList.remove('hidden');
+        // Restore series background
+        if (typeof currentSeries !== 'undefined' && currentSeries) {
+            document.body.classList.add('series-' + currentSeries);
+            // Highlight active series tab
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                if (btn.textContent.includes(currentSeries)) btn.classList.add('active');
+            });
+        }
     }
 };
 
@@ -446,9 +456,19 @@ function renderSeries(series) {
     let acc = list.filter(function (p) { return p.type === '配件'; });
 
     let alHtml = '';
+    const weightMap = {
+        '2020型': '0.458', '2040型': '0.862',
+        '3030輕型': '0.693', '3030重型': '1.07', '3060輕型': '1.218', '3060重型': '1.844',
+        '4040輕型': '1.298', '4040重型': '1.923', '4080輕型': '2.265', '4080重型': '3.505'
+    };
+
     if (al.length > 0) {
         for (let i = 0; i < al.length; i++) {
             let p = al[i];
+
+            // Weight Label
+            let weight = weightMap[p.name] || '';
+            let weightHtml = weight ? `<span class="img-label" style="background:#555; color:white;">${weight} kg/m</span>` : '';
 
             // Check Rank
             let hotItem = hotProfilesData.find(h => h.name === p.name);
@@ -458,8 +478,10 @@ function renderSeries(series) {
             }
 
             alHtml += '<div class="profile-card" onclick="selectProfile(\'' + p.name + '\')" id="card-' + p.name + '" style="position:relative;">';
-            alHtml += badgeHtml; // Inject Badge
-            alHtml += '<div class="profile-img"><img src="assets/' + p.img2d + '" style="width:100%;height:100%;object-fit:contain;padding:10px;" onerror="this.src=\'https://placehold.co/100?text=No+Img\'"></div>';
+            alHtml += '<div class="profile-img" style="position:relative;">';
+            alHtml += weightHtml; // Top-Left Weight
+            alHtml += badgeHtml; // Top-Right Rank
+            alHtml += '<img src="assets/' + p.img2d + '" style="width:100%;height:100%;object-fit:contain;padding:10px;" onerror="this.src=\'https://placehold.co/100?text=No+Img\'"></div>';
             alHtml += '<div><b>' + p.name + '</b></div>';
             alHtml += '<div style="color:#e74c3c; font-weight:bold; font-size:1.1rem;">NT$' + p.price + '/' + p.unit + '</div>';
             alHtml += '</div>';
@@ -484,19 +506,19 @@ function renderSeries(series) {
             let hotItem = hotAccessoriesData.find(h => h.name === p.name);
             let badgeHtml = '';
             if (hotItem) {
-                badgeHtml = `<div class="rank-badge-overlay rank-${hotItem.rank}" style="top:0; left:0;">TOP ${hotItem.rank}</div>`;
+                badgeHtml = `<div class="rank-badge-overlay rank-${hotItem.rank}">TOP ${hotItem.rank}</div>`;
             }
 
             let img3dSrc = (p.img3d && p.img3d !== '') ? 'assets/' + p.img3d : '';
             let img3dError = "this.parentElement.style.background='#eee';this.style.display='none';this.parentElement.innerHTML='<span style=\"color:#999;font-size:12px;\">3D (待補)</span>'";
 
             accHtml += '<div class="acc-card" id="acc-card-' + p.name + '" style="display:flex; flex-direction:column; justify-content:space-between; position:relative;">';
-            accHtml += badgeHtml; // Inject Badge
             accHtml += '<div class="acc-images" style="margin-bottom:5px;">';
 
             // 2D Image
             accHtml += '<div class="acc-img-wrapper" onclick="showLightbox(\'assets/' + p.img2d + '\')">';
             accHtml += '<span class="img-label">2D</span>';
+            accHtml += badgeHtml; // Inject Badge on 2D
             accHtml += '<img src="assets/' + p.img2d + '" class="acc-img">';
             accHtml += '</div>';
 
@@ -627,6 +649,43 @@ window.selectProfile = function (name) {
     selectedProfile = products.find(function (p) { return p.name === name; });
     document.getElementById('selected-profile-name').innerText = name;
     document.getElementById('aluminum-input-area').classList.remove('hidden');
+
+    // Apply series-specific color to the add button
+    const addBtn = document.querySelector('.btn-add');
+    if (addBtn && selectedProfile) {
+        const series = selectedProfile.series || currentSeries;
+        let btnColor = '#2980b9'; // Default 20 series blue
+        let btnHoverColor = '#1f6391'; // Darker blue for hover
+
+        if (series === '30') {
+            btnColor = '#e67e22'; // 30 series orange
+            btnHoverColor = '#c55a11'; // Darker orange for hover
+        } else if (series === '40') {
+            btnColor = '#27ae60'; // 40 series green
+            btnHoverColor = '#1e8449'; // Darker green for hover
+        }
+
+        // Use setProperty with important flag to override CSS
+        addBtn.style.setProperty('background', btnColor, 'important');
+        addBtn.style.setProperty('background-color', btnColor, 'important');
+        addBtn.style.setProperty('border-color', btnColor, 'important');
+
+        // Store colors for hover effect
+        addBtn.dataset.normalColor = btnColor;
+        addBtn.dataset.hoverColor = btnHoverColor;
+
+        // Remove old listeners and add new ones
+        addBtn.onmouseenter = function () {
+            this.style.setProperty('background', this.dataset.hoverColor, 'important');
+            this.style.setProperty('background-color', this.dataset.hoverColor, 'important');
+            this.style.setProperty('border-color', this.dataset.hoverColor, 'important');
+        };
+        addBtn.onmouseleave = function () {
+            this.style.setProperty('background', this.dataset.normalColor, 'important');
+            this.style.setProperty('background-color', this.dataset.normalColor, 'important');
+            this.style.setProperty('border-color', this.dataset.normalColor, 'important');
+        };
+    }
     renderSpecList();
 };
 
@@ -802,8 +861,28 @@ function renderCart() {
     document.getElementById('cart-count').innerText = cart.length;
 }
 
-// Add Delivery Fee Listener
-document.querySelector('select[name="delivery"]').addEventListener('change', calculateTotalWithDelivery);
+// Add Delivery Fee Listener and Address Field Toggle
+document.querySelector('select[name="delivery"]').addEventListener('change', function () {
+    calculateTotalWithDelivery();
+    toggleAddressField();
+});
+
+// Toggle address field based on delivery method
+function toggleAddressField() {
+    const deliveryMethod = document.querySelector('select[name="delivery"]').value;
+    const addressInput = document.getElementById('address-input');
+
+    if (deliveryMethod === '自取' || deliveryMethod === '店到店') {
+        // Hide address field for self-pickup and store-to-store
+        addressInput.style.display = 'none';
+        addressInput.removeAttribute('required');
+        addressInput.value = ''; // Clear value
+    } else {
+        // Show address field for delivery
+        addressInput.style.display = 'block';
+        addressInput.setAttribute('required', 'required');
+    }
+}
 
 function calculateTotalWithDelivery() {
     let baseTotal = 0;
@@ -822,12 +901,22 @@ function calculateTotalWithDelivery() {
 
     // Update Display
     let totalEl = document.getElementById('cart-total');
-    if (deliveryMethod === '宅配') {
+    let isStoreToStore = deliveryMethod.includes('店到店');
+    let needsQuoting = deliveryMethod.includes('宅配') || deliveryMethod.includes('公司配送');
+
+    if (isStoreToStore) {
+        finalTotal += 60;
+        totalEl.innerHTML = `${finalTotal} <span style="font-size:0.6em; color:rgba(255,255,255,0.8); font-weight:normal;">(含 60 元店到店運費)</span>`;
+        totalEl.setAttribute('data-note', '(含 60 元店到店運費)');
+    } else if (needsQuoting) {
         // Red color for notice
         totalEl.innerHTML = `${finalTotal} <span style="font-size:0.6em; color:#e74c3c; font-weight:normal;">+ 運費待報價</span>`;
+        totalEl.setAttribute('data-note', '(運費待報價)');
     } else {
         totalEl.innerText = finalTotal;
+        totalEl.removeAttribute('data-note');
     }
+    totalEl.setAttribute('data-raw-total', finalTotal);
 }
 
 window.removeFromCart = function (id) {
@@ -851,7 +940,27 @@ document.getElementById('order-form').addEventListener('submit', function (e) {
     triggerLoadingAnimation();
 
     let formData = new FormData(e.target);
-    let payload = { customer: Object.fromEntries(formData.entries()), items: cart, totalEst: document.getElementById('cart-total').innerText };
+    let totalEl = document.getElementById('cart-total');
+    let rawTotal = totalEl.getAttribute('data-raw-total') || totalEl.innerText.split(' ')[0];
+    let deliveryNote = totalEl.getAttribute('data-note') || "";
+
+    let customerData = Object.fromEntries(formData.entries());
+    if (deliveryNote) {
+        customerData.note = (customerData.note ? customerData.note + " " : "") + deliveryNote;
+    }
+
+    let deliveryMethod = formData.get('delivery');
+    let shipFee = 0;
+    if (deliveryMethod && deliveryMethod.includes('店到店')) {
+        shipFee = 60;
+    }
+
+    let payload = {
+        customer: customerData,
+        items: cart,
+        totalEst: rawTotal,
+        shippingFee: shipFee // [Fixed] Calculate directly from form data
+    };
 
     fetch(API_URL, {
         method: 'POST',
@@ -896,41 +1005,31 @@ function triggerLoadingAnimation() {
     overlay.classList.add('active');
 
     // 重置所有步驟
-    document.querySelectorAll('.factory-step, .connection-line').forEach(el => {
+    document.querySelectorAll('.process-step, .process-line').forEach(el => {
         el.classList.remove('active');
     });
 
-    // 步驟1：派單中
+    // 步驟1：收單中
     setTimeout(() => {
-        document.getElementById('fStep1').classList.add('active');
-        progressText.textContent = '正在派單處理中...';
-    }, 300);
+        document.getElementById('pStep1').classList.add('active');
+        progressText.textContent = '正在接收訂單資料...';
+    }, 500);
 
-    // 連接線1 + 步驟2：精密裁切
+    // 連接線動畫 (1.0s 開始，耗時 2s)
     setTimeout(() => {
-        document.getElementById('line1').classList.add('active');
-        document.getElementById('fStep2').classList.add('active');
-        progressText.textContent = '正在進行精密裁切...';
-    }, 1500);
+        document.getElementById('pLine').classList.add('active');
+    }, 1000);
 
-    // 連接線2 + 步驟3：QA/QC
+    // 步驟2：已派單 (3.0s 出現，此時線剛好跑完)
     setTimeout(() => {
-        document.getElementById('line2').classList.add('active');
-        document.getElementById('fStep3').classList.add('active');
-        progressText.textContent = 'QA/QC 品質檢驗中...';
-    }, 2700);
-
-    // 連接線3 + 步驟4：包裝出貨
-    setTimeout(() => {
-        document.getElementById('line3').classList.add('active');
-        document.getElementById('fStep4').classList.add('active');
-        progressText.textContent = '正在包裝準備出貨...';
-    }, 3900);
+        document.getElementById('pStep2').classList.add('active');
+        progressText.textContent = '訂單已成功派單！';
+    }, 3000);
 
     // 完成動畫
     setTimeout(() => {
         progressText.textContent = '✅ 訂單提交成功！';
-    }, 5100);
+    }, 5000);
 }
 
 // 隱藏載入動畫
@@ -1073,7 +1172,7 @@ window.switchSeries = function (series) {
     let descContainer = document.getElementById('series-desc-container');
     if (descContainer) {
         descContainer.innerText = descriptions[series] || "";
-        // Styles are now handled by CSS class .series-desc-container
+        descContainer.style.color = '#171717'; // Force dark text color
     }
 
     renderSeries(series);
@@ -1193,4 +1292,107 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 
     initBanner();
+
+    // Initialize series immediately
+    if (typeof switchSeries === 'function') {
+        switchSeries('20');
+    }
 });
+
+// --- Order Lookup Logic ---
+function openOrderQueryModal() {
+    document.getElementById('query-modal').classList.add('active');
+}
+
+function closeQueryModal() {
+    document.getElementById('query-modal').classList.remove('active');
+}
+
+function toggleOrderDetails(detailsId) {
+    var detailsDiv = document.getElementById(detailsId);
+    if (detailsDiv) {
+        if (detailsDiv.style.display === 'none') {
+            detailsDiv.style.display = 'block';
+        } else {
+            detailsDiv.style.display = 'none';
+        }
+    }
+}
+
+
+function submitOrderQuery() {
+    var phone = document.getElementById('query-phone').value.trim();
+    if (!phone) {
+        alert('請輸入手機號碼');
+        return;
+    }
+
+    var resultsDiv = document.getElementById('query-results');
+    resultsDiv.innerHTML = '<div style="text-align:center; padding:20px;">查詢中... <i class="fas fa-spinner fa-spin"></i></div>';
+
+    // Call GAS
+    // Use the global API_URL defined at the top
+    var scriptUrl = API_URL;
+
+    fetch(scriptUrl + '?action=queryOrder&phone=' + encodeURIComponent(phone))
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                if (data.orders.length === 0) {
+                    resultsDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">查無資料，請確認手機號碼是否正確。<br>(僅顯示最近 5 筆訂單)</div>';
+                } else {
+                    var html = '';
+                    data.orders.forEach(function (order, index) {
+                        var statusColor = '#999';
+                        var statusText = '處理中';
+                        var rawStatus = order.status || 'unquoted';
+
+                        // Map status to UI
+                        if (rawStatus === 'unquoted') { statusText = '待報價 / 處理中'; statusColor = '#f39c12'; } // Orange
+                        else if (rawStatus === 'quoted') { statusText = '已報價 (請收信)'; statusColor = '#3498db'; } // Blue
+                        else if (rawStatus === 'paid') { statusText = '已付款/確認'; statusColor = '#27ae60'; } // Green
+                        else if (rawStatus === 'shipping') { statusText = '待出貨'; statusColor = '#1abc9c'; } // Teal
+                        else if (rawStatus === 'dispatched') { statusText = '已出貨'; statusColor = '#9b59b6'; } // Purple
+                        else if (rawStatus === 'completed') { statusText = '已完成'; statusColor = '#2ecc71'; } // Green
+                        else if (rawStatus === 'cancelled') { statusText = '已取消'; statusColor = '#e74c3c'; } // Red
+
+                        var safeDate = "";
+                        try {
+                            safeDate = new Date(order.timestamp).toLocaleDateString();
+                        } catch (e) { safeDate = "未知日期"; }
+
+                        // Create unique ID for this order card
+                        var cardId = 'order-card-' + index;
+                        var detailsId = 'order-details-' + index;
+
+                        html += `
+                        <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <span style="font-weight:bold; color:#333;">${safeDate}</span>
+                                <span style="background:${statusColor}; color:white; padding:2px 8px; border-radius:4px; font-size:0.85rem;">${statusText}</span>
+                            </div>
+                            <div style="color:#555; text-align:left; font-size:0.9rem; margin-bottom:5px; cursor:pointer;" onclick="toggleOrderDetails('${detailsId}')">
+                                ${order.summary}
+                                <span style="color:#3b82f6; font-size:0.8rem; margin-left:5px;">📋 點擊查看完整明細</span>
+                            </div>
+                            <div id="${detailsId}" style="display:none; background:#f9f9f9; padding:10px; border-radius:6px; margin:10px 0; font-size:0.85rem; color:#333; white-space:pre-wrap; text-align:left; max-height:300px; overflow-y:auto;">
+                                ${order.details || '無詳細資料'}
+                            </div>
+                            <div style="display:flex; justify-content:space-between; color:#888; font-size:0.85rem;">
+                                <span>配送：${order.delivery}</span>
+                                <span>總額：$${order.total}</span>
+                            </div>
+                        </div>
+                        `;
+                    });
+                    resultsDiv.innerHTML = html;
+                }
+            } else {
+                resultsDiv.innerHTML = '<div style="color:red; text-align:center; padding:20px;">查詢失敗: ' + (data.message || '未知錯誤') + '</div>';
+            }
+        })
+        .catch(err => {
+            resultsDiv.innerHTML = '<div style="color:red; text-align:center; padding:20px;">連線錯誤，請稍後再試。</div>';
+            console.error(err);
+        });
+}

@@ -43,7 +43,7 @@
             </nav>
 
             <div class="separator"></div>
-            <div id="hot-sales-container" style="padding:10px; color:white;">
+            <div id="hot-sales-container" style="padding:10px;">
                 <!-- Hot Sales Content will be injected here -->
             </div>
 
@@ -63,12 +63,18 @@
             <div id="view-product" class="content-view">
                 <header class="page-header">
                     <h2 id="page-title">20 系列選購</h2>
+                    <button onclick="openOrderQueryModal()"
+                        style="background: #545454; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: all 0.2s;"
+                        onmouseover="this.style.background='#3d3d3d'; this.style.transform='translateY(-2px)';"
+                        onmouseout="this.style.background='#545454'; this.style.transform='translateY(0)';">
+                        <i class="fas fa-search"></i> 查詢訂單
+                    </button>
                 </header>
                 <section id="aluminum-section" class="section-block">
-                    <div id="series-desc-container" class="series-desc-container"></div>
+                    <div id="series-desc-container" class="series-desc-container" style="color: #171717 !important;">
+                    </div>
                     <div class="section-title">鋁擠型規格選擇 (點擊圖片選取)</div>
                     <div id="aluminum-grid" class="aluminum-grid-container">
-                        <p class="loading-text">載入中...</p>
                     </div>
                     <div id="aluminum-input-area" class="input-panel hidden">
                         <div class="input-top-row">
@@ -130,6 +136,30 @@
             </div>
         </main>
     </div>
+
+
+    <!-- Order Query Modal -->
+    <div id="query-modal" class="lightbox" onclick="closeQueryModal()">
+        <div class="modal-content" onclick="event.stopPropagation()"
+            style="background: white; padding: 25px; border-radius: 12px; max-width: 500px; width: 90%; position: relative;">
+            <button class="close-lightbox" onclick="closeQueryModal()"
+                style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
+            <h3 style="margin-bottom: 20px; color: #333; text-align: center;">📜 訂單查詢</h3>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="tel" id="query-phone" placeholder="輸入手機號碼"
+                    style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                <button onclick="submitOrderQuery()"
+                    style="background: #545454; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: all 0.2s;"
+                    onmouseover="this.style.background='#3d3d3d';"
+                    onmouseout="this.style.background='#545454';">查詢</button>
+            </div>
+            <div id="query-results" style="max-height: 300px; overflow-y: auto;">
+                <!-- Results injected here -->
+                <div style="text-align: center; color: #888; padding: 20px;">請輸入手機號碼查詢歷史訂單</div>
+            </div>
+        </div>
+    </div>
+
     <button class="floating-cart-btn" onclick="toggleCart()">
         <i class="fas fa-shopping-cart"></i> 詢價單 <span id="cart-count">0</span>
     </button>
@@ -149,11 +179,13 @@
                     <input type="text" name="name" placeholder="您的姓名" required>
                     <input type="tel" name="phone" placeholder="連絡電話" required>
                     <input type="email" name="email" placeholder="電子信箱 (接收報價單)" required>
-                    <input type="text" name="address" placeholder="配送地址" required>
+                    <input type="text" id="address-input" name="address" placeholder="配送地址" required>
                     <select name="delivery"
                         style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; margin-bottom: 10px;">
-                        <option value="宅配">宅配寄送</option>
+                        <option value="宅配(運費待報價)">宅配寄送</option>
                         <option value="自取">公司自取</option>
+                        <option value="店到店(含60元運費)">店到店(純配件)</option>
+                        <option value="公司配送(運費待報價)">公司配送(大量)</option>
                     </select>
                     <textarea name="note" placeholder="備註 (選填)" rows="2"></textarea>
                     <button type="submit" id="btn-submit" class="btn-submit">送出訂單</button>
@@ -190,39 +222,32 @@
         <div class="loading-content">
             <div class="loading-title">正在處理您的訂單...</div>
 
-            <div class="factory-animation">
-                <!-- 工廠步驟 -->
-                <div class="factory-step f-step-1 step-1" id="fStep1">
-                    <div class="icon">📄</div>
-                    <div class="label">派單中</div>
-                </div>
-
-                <div class="factory-step f-step-2 step-2" id="fStep2">
-                    <div class="icon">✂️</div>
-                    <div class="label">精密裁切</div>
-                </div>
-
-                <div class="factory-step f-step-3 step-3" id="fStep3">
-                    <div class="icon">✅</div>
-                    <div class="label">QA/QC</div>
-                </div>
-
-                <div class="factory-step f-step-4 step-4" id="fStep4">
-                    <div class="icon">📦</div>
-                    <div class="label">包裝出貨</div>
+            <!-- 新版訂單動畫 (Flexbox) -->
+            <div class="process-animation">
+                <!-- 步驟 1 -->
+                <div class="process-step" id="pStep1">
+                    <div class="icon">📝</div>
+                    <div class="label">收單中</div>
                 </div>
 
                 <!-- 連接線 -->
-                <div class="connection-line line-1" id="line1"></div>
-                <div class="connection-line line-2" id="line2"></div>
-                <div class="connection-line line-3" id="line3"></div>
+                <div class="process-line" id="pLine">
+                    <div class="process-line-fill"></div>
+                </div>
+
+                <!-- 步驟 2 -->
+                <div class="process-step" id="pStep2">
+                    <div class="icon">✅</div>
+                    <div class="label">已派單</div>
+                </div>
             </div>
 
             <div class="progress-text" id="progressText">正在處理您的訂單...</div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=20260201_V2"></script>
+    <script src="admin.js?v=20260201_V2"></script>
 </body>
 
 </html>

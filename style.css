@@ -1,37 +1,51 @@
 :root {
-    /* === 方案A: 現代工業風配色 === */
-    --bg-primary: #0f172a;
-    /* 深藍灰主背景 */
-    --bg-secondary: #1e293b;
-    /* 次要背景 */
+    /* === Tool-First Minimalist (工具型極簡) === */
+    --bg-primary: #fafafa;
+    /* 統一淺灰背景 */
     --surface: #ffffff;
     /* 純白卡片 */
 
-    /* 系列accent顏色（鮮明版）*/
-    --accent-20: #3b82f6;
-    /* 明亮藍 */
-    --accent-30: #f97316;
-    /* 活力橙 */
-    --accent-40: #10b981;
-    /* 翠綠 */
+    /* 文字顏色 - 統一中性灰 */
+    --text-primary: #545454;
+    /* 深灰文字 */
+    --text-secondary: #737373;
+    /* 次要文字 */
+
+    /* 互動元素 - 單一強調色 */
     --accent: #3b82f6;
-    /* 預設accent */
+    /* 中性藍 (唯一強調色) */
+    --accent-hover: #2563eb;
+    /* 懸停加深 */
 
-    /* 文字顏色 */
-    --text-primary: #ffffff;
-    --text-secondary: #94a3b8;
-    --text-dark: #1e293b;
+    /* 系列識別色 - 精確匹配用戶圖片色號 */
+    --accent-20: #E3F2FD;
+    --accent-30: #FFF3E0;
+    --accent-40: #E8F5E9;
 
-    /* 邊框與陰影 */
-    --border: #334155;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
-    --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.35);
+    /* 系列背景色 - 上白下彩漸層終點 */
+    --bg-20: #E3F2FD;
+    --bg-30: #FFF3E0;
+    --bg-40: #E8F5E9;
 
-    /* 舊變數保留（向後兼容）*/
-    --primary: #0f172a;
+    /* 邊框與陰影 - 專業層次感 */
+    --border: #e5e5e5;
+    /* 統一邊框色 */
+    --shadow-base: 0 2px 8px rgba(0, 0, 0, 0.08);
+    /* 基礎浮起 */
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+    /* 懸停強化 */
+    --shadow-active: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    /* 選中發光 */
+
+    /* 舊變數兼容 */
+    --primary: #fafafa;
     --white: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --text-dark: #0a0a0a;
+    --shadow-sm: var(--shadow-base);
+    --shadow-md: var(--shadow-base);
+    --shadow-lg: var(--shadow-hover);
+    --shadow-xl: var(--shadow-hover);
 }
 
 html {
@@ -42,9 +56,8 @@ html {
 body {
     font-family: "Noto Sans TC", sans-serif;
     margin: 0;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
     background-attachment: fixed;
-    /* 固定背景 */
     color: var(--text-primary);
     overflow-x: hidden;
 }
@@ -54,23 +67,18 @@ body {
     height: 100vh;
 }
 
-/* Reduced styling for lighter feel */
+/* 深色專業側邊欄 */
 .sidebar {
-    width: 220px;
-    /* 稍微加寬 */
-    background: rgba(15, 23, 42, 0.95);
-    /* 半透明深色 */
-    backdrop-filter: blur(10px);
-    /* 毛玻璃效果 */
-    border-right: 1px solid rgba(148, 163, 184, 0.1);
-    padding: 20px 15px;
+    width: 240px;
+    background: #545454;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 24px 16px;
     display: flex;
     flex-direction: column;
     height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
-    /* 右側陰影 */
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
 }
 
 /* Custom Scrollbar for Sidebar */
@@ -83,47 +91,69 @@ body {
     border-radius: 3px;
 }
 
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 .brand {
-    font-size: 1.6rem;
-    font-weight: 800;
-    margin-bottom: 35px;
-    color: var(--text-primary);
-    background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 0.5px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 32px;
+    color: white;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .nav-item {
     width: 100%;
-    padding: 14px 16px;
-    margin-bottom: 6px;
+    padding: 12px 14px;
+    margin-bottom: 4px;
     border: none;
     background: transparent;
     text-align: left;
     cursor: pointer;
     font-size: 0.95rem;
     font-weight: 500;
-    border-radius: 10px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color: var(--text-secondary);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.7);
     position: relative;
-    overflow: hidden;
 }
 
 .nav-item:hover {
-    background: rgba(148, 163, 184, 0.1);
-    color: var(--text-primary);
-    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateX(2px);
 }
 
 .nav-item.active {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%) !important;
-    color: var(--text-primary) !important;
+    background: rgba(59, 130, 246, 0.15) !important;
+    color: #60a5fa !important;
     font-weight: 600;
-    box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.3);
-    border-left: 3px solid var(--accent-20);
+    box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.3);
+    border-left: 3px solid #60a5fa;
+}
+
+/* Series-specific colors for navigation */
+.series-20 .nav-item.active:nth-child(1) {
+    background: var(--bg-20) !important;
+    color: #1e3a8a !important;
+    border-left-color: var(--accent-20);
+    box-shadow: inset 0 0 0 1px rgba(189, 224, 245, 0.5);
+}
+
+.series-30 .nav-item.active:nth-child(2) {
+    background: var(--bg-30) !important;
+    color: #7c2d12 !important;
+    border-left-color: var(--accent-30);
+    box-shadow: inset 0 0 0 1px rgba(245, 194, 165, 0.5);
+}
+
+.series-40 .nav-item.active:nth-child(3) {
+    background: var(--bg-40) !important;
+    color: #14532d !important;
+    border-left-color: var(--accent-40);
+    box-shadow: inset 0 0 0 1px rgba(183, 224, 161, 0.5);
 }
 
 .project-tab.active {
@@ -134,7 +164,7 @@ body {
 
 .separator {
     height: 1px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     margin: 10px 0;
 }
 
@@ -148,14 +178,14 @@ body {
 }
 
 .social-icon {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.5);
     font-size: 1.2rem;
     transition: 0.2s;
     text-decoration: none;
 }
 
 .social-icon:hover {
-    color: var(--white);
+    color: white;
     transform: translateY(-3px);
 }
 
@@ -163,7 +193,7 @@ body {
 .about-tab.active,
 .custom-tab.active {
     background: var(--white) !important;
-    color: var(--primary) !important;
+    color: #1e293b !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -172,15 +202,45 @@ body {
     padding: 30px;
     overflow-y: auto;
     position: relative;
+    color: var(--text-primary) !important;
+    background: #fafafa;
+    transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* Series backgrounds reverted to white */
+.series-20 .main-content,
+.series-30 .main-content,
+.series-40 .main-content {
+    background: #fafafa;
 }
 
 .hidden {
     display: none !important;
 }
 
+/* Hot Sales Sidebar (Mobile) - Matching Cart Sidebar */
+.hot-sales-sidebar {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 330px;
+    height: 100%;
+    background: #545454;
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.3);
+    transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.hot-sales-sidebar.open {
+    right: 0;
+}
+
 .section-title {
     font-size: 1.3rem;
-    font-weight: 700;
+    font-weight: 600;
     margin-bottom: 20px;
     color: var(--text-primary);
     border-left: 4px solid var(--accent);
@@ -190,22 +250,78 @@ body {
     gap: 8px;
 }
 
+/* Added for visibility on light theme */
+.series-desc-container {
+    color: var(--text-primary) !important;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: #f5f5f5;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+}
+
+/* Ultra-strong override for series description */
+#series-desc-container,
+div.series-desc-container,
+#aluminum-section .series-desc-container {
+    color: #171717 !important;
+}
+
 #page-title {
     font-size: 2.8rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-weight: 700;
+    color: var(--text-primary);
     margin: 0 0 10px 0;
     letter-spacing: -0.5px;
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .divider {
-    border: 0;
-    border-top: 1px dashed #ccc;
-    margin: 30px 0;
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 25px 0;
+}
+
+/* Force dark text for all views */
+#view-product,
+#view-projects,
+#view-about,
+#view-custom {
+    color: var(--text-primary) !important;
+}
+
+#view-product *,
+#view-projects *,
+#view-about *,
+#view-custom * {
+    color: inherit;
+}
+
+/* Specific overrides for commonly white elements */
+.project-row,
+.project-info,
+.case-title,
+.case-desc,
+.custom-container,
+.custom-title,
+.custom-desc {
+    color: var(--text-primary) !important;
+}
+
+/* Ensure buttons and links maintain correct colors */
+a,
+button {
+    color: inherit;
+}
+
+/* Prevent flicker during page load */
+#aluminum-grid:empty::before,
+#accessories-list:empty::before {
+    content: '載入中...';
+    display: block;
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
 }
 
 /* 1. 鋁材與專案列表 (4欄位) */
@@ -222,13 +338,9 @@ body {
 .profile-card,
 .project-card,
 .acc-card {
-    background: var(--surface);
-    color: var(--text-dark);
-    border-radius: 16px;
-    box-shadow: var(--shadow-md);
-    border: 2px solid transparent;
+    border: 1px solid var(--border);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.2s ease;
     width: 280px;
     margin: 0;
     display: flex;
@@ -236,43 +348,69 @@ body {
     justify-content: space-between;
     box-sizing: border-box;
     height: 100%;
-    padding: 18px;
+    padding: 16px;
     overflow: hidden;
     position: relative;
+    background: var(--surface);
+    color: var(--text-primary);
+    border-radius: 8px;
+    box-shadow: var(--shadow-base);
+}
+
+.profile-card {
+    /* Apply brushed metal texture with a light overlay for readability */
+    background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+        url('assets/metal_texture.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    border: 1px solid #cbd5e1 !important;
+    /* Slightly stronger border for metal look */
+}
+
+.profile-card b {
+    color: #0f172a;
+    /* Ensure name is sharp */
+    font-size: 1.05rem;
+}
+
+/* Series-specific card backgrounds */
+.series-20 .acc-card {
+    background: var(--bg-20);
+}
+
+.series-30 .acc-card {
+    background: var(--bg-30);
+}
+
+.series-40 .acc-card {
+    background: var(--bg-40);
 }
 
 .profile-card:hover,
 .project-card:hover {
-    transform: translateY(-12px) scale(1.02);
-    box-shadow: var(--shadow-xl);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
     border-color: var(--accent);
 }
 
-/* 卡片懸浮光暈效果 */
-.profile-card::before,
-.project-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-}
-
-.profile-card:hover::before,
-.project-card:hover::before {
-    opacity: 1;
-}
 
 .profile-card.selected {
-    border-color: var(--accent-20);
+    border-width: 2px !important;
     background: var(--surface);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), var(--shadow-lg);
-    transform: scale(1.03);
+    box-shadow: var(--shadow-active), var(--shadow-hover);
+    transform: translateY(-4px);
+}
+
+.series-20 .profile-card.selected {
+    border-color: #3b82f6 !important;
+}
+
+.series-30 .profile-card.selected {
+    border-color: #f97316 !important;
+}
+
+.series-40 .profile-card.selected {
+    border-color: #22c55e !important;
 }
 
 .profile-img,
@@ -301,6 +439,12 @@ body {
 .profile-card:hover .profile-img img {
     /* No scale on hover or slight scale */
     transform: scale(1.05);
+    mix-blend-mode: normal;
+}
+
+.profile-img img {
+    background: transparent;
+    mix-blend-mode: multiply;
 }
 
 .profile-card>div:not(.profile-img) {
@@ -411,17 +555,16 @@ body {
 
 /* 3. 輸入框面板 (對齊4欄) */
 .input-panel {
-    background: rgba(30, 41, 59, 0.6);
-    backdrop-filter: blur(16px);
+    background: white;
     color: var(--text-primary);
-    padding: 24px;
-    border-radius: 16px;
+    padding: 20px;
+    border-radius: 8px;
     margin-top: 25px;
-    box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(148, 163, 184, 0.2);
+    box-shadow: var(--shadow-base);
+    border: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
     width: 100%;
     max-width: 1195px;
     box-sizing: border-box;
@@ -442,10 +585,22 @@ body {
 }
 
 .highlight-text {
-    color: var(--accent-20);
+    color: var(--accent);
     font-weight: 700;
     font-size: 1.25rem;
     margin-left: 8px;
+}
+
+.series-20 .highlight-text {
+    color: #3b82f6;
+}
+
+.series-30 .highlight-text {
+    color: #f97316;
+}
+
+.series-40 .highlight-text {
+    color: #22c55e;
 }
 
 /* ★★★ 重點修復區：強制定義輸入框與按鈕樣式 ★★★ */
@@ -458,15 +613,14 @@ body {
 }
 
 .input-group input {
-    padding: 12px 16px;
-    border: 1px solid rgba(148, 163, 184, 0.3);
-    border-radius: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
     width: 110px;
-    background: rgba(15, 23, 42, 0.4);
+    background: white;
     color: var(--text-primary);
     font-size: 1rem;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 
 #profile-len {
@@ -480,27 +634,42 @@ body {
 
 /* Narrower for quantity */
 .btn-add {
-    background: linear-gradient(135deg, var(--accent-20) 0%, var(--accent-40) 100%) !important;
+    background: var(--accent) !important;
     color: white !important;
     font-weight: 600;
     border: none;
-    padding: 12px 28px;
-    border-radius: 10px;
+    padding: 12px 24px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    position: relative;
-    overflow: hidden;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-base);
+}
+
+/* Series-specific Add Button Styles */
+.series-20 .btn-add {
+    background: var(--accent-20) !important;
+    color: #171717 !important;
+}
+
+.series-30 .btn-add {
+    background: var(--accent-30) !important;
+    color: #171717 !important;
+}
+
+.series-40 .btn-add {
+    background: var(--accent-40) !important;
+    color: #171717 !important;
 }
 
 .btn-add:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    background: var(--accent-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
 }
 
 .btn-add:active {
-    transform: translateY(0) scale(0.98);
+    transform: translateY(0);
 }
 
 /* 配件的輸入框 */
@@ -514,20 +683,19 @@ body {
 .acc-controls input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc !important;
-    /* 強制顯示邊框 */
+    border: 1px solid var(--border) !important;
     border-radius: 6px;
     text-align: center;
-    background: #fdfdfd;
+    background: white;
     font-size: 1rem;
 }
 
 .acc-controls input:focus,
 .input-group input:focus {
-    border-color: var(--accent-20) !important;
-    background: rgba(59, 130, 246, 0.05);
+    border-color: var(--accent) !important;
+    background: white;
     outline: none;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 /* 尺寸列表 */
@@ -607,7 +775,7 @@ body {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    background: linear-gradient(135deg, var(--accent-20) 0%, var(--accent-40) 100%);
+    background: #545454;
     color: white;
     border: none;
     padding: 16px 28px;
@@ -615,17 +783,17 @@ body {
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     z-index: 900;
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.3s ease;
 }
 
 .floating-cart-btn:hover {
     transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.45);
 }
 
 .cart-sidebar {
@@ -634,14 +802,14 @@ body {
     right: -350px;
     width: 330px;
     height: 100%;
-    background: rgba(15, 23, 42, 0.98);
-    backdrop-filter: blur(20px);
-    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+    background: #545454;
+    color: white !important;
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.3);
     transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     z-index: 1000;
     display: flex;
     flex-direction: column;
-    border-left: 1px solid rgba(148, 163, 184, 0.2);
+    border-left: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .cart-sidebar.open {
@@ -650,19 +818,18 @@ body {
 
 .cart-header {
     padding: 24px;
-    background: rgba(30, 41, 59, 0.8);
-    color: var(--text-primary);
+    background: rgba(30, 41, 59, 0.5);
+    color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .cart-title {
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: white;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -671,7 +838,7 @@ body {
 .close-cart {
     cursor: pointer;
     font-size: 1.8rem;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.6);
     transition: all 0.2s;
     width: 32px;
     height: 32px;
@@ -682,8 +849,8 @@ body {
 }
 
 .close-cart:hover {
-    color: var(--text-primary);
-    background: rgba(148, 163, 184, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
     transform: rotate(90deg);
 }
 
@@ -703,14 +870,13 @@ body {
 .cart-item {
     display: flex;
     align-items: center;
-    background: rgba(30, 41, 59, 0.6);
+    background: rgba(30, 41, 59, 0.4);
     padding: 12px;
     border-radius: 12px;
     margin-bottom: 12px;
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    box-shadow: var(--shadow-base);
     transition: all 0.2s;
-    backdrop-filter: blur(10px);
 }
 
 .cart-item:hover {
@@ -723,8 +889,8 @@ body {
     width: 60px;
     height: 60px;
     border-radius: 8px;
-    background: rgba(15, 23, 42, 0.4);
-    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: #f8fafc;
+    border: 1px solid var(--border);
     object-fit: contain;
     margin-right: 15px;
     padding: 4px;
@@ -735,15 +901,15 @@ body {
 }
 
 .cart-item-title {
-    font-weight: 600;
     font-size: 0.95rem;
-    color: var(--text-primary);
+    font-weight: 600;
+    color: white;
     margin-bottom: 4px;
 }
 
-.cart-item-spec {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
+.cart-item-details {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
     background: rgba(148, 163, 184, 0.15);
     padding: 3px 8px;
     border-radius: 6px;
@@ -790,10 +956,9 @@ body {
 
 .cart-footer {
     padding: 24px;
-    background: rgba(30, 41, 59, 0.8);
-    border-top: 1px solid rgba(148, 163, 184, 0.2);
+    background: rgba(30, 41, 59, 0.5);
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
 }
 
 .total-row {
@@ -802,7 +967,7 @@ body {
     align-items: center;
     font-size: 1.15rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: white;
     margin-bottom: 20px;
     padding: 12px;
     background: rgba(59, 130, 246, 0.1);
@@ -823,7 +988,7 @@ body {
     border-radius: 10px;
     font-size: 0.95rem;
     background: rgba(15, 23, 42, 0.4);
-    color: var(--text-primary);
+    color: white !important;
     box-sizing: border-box;
     transition: all 0.3s;
 }
@@ -838,22 +1003,25 @@ body {
 
 .btn-submit {
     width: 100%;
-    background: linear-gradient(135deg, var(--accent-20) 0%, var(--accent-40) 100%);
-    color: white;
+    background: #3b82f6 !important;
+    /* Force a bright blue */
+    color: white !important;
     border: none;
     padding: 16px;
     border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    font-weight: 800;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     margin-top: 12px;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .btn-submit:hover {
+    background: #2563eb !important;
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
 }
 
 .btn-submit:active {
@@ -2050,20 +2218,19 @@ body.series-40 {
 /* Rank Badge Overlay */
 .rank-badge-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 50px;
-    height: 24px;
+    top: 5px;
+    right: 5px;
+    padding: 3px 8px;
     color: white;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px 0 6px 0;
-    /* Corner styling */
-    z-index: 5;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    z-index: 20;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Desktop Sidebar Hot Card */
@@ -2572,175 +2739,117 @@ body.banner-hidden {
     font-weight: 700;
 }
 
-.factory-animation {
-    position: relative;
-    width: 500px;
-    height: 300px;
-    margin: 0 auto 40px;
+/* ========================================
+   新版訂單動畫 (Clean Flexbox)
+   ======================================== */
+.process-animation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
+    margin: 40px auto;
+    gap: 0;
+    /* 線條會自動填滿 */
 }
 
-.factory-step {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    background: rgba(30, 41, 59, 0.8);
+.process-step {
+    width: 100px;
+    height: 100px;
+    background: rgba(30, 41, 59, 0.9);
+    border: 2px solid rgba(148, 163, 184, 0.3);
     border-radius: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: 2px solid rgba(148, 163, 184, 0.2);
-    opacity: 0;
-    transform: scale(0.5);
+    opacity: 0.5;
+    /* 未激活半透明 */
+    transform: scale(0.9);
     transition: all 0.5s ease;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
 }
 
-.factory-step.active {
-    opacity: 1;
-    transform: scale(1);
-    border-color: var(--step-color);
-    box-shadow: 0 0 30px rgba(var(--step-rgb), 0.5);
+.process-step .icon {
+    font-size: 2.5rem;
+    margin-bottom: 5px;
 }
 
-.factory-step .icon {
-    font-size: 3rem;
-    margin-bottom: 8px;
-}
-
-.factory-step .label {
+.process-step .label {
     font-size: 0.9rem;
     color: #cbd5e1;
-    font-weight: 600;
+    font-weight: bold;
 }
 
-.f-step-1 {
-    top: 20px;
-    left: 20px;
-}
-
-.f-step-2 {
-    top: 20px;
-    right: 20px;
-}
-
-.f-step-3 {
-    bottom: 20px;
-    right: 20px;
-}
-
-.f-step-4 {
-    bottom: 20px;
-    left: 20px;
-}
-
-.step-1 {
-    --step-color: #3b82f6;
-    --step-rgb: 59, 130, 246;
-}
-
-.step-2 {
-    --step-color: #f59e0b;
-    --step-rgb: 245, 158, 11;
-}
-
-.step-3 {
-    --step-color: #10b981;
-    --step-rgb: 16, 185, 129;
-}
-
-.step-4 {
-    --step-color: #8b5cf6;
-    --step-rgb: 139, 92, 246;
-}
-
-/* 連接線動畫 */
-.connection-line {
-    position: absolute;
-    background: linear-gradient(90deg, transparent, var(--line-color), transparent);
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-.connection-line.active {
+/* 激活狀態 */
+.process-step.active {
     opacity: 1;
-    animation: flow 2s ease-in-out infinite;
+    transform: scale(1.1);
+    background: rgba(30, 41, 59, 1);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    /* 默認藍光 */
+    border-color: #3b82f6;
 }
 
-@keyframes flow {
-
-    0%,
-    100% {
-        opacity: 0.3;
-    }
-
-    50% {
-        opacity: 1;
-    }
+/* 步驟2 特殊色 */
+#pStep2.active {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    /* 綠光 */
+    border-color: #10b981;
 }
 
-.line-1 {
-    top: 80px;
-    left: 140px;
-    width: 240px;
-    height: 3px;
-    --line-color: #f59e0b;
+/* 連接線容器 */
+.process-line {
+    flex-grow: 1;
+    height: 6px;
+    background: #334155;
+    margin: 0 -5px;
+    /* 稍微重疊，確保無縫隙 */
+    position: relative;
+    z-index: 1;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
-.line-2 {
-    top: 140px;
-    right: 80px;
-    width: 3px;
-    height: 80px;
-    --line-color: #10b981;
-    background: linear-gradient(180deg, transparent, var(--line-color), transparent);
+/* 內部填充線 */
+.process-line-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #10b981);
+    transition: width 2s linear;
+    /* 線性動畫核心 */
 }
 
-.line-3 {
-    bottom: 80px;
-    left: 140px;
-    width: 240px;
-    height: 3px;
-    --line-color: #8b5cf6;
+/* 線條激活時填充 */
+.process-line.active .process-line-fill {
+    width: 100%;
 }
 
 .progress-text {
-    font-size: 1.1rem;
-    color: #94a3b8;
-    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e2e8f0;
+    margin-top: 30px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* 響應式調整 */
 @media (max-width: 768px) {
-    .factory-animation {
-        width: 100%;
-        max-width: 400px;
-        height: 250px;
-    }
-
-    .factory-step {
-        width: 90px;
-        height: 90px;
-    }
-
-    .factory-step .icon {
-        font-size: 2rem;
-    }
-
-    .factory-step .label {
-        font-size: 0.75rem;
-    }
-
-    .loading-title {
-        font-size: 1.5rem;
-    }
-
-    .line-1,
-    .line-3 {
-        width: 180px;
-        left: 100px;
-    }
-
     .line-2 {
         right: 60px;
     }
+}
+
+/* Page Header Layout for Check Order Button */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.page-header h2 {
+    margin: 0;
 }
