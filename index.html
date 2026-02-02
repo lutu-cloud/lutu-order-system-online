@@ -7,11 +7,14 @@
     <title>LUTU 鋁圖 - 訂購系統</title>
     <link rel="stylesheet" href="style.css?v=20260201_V5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- SheetJS for Excel Import (BOM Upload) -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 </head>
 
 <body>
     <!-- 頂部橫幅輪播 -->
-    <div class="top-banner" id="topBanner">
+    <div class="top-banner" id="topBanner" style="z-index: 9998;"> <!-- Lower z-index than Hub -->
         <div class="banner-content">
             <i class="banner-icon fas fa-crown"></i>
             <span class="banner-text" id="bannerText">🏆 工業級鋁擠型專家 | 超過1000+專案實績</span>
@@ -29,9 +32,42 @@
         </button>
     </div>
 
+    <!-- 首頁分流樞紐 (Hub Overlay) -->
+    <div id="hub-overlay" class="hub-overlay">
+        <div class="hub-container">
+            <h1 class="hub-title">歡迎來到 LUTU 鋁圖</h1>
+            <p class="hub-subtitle">請選擇您的採購身份以獲得最佳體驗</p>
+
+            <div class="hub-cards">
+                <!-- 個人 DIY 卡片 -->
+                <div class="hub-card personal" onclick="selectUserMode('B2C')">
+                    <div class="hub-icon"><i class="fas fa-tools"></i></div>
+                    <h3>個人 DIY / 創客</h3>
+                    <p>直覺的圖形化選購介面，適合少量訂製與個人專案。</p>
+                    <div class="hub-btn">進入選購 <i class="fas fa-arrow-right"></i></div>
+                </div>
+
+                <!-- 企業採購 卡片 -->
+                <div class="hub-card pro" onclick="selectUserMode('B2B')">
+                    <div class="hub-tag">PRO</div>
+                    <div class="hub-icon"><i class="fas fa-building"></i></div>
+                    <h3>企業採購</h3>
+                    <p>支援 EXCEL 快速貼上、物流預判與結構分析，適合批量採購。</p>
+                    <div class="hub-btn">進入採購中心 <i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+
+            <div class="hub-footer">
+                <a href="#" onclick="selectUserMode('B2C')">先隨便逛逛 ></a>
+            </div>
+        </div>
+    </div>
+
     <div class="app-container">
         <aside class="sidebar">
-            <div class="brand">LUTU 鋁圖</div>
+            <div class="brand" onclick="returnToHub()" title="返回首頁選擇身份" style="cursor: pointer;">
+                <i class="fas fa-chevron-left" style="font-size: 0.8em; margin-right: 5px;"></i> LUTU 鋁圖
+            </div>
             <nav class="nav-tabs">
                 <button class="nav-item active" onclick="switchSeries('20')">20 系列</button>
                 <button class="nav-item" onclick="switchSeries('30')">30 系列</button>
@@ -40,6 +76,7 @@
                 <button class="nav-item project-tab" onclick="switchView('projects')">專案範例教學</button>
                 <button class="nav-item custom-tab" onclick="switchView('custom')">客製成品</button>
                 <button class="nav-item about-tab" onclick="switchView('about')">關於我們</button>
+
             </nav>
 
             <div class="separator"></div>
@@ -69,6 +106,7 @@
                         onmouseout="this.style.background='#545454'; this.style.transform='translateY(0)';">
                         <i class="fas fa-search"></i> 查詢訂單
                     </button>
+
                 </header>
                 <section id="aluminum-section" class="section-block">
                     <div id="series-desc-container" class="series-desc-container" style="color: #171717 !important;">
@@ -241,8 +279,247 @@
                     <div class="label">已派單</div>
                 </div>
             </div>
-
             <div class="progress-text" id="progressText">正在處理您的訂單...</div>
+        </div>
+    </div>
+
+    <!-- B2B Dashboard (Hidden by default, shown in B2B Mode) -->
+    <div id="b2b-dashboard" class="b2b-dashboard hidden">
+        <!-- Sidebar Removed -->
+
+        <div class="b2b-main">
+            <div class="b2b-header">
+                <!-- Single row: Title + Series Tabs + Search + Exit -->
+                <div class="b2b-header-compact" style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+                    <!-- Left: Title -->
+                    <h2 style="margin:0; white-space:nowrap; cursor: pointer;" onclick="returnToHub()" title="返回首頁">
+                        <i class="fas fa-chevron-left" style="font-size: 0.8em; margin-right: 5px;"></i> LUTU <span
+                            class="pro-tag">PRO</span>
+                    </h2>
+
+                    <!-- Left: Series Tabs -->
+                    <div class="b2b-series-tabs" style="display:flex; gap:10px;">
+                        <button class="b2b-tab-btn active" onclick="switchB2BSeries('20')"
+                            data-series="20">20系列</button>
+                        <button class="b2b-tab-btn" onclick="switchB2BSeries('30')" data-series="30">30系列</button>
+                        <button class="b2b-tab-btn" onclick="switchB2BSeries('40')" data-series="40">40系列</button>
+                    </div>
+
+                    <!-- Right: Actions (Import + Template + Search + Exit) -->
+                    <div style="display:flex; gap:12px; align-items:center; margin-left:auto;">
+                        <button class="btn-xs btn-outline" onclick="openBOMUploadModal()"
+                            style="color:#2980b9; border-color:#2980b9; background: white; white-space:nowrap; padding: 8px 12px; font-weight: bold;">
+                            <i class="fas fa-file-upload"></i> 匯入 Excel
+                        </button>
+                        <button class="btn-xs btn-outline" onclick="downloadBOMTemplate()"
+                            style="color:#27ae60; border-color:#27ae60; background: white; white-space:nowrap; padding: 8px 12px; font-weight: bold;">
+                            <i class="fas fa-file-download"></i> 下載公版範本
+                        </button>
+
+                        <button onclick="openOrderQueryModal()"
+                            style="background: #545454; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.2s;"
+                            onmouseover="this.style.background='#3d3d3d'; this.style.transform='translateY(-1px)';"
+                            onmouseout="this.style.background='#545454'; this.style.transform='translateY(0)';">
+                            <i class="fas fa-search"></i> 查詢訂單
+                        </button>
+
+                        <button class="btn-xs btn-outline" onclick="returnToHub()"
+                            style="border-color:#e74c3c; color:#e74c3c; background: white; white-space:nowrap; padding: 8px 12px; font-weight: bold;">
+                            <i class="fas fa-sign-out-alt"></i> 退出
+                        </button>
+                    </div>
+                </div>
+
+                <!-- NEW: Mobile View Selector (Tabbed Navigation) -->
+                <div class="b2b-mobile-nav" id="b2b-mobile-tabs">
+                    <button class="b2b-nav-item active" onclick="switchB2BView('list')" id="m-tab-list">
+                        <i class="fas fa-th-list"></i>
+                        <span>商品列表</span>
+                    </button>
+                    <button class="b2b-nav-item" onclick="switchB2BView('detail')" id="m-tab-detail">
+                        <i class="fas fa-search-plus"></i>
+                        <span>商品詳情</span>
+                    </button>
+                    <button class="b2b-nav-item" onclick="switchB2BView('bom')" id="m-tab-bom">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>擬定工單</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="b2b-content">
+                <!-- Left: Product Selection (List) -->
+                <div class="b2b-product-panel">
+                    <div id="b2b-product-list" class="b2b-product-list">
+                        <!-- JS Rendered Items (Table View) -->
+                    </div>
+                </div>
+
+                <!-- Middle: Product Detail & Analysis -->
+                <div class="b2b-detail-panel">
+                    <div id="b2b-product-detail" class="b2b-product-detail-card">
+                        <div class="detail-placeholder">
+                            👈 請從左側選擇商品查看詳情
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: BOM Manifest Section -->
+                <div class="b2b-analysis-panel">
+                    <!-- Analysis Summary (Weight/Series) -->
+                    <div id="b2b-analysis-charts"></div>
+
+                    <div id="b2b-cart-list" class="b2b-cart-list">
+                        <!-- JS Rendered Cart Items (Compact) -->
+                        <div style="text-align:center; padding:30px; color:#999;">
+                            尚未加入任何商品<br>
+                            <small>請從左側點擊商品加入，或使用上方「匯入 Excel」功能</small>
+                        </div>
+                    </div>
+                    <div class="b2b-footer">
+                        <div class="b2b-total">
+                            預估總額: <span id="b2b-total-price">NT$0</span>
+                        </div>
+                        <button class="b2b-btn-submit" onclick="openB2BSubmitModal()">
+                            <i class="fas fa-paper-plane"></i> 提交詢價單
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOM Upload Modal -->
+    <div id="bom-upload-modal" class="hub-overlay hidden" style="background:rgba(0,0,0,0.5); z-index:10000;">
+        <div class="hub-container"
+            style="max-width:600px; background:white; padding:30px; border-radius:12px; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0;"><i class="fas fa-file-excel" style="color:#27ae60;"></i> 匯入 BOM 表</h3>
+                <button class="btn-xs" onclick="closeBOMUploadModal()"
+                    style="border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+            </div>
+
+            <div id="upload-step-1">
+                <div class="upload-area" id="drop-zone"
+                    style="border:2px dashed #ccc; padding:40px; text-align:center; border-radius:8px; cursor:pointer; background:#fafafa;">
+                    <i class="fas fa-cloud-upload-alt" style="font-size:3rem; color:#ccc; margin-bottom:15px;"></i>
+                    <p style="color:#666; margin-bottom:10px;">拖放 Excel 檔案至此，或點擊上傳</p>
+                    <input type="file" id="bom-file-input" accept=".xlsx, .xls" style="display:none;"
+                        onchange="handleFileSelect(this)">
+                    <button class="btn-xs btn-outline"
+                        onclick="document.getElementById('bom-file-input').click()">選擇檔案</button>
+                    <div style="margin-top:10px; font-size:0.8rem; color:#999;">
+                        支援格式: .xlsx, .xls |
+                        <a href="javascript:void(0)" onclick="downloadBOMTemplate()"
+                            style="color:#27ae60; text-decoration:underline;">下載範例範本 (.csv)</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="upload-step-2" style="display:none;">
+                <div style="margin-bottom:15px; font-weight:bold; color:#2c3e50;">
+                    欄位對應確認
+                    <span style="font-size:0.8rem; color:#e67e22; font-weight:normal; margin-left:10px;">
+                        <i class="fas fa-info-circle"></i> AI 已自動識別欄位
+                    </span>
+                </div>
+
+                <div style="background:#f8f9fa; padding:15px; border-radius:6px; margin-bottom:20px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <div>
+                            <label style="font-size:0.8rem; display:block; color:#7f8c8d;">產品大類 (選填)</label>
+                            <select id="map-cat" class="detail-input"></select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; display:block; color:#7f8c8d;">產品類型 (選填)</label>
+                            <select id="map-series" class="detail-input"></select>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr; gap:10px; margin-bottom:10px;">
+                        <div>
+                            <label style="font-size:0.8rem; display:block; color:#7f8c8d;">品項名稱 (必要)</label>
+                            <select id="map-name" class="detail-input"></select>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div>
+                            <label style="font-size:0.8rem; display:block; color:#7f8c8d;">長度 (鋁材標註用)</label>
+                            <select id="map-len" class="detail-input"></select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; display:block; color:#27ae60; font-weight:bold;">訂購數量
+                                (必要)</label>
+                            <select id="map-qty" class="detail-input" style="border-color:#27ae60;"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="upload-preview"
+                    style="max-height:200px; overflow-y:auto; border:1px solid #eee; margin-bottom:20px; font-size:0.85rem;">
+                    <!-- Preview Table -->
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div id="upload-stats" style="color:#666; font-size:0.9rem;"></div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-xs btn-outline" onclick="resetUpload()">重選檔案</button>
+                        <button class="btn-add-detail" onclick="processBOMImport()" style="width:auto; margin-top:0;">
+                            <i class="fas fa-file-import"></i> 確認匯入
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- B2B Assessment/Checkout Modal -->
+    <div id="b2b-submit-modal" class="hub-overlay hidden" style="background:rgba(0,0,0,0.5); z-index:10000;">
+        <div class="hub-container"
+            style="max-width:500px; background:white; padding:30px; border-radius:12px; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0;"><i class="fas fa-file-invoice-dollar" style="color:#2980b9;"></i> 發送詢價單</h3>
+                <button class="btn-xs" onclick="closeB2BSubmitModal()"
+                    style="border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+            </div>
+
+            <div style="background:#f8f9fa; padding:15px; border-radius:8px; margin-bottom:20px; font-size:0.9rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <span style="color:#666;">BOM 項目數</span>
+                    <span style="font-weight:bold;" id="b2b-modal-count">0</span>
+                </div>
+                <div
+                    style="display:flex; justify-content:space-between; font-size:1.1rem; color:#2c3e50; font-weight:bold;">
+                    <span>預估總額</span>
+                    <span id="b2b-modal-total">NT$0</span>
+                </div>
+            </div>
+
+            <form id="b2b-order-form" onsubmit="submitB2BOrder(event)">
+                <div class="detail-input-group">
+                    <label>聯絡人姓名 *</label>
+                    <input type="text" name="name" class="detail-input" required placeholder="王大明">
+                </div>
+                <div class="detail-input-group">
+                    <label>電話 / 分機 *</label>
+                    <input type="tel" name="phone" class="detail-input" required placeholder="0912-345-678">
+                </div>
+                <div class="detail-input-group">
+                    <label>公司 / 單位名稱</label>
+                    <input type="text" name="company" class="detail-input" placeholder="例如：台大機械系 / 某某科技">
+                </div>
+                <div class="detail-input-group">
+                    <label>Email (接收報價單) *</label>
+                    <input type="email" name="email" class="detail-input" required placeholder="example@company.com">
+                </div>
+                <div class="detail-input-group">
+                    <label>專案備註 (選填)</label>
+                    <textarea name="note" class="detail-input" rows="3" placeholder="例如：急件，需要統編..."></textarea>
+                </div>
+
+                <button type="submit" class="b2b-btn-submit" style="width:100%; margin-top:10px;">
+                    <i class="fas fa-check-circle"></i> 確認送出
+                </button>
+            </form>
         </div>
     </div>
 

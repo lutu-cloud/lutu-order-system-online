@@ -1431,7 +1431,334 @@ button {
     background: #f9f9f9;
 }
 
-/* RWD for Custom Cases & Projects */
+/* === B2B Layout Fixes (2026/02/02 - Consolidated) === */
+.b2b-content {
+    display: flex;
+    height: calc(100vh - 80px);
+    gap: 20px;
+    padding: 20px;
+    overflow: hidden;
+    background: #f1f2f6;
+}
+
+.b2b-product-panel {
+    flex: 0.8;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.b2b-product-list {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* 2. Middle: Hero Detail & Editor Area */
+.b2b-detail-panel {
+    flex: 3.7;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    gap: 15px;
+    min-width: 0;
+}
+
+/* 3. Right: BOM Manifest & Analysis */
+.b2b-analysis-panel {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    gap: 15px;
+    min-width: 0;
+}
+
+/* Detail Card: Workspace filling the entire middle column */
+.b2b-product-detail-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: auto !important;
+    min-height: 0;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.detail-input {
+    box-sizing: border-box !important;
+    /* Force box model */
+}
+
+/* Manifest List: Take remaining space and scroll */
+.b2b-cart-list {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eee;
+}
+
+/* Series Themed SKU Badges */
+.sku-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.sku-badge-20 {
+    background: #eef6ff;
+    color: #007bff;
+    border-color: #bcd9ff;
+}
+
+.sku-badge-30 {
+    background: #fff9eb;
+    color: #d97706;
+    border-color: #fde68a;
+}
+
+.sku-badge-40 {
+    background: #ecfdf5;
+    color: #059669;
+    border-color: #a7f3d0;
+}
+
+.b2b-sub-item-row {
+    font-size: 0.8rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+/* Detail Panel Refinement */
+.b2b-detail-hero {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f1f2f6;
+    max-width: 100%;
+}
+
+.b2b-detail-img-container {
+    flex: 0 0 140px;
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+}
+
+.b2b-detail-info-main {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.b2b-series-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.series-20-tag {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.series-30-tag {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.series-40-tag {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* Synchronize font size with left panel */
+/* Enlarge Title and Tags */
+.b2b-detail-info-main h2 {
+    margin: 5px 0 10px 0;
+    font-size: 1.25rem;
+    /* Recalibrated Title Size */
+    color: #2c3e50;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.b2b-detail-price-box {
+    margin-top: 8px;
+    font-size: 1.05rem;
+    /* Recalibrated Price Size */
+    color: #e74c3c;
+    font-weight: 700;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.b2b-input-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+.detail-row-flex {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.detail-row-flex input {
+    height: 46px;
+    /* Optimized Large Input */
+    padding: 0 15px;
+    border: 2px solid #e1e4e8;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    /* Clear but balanced font */
+    font-weight: 600;
+    transition: all 0.2s ease;
+    background: #fdfdfd;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.detail-row-flex input:focus {
+    border-color: #007bff;
+    outline: none;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.detail-row-flex .input-len {
+    flex: 2 1 0;
+    /* Grow:2, Shrink:1, Basis:0 */
+}
+
+.detail-row-flex .input-qty {
+    flex: 1 1 0;
+    /* Grow:1, Shrink:1, Basis:0 */
+    text-align: center;
+}
+
+.b2b-detail-action-bar {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #eee;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.b2b-manifest-header {
+    flex-shrink: 0;
+    padding: 15px 20px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.b2b-footer {
+    flex-shrink: 0;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Analysis Summary Styling */
+.analysis-item {
+    text-align: center;
+}
+
+.analysis-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.analysis-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* === B2B Mode Visibility Control (Fix content bleeding) === */
+body.mode-b2b .app-container,
+body.mode-b2b .floating-cart-btn,
+body.mode-b2b .top-banner,
+body.mode-b2b #hub-overlay {
+    display: none !important;
+}
+
+body.mode-b2b #b2b-dashboard {
+    display: block !important;
+    height: 100vh;
+    background: #f1f2f6;
+    /* Light gray bg for dashboard feel */
+}
+
+/* Note: Consolidated into main B2B section above */
+
+/* Optional: Add a matching header to Right Panel for visual symmetry */
+.b2b-manifest-header {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 0;
+    margin-top: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
 @media (max-width: 1100px) {
 
     .custom-case-row,
@@ -1895,6 +2222,241 @@ body.series-40 {
 .project-row .info-complete-img {
     margin-top: auto;
     /* Push to bottom of info section if needed, or just flow naturally */
+}
+
+/* --- B2B SKU Badges --- */
+.sku-badge-main {
+    display: inline-block;
+    background-color: #ebf5fb;
+    /* Light Blue BG */
+    color: #2980b9;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid #aed6f1;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.sku-badge-sub {
+    display: inline-block;
+    background-color: #fef5e7;
+    /* Light Orange BG */
+    color: #e67e22;
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid #fad7a0;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+
+/* --- B2B Dashboard Layout (Natural Scroll) --- */
+.b2b-dashboard {
+    /* Overlay effectively replaces body content */
+    position: absolute;
+    /* Changed from fixed to absolute so it scrolls with page */
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh;
+    background: #fdfdfd;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    /* Removed overflow: hidden so body can scroll */
+}
+
+.b2b-sidebar {
+    display: none !important;
+}
+
+.b2b-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* Let content dictate height */
+}
+
+/* Sticky Header */
+.b2b-header {
+    background: white;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    /* Stronger shadow */
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1010;
+    /* Above sidebar */
+}
+
+.b2b-content {
+    display: flex;
+    /* Side by side on desktop */
+    align-items: flex-start;
+    /* Important for sticky sidebar */
+    padding: 20px;
+    /* Add breathing room */
+    gap: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+    /* Center content on ultra-wide */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Left: Product Panel (Natural Growth) */
+.b2b-product-panel {
+    flex: 6;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    /* No overflow/height constraints -> grows with list */
+}
+
+.b2b-table-header {
+    display: flex;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #ddd;
+    color: #555;
+    font-weight: bold;
+    font-size: 0.9rem;
+    position: sticky;
+    /* Table header sticks inside panel? No, difficult with main scroll. Keep static or top 60px if needed. */
+}
+
+.b2b-product-list {
+    /* Fixed height for desktop to ensure internal scrollability */
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
+/* Right: Analysis Panel (Sticky) */
+.b2b-analysis-panel {
+    flex: 4;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+
+    /* STICKY MAGIC */
+    position: sticky;
+    top: 90px;
+    /* Below fixed header */
+    height: calc(100vh - 120px);
+    /* Fit within viewport */
+    overflow-y: auto;
+    /* Internal scroll for cart/charts if needed */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Series Tabs */
+.b2b-tab-btn {
+    padding: 8px 30px;
+    border: 2px solid #ddd;
+    background: white;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #777;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.b2b-tab-btn:hover {
+    background: #fdfdfd;
+    transform: translateY(-1px);
+}
+
+.b2b-tab-btn[data-series="20"] {
+    border-color: #aed6f1;
+    color: #2980b9;
+}
+
+.b2b-tab-btn[data-series="20"].active {
+    background: #3498db;
+    color: white;
+    border-color: #3498db;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.4);
+}
+
+.b2b-tab-btn[data-series="30"] {
+    border-color: #fad7a0;
+    color: #d35400;
+}
+
+.b2b-tab-btn[data-series="30"].active {
+    background: #e67e22;
+    color: white;
+    border-color: #e67e22;
+    box-shadow: 0 4px 10px rgba(230, 126, 34, 0.4);
+}
+
+.b2b-tab-btn[data-series="40"] {
+    border-color: #abebc6;
+    color: #27ae60;
+}
+
+.b2b-tab-btn[data-series="40"].active {
+    background: #27ae60;
+    color: white;
+    border-color: #27ae60;
+    box-shadow: 0 4px 10px rgba(39, 174, 96, 0.4);
+}
+
+/* Columns */
+.col-img {
+    width: 50px;
+    text-align: center;
+}
+
+.col-name {
+    flex: 2;
+    padding-left: 10px;
+    min-width: 150px;
+}
+
+.col-price {
+    width: 70px;
+    text-align: right;
+}
+
+.col-input {
+    width: 140px;
+    text-align: center;
+}
+
+.col-action {
+    width: 70px;
+    text-align: center;
+}
+
+/* RWD: Mobile Stack (Deprecated/Redundant with newer 1024px rule, but keeping structure for safety) */
+@media (max-width: 900px) {
+
+    .col-img,
+    .col-price {
+        display: none;
+    }
+
+    .col-input {
+        width: auto;
+        flex: 1;
+    }
+
+    .b2b-tab-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
 }
 
 /* Ensure complete image is not too tall */
@@ -2900,4 +3462,1143 @@ body.banner-hidden {
         height: auto !important;
         display: block !important;
     }
+}
+
+/* =========================================================================
+   HUB OVERLAY & B2B PRO MODE STYLES
+   ========================================================================= */
+
+/* 1. Hub Overlay (Full Screen) */
+.hub-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #f0f2f5;
+    z-index: 9999;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease;
+}
+
+.hub-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hub-container {
+    text-align: center;
+    max-width: 900px;
+    width: 100%;
+}
+
+.hub-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.hub-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.hub-cards {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hub-card {
+    background: white;
+    width: 300px;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.hub-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Personal Card */
+.hub-card:nth-child(1) {
+    border-color: #e5e7eb;
+}
+
+.hub-card:nth-child(1):hover {
+    border-color: #3b82f6;
+}
+
+/* Pro Card */
+.hub-card.pro {
+    border-color: #fce7f3;
+    /* Subtle BG color hint */
+}
+
+.hub-card.pro:hover {
+    border-color: #f59e0b;
+}
+
+.hub-icon {
+    font-size: 3.5rem;
+    margin-bottom: 25px;
+    color: #4b5563;
+}
+
+.hub-card.personal .hub-icon {
+    color: #3b82f6;
+}
+
+.hub-card.pro .hub-icon {
+    color: #2c3e50;
+}
+
+.hub-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #1f2937;
+    font-weight: 700;
+}
+
+.hub-card p {
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+    min-height: 48px;
+    /* Alignment */
+}
+
+.hub-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #f3f4f6;
+    color: #4b5563;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.hub-card:hover .hub-btn {
+    background: #1f2937;
+    color: white;
+}
+
+.hub-card.pro:hover .hub-btn {
+    background: #f59e0b;
+    color: white;
+}
+
+.hub-tag {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #f59e0b;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 4px;
+    transform: rotate(10deg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hub-footer {
+    margin-top: 50px;
+}
+
+.hub-footer a {
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+    border-bottom: 1px dashed transparent;
+}
+
+.hub-footer a:hover {
+    color: #4b5563;
+    border-color: #4b5563;
+}
+
+
+/* 2. B2B Analysis Panel (In Cart Sidebar) */
+.analysis-panel {
+    background: #2d3436;
+    /* Dark Theme */
+    color: #dfe6e9;
+    border-radius: 8px;
+    margin: 15px;
+    padding: 15px;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+    border-left: 4px solid #f59e0b;
+    display: none;
+    /* Hidden by default */
+}
+
+.analysis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 8px;
+}
+
+.analysis-title {
+    font-weight: bold;
+    color: #f59e0b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.analysis-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.analysis-label {
+    font-size: 0.75rem;
+    color: #b2bec3;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.analysis-value {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.analysis-value small {
+    font-size: 0.7rem;
+    font-weight: normal;
+    color: #aaa;
+    margin-left: 2px;
+}
+
+/* Visualization Bar */
+.theoretical-bar-container {
+    margin-top: 15px;
+}
+
+.theoretical-label {
+    font-size: 0.8rem;
+    color: #dfe6e9;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.theoretical-bar {
+    background: #636e72;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+}
+
+.bar-segment {
+    background: #00b894;
+    height: 100%;
+    border-right: 1px solid #2d3436;
+    transition: width 0.3s ease;
+}
+
+.bar-segment.waste {
+    background: #d63031;
+}
+
+.analysis-note {
+    font-size: 0.75rem;
+    color: #fdcb6e;
+    margin-top: 10px;
+    display: flex;
+    align-items: top;
+    gap: 6px;
+    line-height: 1.4;
+    background: rgba(253, 203, 110, 0.1);
+    padding: 8px;
+    border-radius: 4px;
+}
+
+/* User Mode Toggles */
+/* If body has 'mode-b2b', show panel */
+body.mode-b2b .analysis-panel {
+    display: block !important;
+}
+
+/* =========================================================================
+   B2B VISUAL IDENTITY
+   ========================================================================= */
+
+/* 1. Sidebar Change */
+body.mode-b2b .sidebar {
+    background: #2c3e50;
+    /* Professional Dark Blue/Grey */
+    border-right: 1px solid #34495e;
+}
+
+body.mode-b2b .brand::after {
+    content: " PRO";
+    font-size: 0.8rem;
+    background: #f59e0b;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* 2. Header Indicator */
+body.mode-b2b .page-header h2::after {
+    content: "企業採購模式";
+    font-size: 1rem;
+    color: #f59e0b;
+    border: 1px solid #f59e0b;
+    padding: 4px 10px;
+    border-radius: 50px;
+    margin-left: 15px;
+    vertical-align: middle;
+    font-weight: normal;
+}
+
+/* 3. Global Accent Override for B2B */
+body.mode-b2b {
+    --accent: #f59e0b !important;
+    /* Override Blue with Orange/Gold */
+    --accent-hover: #d97706 !important;
+}
+
+/* 4. Button & Interaction adjustments */
+body.mode-b2b .floating-cart-btn {
+    background: #f59e0b;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+body.mode-b2b .floating-cart-btn:hover {
+    background: #d97706;
+}
+
+/* 5. Compact Card View for Pros (Less decoration, more data focus) */
+body.mode-b2b .profile-card {
+    border-radius: 4px;
+    /* Sharper corners */
+    border: 1px solid #ccc !important;
+    background: #fff !important;
+    /* Remove texture for clean look */
+}
+
+/* Step 2: Structure Analysis Chart Styles */
+.structure-chart-container {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.structure-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #dfe6e9;
+    margin-bottom: 5px;
+}
+
+.structure-bar {
+    display: flex;
+    height: 12px;
+    background: #444;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.structure-seg-al {
+    background: #3b82f6;
+    /* Blue for Aluminum */
+}
+
+.structure-seg-acc {
+    background: #e74c3c;
+    /* Red for Accessories */
+}
+
+.structure-legend {
+    display: flex;
+    gap: 10px;
+    font-size: 0.7rem;
+    color: #b2bec3;
+    justify-content: flex-end;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.health-alert {
+    background: rgba(231, 76, 60, 0.2);
+    border: 1px solid #e74c3c;
+    color: #ff7675;
+    padding: 8px;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.b2b-product-row {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid #ecf0f1;
+    padding: 10px;
+    transition: background 0.1s;
+}
+
+.b2b-product-row:hover {
+    background: #fffef0;
+    /* Subtle highlight */
+}
+
+.b2b-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+.input-group-sm {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.input-group-sm input {
+    width: 70px;
+    padding: 4px;
+    border: 1px solid #dfe6e9;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* Hide standard scrollbars for cleaner look */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+#b2b-analysis-charts {
+    padding: 15px;
+    background: #fff;
+    border-bottom: 2px solid #f1f2f6;
+    border-top: 1px solid #eee;
+    /* Light boundary when at top */
+}
+
+/* Specific styling for analysis items inside the narrower right panel */
+#b2b-analysis-charts .analysis-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+#b2b-analysis-charts .analysis-value {
+    font-size: 1.25rem !important;
+}
+
+#b2b-analysis-charts .analysis-label {
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.b2b-manifest-header {
+    padding: 15px 20px;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+}
+
+.b2b-cart-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.b2b-cart-item {
+    display: flex;
+    padding: 10px 20px;
+    border-bottom: 1px solid #f1f2f6;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.b2b-footer {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    background: #f8f9fa;
+}
+
+.b2b-total {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2d3436;
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.b2b-btn-submit {
+    width: 100%;
+    padding: 12px;
+    background: #2c3e50;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.b2b-btn-submit:hover {
+    background: #f59e0b;
+}
+
+.btn-xs {
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-outline {
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+.btn-add-b2b {
+    background: #27ae60;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-add-b2b:hover {
+    background: #2ecc71;
+}
+
+/* Hide standard scrollbars for cleaner look */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+/* Tree View Sidebar */
+.b2b-tree-container {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.b2b-tree-group {
+    margin-bottom: 5px;
+}
+
+.b2b-tree-header {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px;
+    color: #dfe6e9;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+}
+
+.b2b-tree-header:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f59e0b;
+}
+
+.b2b-tree-header.active {
+    background: #2c3e50;
+    color: #f59e0b;
+    border-left: 3px solid #f59e0b;
+}
+
+.b2b-tree-header .arrow {
+    font-size: 0.8rem;
+    transition: transform 0.3s;
+}
+
+.b2b-tree-header.active .arrow {
+    transform: rotate(90deg);
+}
+
+.b2b-tree-children {
+    display: none;
+    padding-left: 10px;
+    margin-top: 5px;
+}
+
+.b2b-tree-children.open {
+    display: block;
+}
+
+.b2b-tree-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    color: #bdc3c7;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.1s;
+    text-decoration: none;
+}
+
+.b2b-tree-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    padding-left: 15px;
+    /* Slide effect */
+}
+
+.b2b-tree-item.selected {
+    background: #f59e0b;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Focus Mode Panel (Main Center) */
+.b2b-focus-panel {
+    flex: 6;
+    padding: 30px;
+    background: #f1f2f6;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.focus-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 800px;
+    padding: 30px;
+    display: flex;
+    gap: 30px;
+}
+
+.focus-img-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.focus-main-img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+
+.focus-info {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.focus-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #2d3436;
+    margin-bottom: 5px;
+}
+
+.focus-meta {
+    color: #b2bec3;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.focus-price-box {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.focus-price {
+    font-size: 1.5rem;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* Multi-row Input for Aluminum */
+.focus-input-area {
+    background: #fff;
+    border: 1px solid #dfe6e9;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.focus-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.focus-input {
+    padding: 10px;
+    border: 1px solid #dfe6e9;
+    border-radius: 4px;
+    flex: 1;
+    font-size: 1rem;
+}
+
+.btn-add-focus {
+    width: 100%;
+    padding: 12px;
+    background: #2c3e50;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.2s;
+}
+
+.btn-add-focus:hover {
+    background: #34495e;
+}
+
+/* =========================================================================
+   B2B SPLIT-SCREEN LAYOUT ENHANCEMENTS
+   ========================================================================= */
+
+/* Product Row Selected State */
+.b2b-product-row.selected {
+    background: linear-gradient(90deg, #fee2e2 0%, #fff 100%) !important;
+    border-left: 4px solid #e74c3c;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
+    transform: translateX(2px);
+}
+
+/* Product Detail Card */
+.b2b-product-detail-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    min-height: 220px;
+}
+
+.detail-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 180px;
+    color: #999;
+    font-size: 1.1rem;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Detail Grid Layout */
+.detail-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 20px;
+}
+
+.detail-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detail-img img {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fafafa;
+}
+
+.detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail-info h3 {
+    font-size: 1.4rem;
+    margin: 0;
+    color: #2d3436;
+    font-weight: 700;
+}
+
+.detail-meta {
+    font-size: 0.9rem;
+    color: #95a5a6;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.detail-price {
+    font-size: 1.3rem;
+    color: #e74c3c;
+    font-weight: 700;
+    padding: 8px 12px;
+    background: #fff5f5;
+    border-radius: 6px;
+    display: inline-block;
+    align-self: flex-start;
+}
+
+/* Detail Input Group */
+.detail-input-group {
+    margin-top: 10px;
+}
+
+.detail-input-group label {
+    display: block;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.detail-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.detail-input {
+    padding: 8px 12px;
+    border: 1px solid #dfe6e9;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    flex: 1;
+    transition: border-color 0.2s;
+}
+
+.detail-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.detail-input-lg {
+    width: 120px;
+    padding: 10px 14px;
+    border: 1px solid #dfe6e9;
+    border-radius: 6px;
+    font-size: 1rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.detail-input-lg:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Add Detail Button */
+.btn-add-detail {
+    width: 100%;
+    padding: 12px 20px;
+    background: #2c3e50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-add-detail:hover {
+    background: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.btn-add-detail:active {
+    transform: translateY(0);
+}
+
+/* Upload BOM Button (for later) */
+.btn-upload-bom {
+    padding: 10px 18px;
+    background: #f59e0b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-upload-bom:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+    .detail-grid {
+        grid-template-columns: 150px 1fr;
+    }
+
+    .detail-img img {
+        max-width: 140px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-img {
+        justify-content: flex-start;
+    }
+
+    .detail-img img {
+        max-width: 120px;
+    }
+}
+
+/* === B2B Responsive Design (Prevent Sticking) === */
+/* === B2B Responsive Design (Tabbed Mobile Layout) === */
+@media (max-width: 1024px) {
+
+    /* Hide desktop-only layout */
+    .b2b-content {
+        flex-direction: column;
+        height: auto;
+        overflow-y: visible;
+        padding-bottom: 80px;
+        /* Space for mobile navigation */
+    }
+
+    body.mode-b2b #b2b-dashboard {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+    }
+
+    /* Tabbed Interface Implementation */
+    .b2b-product-panel,
+    .b2b-detail-panel,
+    .b2b-analysis-panel {
+        display: none !important;
+        /* Hide all panels by default on mobile */
+        flex: none;
+        width: 100%;
+        height: auto;
+        min-height: 60vh;
+        margin-bottom: 0px;
+    }
+
+    /* Active Panel Display Logic (via body classes) */
+    body.b2b-view-list .b2b-product-panel {
+        display: block !important;
+    }
+
+    body.b2b-view-detail .b2b-detail-panel {
+        display: block !important;
+    }
+
+    body.b2b-view-bom .b2b-analysis-panel {
+        display: block !important;
+    }
+
+    /* Show Mobile Nav */
+    .b2b-mobile-nav {
+        display: flex !important;
+        background: #2c3e50;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 8px 10px;
+        justify-content: space-around;
+        position: relative;
+        z-index: 100;
+        margin-top: 10px;
+    }
+
+    .b2b-nav-item {
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        padding: 5px 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border-radius: 8px;
+        min-width: 80px;
+        color: white;
+    }
+
+    .b2b-nav-item i {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+    }
+
+    .b2b-nav-item span {
+        font-size: 0.75rem;
+        font-weight: bold;
+        opacity: 0.8;
+    }
+
+    .b2b-nav-item.active {
+        color: #f59e0b !important;
+        background: rgba(245, 158, 11, 0.15);
+        box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.3);
+    }
+
+    .b2b-nav-item.active span {
+        opacity: 1;
+    }
+
+    /* Header Compact Mode for Mobile Tabs */
+    .b2b-header {
+        padding: 10px 15px 0 15px !important;
+    }
+
+    .b2b-header-compact {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+
+    .b2b-header-compact>div:last-child {
+        margin-left: 0 !important;
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        display: flex;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .b2b-product-list {
+        max-height: calc(100vh - 250px);
+    }
+}
+
+/* Hide mobile nav by default (desktop) */
+.b2b-mobile-nav {
+    display: none;
+}
+
+
+
+#b2b-analysis-charts:empty {
+    display: none;
 }
