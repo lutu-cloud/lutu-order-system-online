@@ -307,39 +307,38 @@ document.addEventListener('DOMContentLoaded', initData);
 async function initData() {
     console.log("Initializing Data...");
 
-    // 1. Default to local hardcoded data
-    let data = rawData;
+    // 1. Load Local Data IMMEDIATELY (Synchronous)
+    // This ensures UI has data even while waiting for API
+    processData(rawData);
 
-
-    // 2. Try Fetching from API (Priority)
+    // 2. Try Fetching from API (Async Update)
     try {
         console.log("Fetching data from:", API_URL);
         const response = await fetch(API_URL);
         if (response.ok) {
             let remote = await response.json();
-            // Basic validation
             if (remote.products && remote.products.length > 0) {
-                data = remote;
-                console.log("Remote data loaded successfully.");
+                console.log("Remote data loaded successfully. Updating...");
+                processData(remote); // Update with fresh data
             }
         } else {
             console.warn("API Error, status:", response.status);
         }
     } catch (e) {
         console.warn("API Fetch failed, checking local data...", e);
-        // Fallback to rawData (already set)
     }
+}
 
+// Helper: Process Data Logic (Extracted)
+function processData(data) {
     try {
         if (data.products) {
             let lastType = '';
             let lastSeries = '';
 
-            // Temporary collection
             let allItems = data.products.slice(1).map(function (row) {
                 if (!row || row.length < 3) return null;
 
-                // Fill-Down Logic for Merged Cells (Type/Series)
                 let type = row[0];
                 let seriesRaw = row[1];
 
@@ -349,12 +348,8 @@ async function initData() {
                 if (seriesRaw) lastSeries = seriesRaw;
                 else seriesRaw = lastSeries;
 
-                // Handle Series string
                 let series = String(seriesRaw || '').replace('系列', '').trim();
-
-                // ID Generation (Name as ID)
                 let id = row[2];
-                // Sanitize ID just in case (remove quotes)
                 if (id) id = String(id).replace(/['"]/g, '');
 
                 return {
@@ -371,19 +366,10 @@ async function initData() {
                 };
             }).filter(p => p && p.name && p.status !== '下架');
 
-            // 1. Unified Product List (B2C & B2B share this)
-            // We store ALL items in 'products' to ensure matching works for everything.
-            // Duplicate filtering should happen in the UI rendering layer instead.
             products = allItems;
-            // We already have 'b2bRawData' defined globally with the user's hardcoded list.
-            // We can optionally fetch updates for it, but the base list is ready.
             inventoryProducts = b2bRawData;
 
             console.log(`Loaded ${products.length} standard products.`);
-            console.log(`Loaded ${inventoryProducts.length} B2B inventory codes.`);
-
-            // Trigger background sync for stock counts (Optional)
-            fetchInventoryForB2B();
         }
 
         if (data.projects) {
@@ -402,7 +388,6 @@ async function initData() {
                     row[10] ? { img: row[10], text: '步驟4' } : null
                 ].filter(Boolean)
             }));
-            // Swap logic
             const idx02 = projects.findIndex(p => p.id === 'LUTU-02');
             const idx03 = projects.findIndex(p => p.id === 'LUTU-03');
             if (idx02 !== -1 && idx03 !== -1 && idx02 < idx03) {
@@ -425,23 +410,26 @@ async function initData() {
             });
         }
 
-        // Critical Fix: Re-render B2B if active
-        if (userMode === 'B2B') {
-            renderB2BSidebarTree();
-            renderSeriesOverview('20');
-        }
-
-        // Initial Renders
-        switchSeries('30');
-        renderProjects();
-        renderCustomCases();
-        renderHotSales();
-        renderHotSalesMobile();
+        // Re-Render UI after data update
+        refreshUI();
 
     } catch (e) {
         console.error("Data Processing Error", e);
-        document.getElementById('aluminum-grid').innerHTML = '<p>系統初始化失敗，請聯絡管理員。</p>';
     }
+}
+
+function refreshUI() {
+    // Re-render based on current state
+    if (userMode === 'B2B') {
+        renderB2BDashboard(); // Refresh Dashboard Stats
+        renderSeriesOverview(currentB2BSeries); // Refresh List
+    }
+
+    // Always refresh these
+    renderProjects();
+    renderCustomCases();
+    renderHotSales();
+    renderHotSalesMobile();
 }
 
 // Mobile Hot Sales Modal Toggle
@@ -1679,13 +1667,13 @@ window.selectUserMode = function (mode) {
         document.body.classList.add('mode-b2b');
         document.getElementById('b2b-dashboard').classList.remove('hidden');
 
-        // Initialize mobile view
-        if (typeof switchB2BView === 'function') {
-            switchB2BView('list');
-        }
+        // No more sidebar tree init
 
         // Default to loading '20' Series
         switchB2BSeries('20');
+
+        // Show Dashboard Cockpit initially
+        setTimeout(renderB2BDashboard, 100);
 
         renderAnalysisAndManifest();
     } else {
@@ -1724,38 +1712,378 @@ window.switchB2BSeries = function (series) {
 
     // 2. Render Content
     renderSeriesOverview(series);
-
-    // 3. Switch to list view on mobile
-    if (typeof switchB2BView === 'function') {
-        switchB2BView('list');
-    }
-};
-
-// --- B2B Mobile View Controller ---
-window.switchB2BView = function (view) {
-    // 1. Update Layout Classes on Body
-    document.body.classList.remove('b2b-view-list', 'b2b-view-detail', 'b2b-view-bom');
-    document.body.classList.add('b2b-view-' + view);
-
-    // 2. Update Tab Button Styles
-    document.querySelectorAll('.b2b-nav-item').forEach(btn => {
-        btn.classList.toggle('active', btn.id === 'm-tab-' + view);
-    });
-
-    // 3. Scroll to top for better experience
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 // Return to Series Overview
 window.returnToSeriesOverview = function () {
-    renderSeriesOverview(currentB2BSeries);
-    if (typeof switchB2BView === 'function') {
-        switchB2BView('list');
+    // If search is active, clear it or re-search? 
+    // UX: If user was searching, maybe keep search results?
+    // For now, let's reset to series view
+    let searchInput = document.getElementById('b2b-search-input');
+    if (searchInput && searchInput.value.trim() !== "") {
+        handleB2BSearch(searchInput.value);
+    } else {
+        renderSeriesOverview(currentB2BSeries);
     }
 };
 
+// ============================================
+// GLOBAL SEARCH LOGIC (New)
+// ============================================
+
+window.handleB2BSearch = function (keyword) {
+    keyword = keyword.trim().toLowerCase();
+
+    // UI Helpers
+    const mainEl = document.querySelector('.b2b-product-panel');
+    const tabs = document.querySelectorAll('.b2b-tab-btn');
+
+    // 1. If empty, revert to current series tab logic
+    if (keyword === "") {
+        // Restore active tab state visually
+        tabs.forEach(btn => {
+            if (btn.getAttribute('data-series') === currentB2BSeries) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+        renderSeriesOverview(currentB2BSeries);
+        return;
+    }
+
+    // 2. Clear Tab Active States (Visual cue that we are in Global Search mode)
+    tabs.forEach(btn => btn.classList.remove('active'));
+
+    // 3. Filter ALL products (ignoring series)
+    // We enhance search to include "Hidden" B2B SKUs
+    let matches = products.filter(p => {
+        let cleanName = p.name.replace(/\(含.*?\)/, '').replace(/組$/, '').trim();
+        let b2bMatch = findB2BItem(p.name) || findB2BItem(`${p.series}-${cleanName}`);
+        let hiddenSKU = b2bMatch ? parseSKU(b2bMatch.name) : "";
+
+        let text = (p.name + " " + (p.id || "") + " " + (hiddenSKU || "")).toLowerCase();
+        return text.includes(keyword);
+    });
+
+    // 4. Render Results
+    if (matches.length === 0) {
+        mainEl.innerHTML = `
+            <div style="padding:40px; text-align:center; color:#999;">
+                <div style="font-size:3rem; margin-bottom:10px; opacity:0.3;"><i class="fas fa-search"></i></div>
+                <div>找不到與 "<b>${keyword}</b>" 相關的商品</div>
+                <div style="font-size:0.85rem; margin-top:5px;">請嘗試輸入不同關鍵字，或搜尋型號。</div>
+            </div>
+        `;
+        return;
+    }
+
+    // Reuse rendering logic but with explicit series badges
+    let html = `
+        <div style="padding: 15px 15px 0 15px; flex-shrink:0;">
+            <h2 style="margin-bottom:12px; color:#2c3e50; font-size:1.2rem; font-weight:800;">
+                <i class="fas fa-search"></i> 搜尋結果 <span style="font-weight:normal; font-size:0.9rem; color:#666;">(${matches.length} 筆)</span>
+            </h2>
+             <div class="b2b-table-header" style="font-size:0.85rem; padding:8px 0; border-bottom:2px solid #eee; margin-bottom:5px;">
+                <div class="col-img" style="flex:0 0 65px;">圖</div>
+                <div class="col-name" style="padding-left:8px;">品名 / 規格</div>
+                <div class="col-price" style="text-align:right; padding-right:8px;">單價</div>
+                <div class="col-action" style="flex:0 0 20px;"></div>
+            </div>
+        </div>
+        <div id="b2b-search-list" class="b2b-product-list" style="flex:1; overflow-y:auto; padding:0 15px 15px 15px; min-height:0;">
+    `;
+
+    matches.forEach(p => {
+        let imgUrl = (p.img2d) ? `assets/${p.img2d}` : 'https://placehold.co/50';
+
+        // Define Series Color
+        let sColor = '#999';
+        if (p.series === '20') sColor = '#3498db';
+        if (p.series === '30') sColor = '#e67e22';
+        if (p.series === '40') sColor = '#2ecc71';
+
+        // --- SMART CODE INJECTION & HYBRID NAMING (Unified) ---
+        let displayName = p.name;
+        let mainCodeHtml = "";
+        let skuCode = "";
+        let subItemsHtml = "";
+
+        let cleanNameForMatch = p.name.replace(/\(含.*?\)/, '').replace(/組$/, '').trim();
+        let match = findB2BItem(p.name);
+        if (!match) match = findB2BItem(`${p.series}-${cleanNameForMatch}`);
+
+        if (match) {
+            skuCode = parseSKU(match.name);
+            let b2bBaseName = removeSKU(match.name).trim();
+            // Extract Set Info
+            let flowInfo = "";
+            let setMatch = p.name.match(/(\(含.*?\))/);
+            if (setMatch) flowInfo = " " + setMatch[1];
+
+            displayName = b2bBaseName;
+            const fullB2BName = match.name;
+            if (flowInfo && !fullB2BName.includes('(含')) {
+                displayName += flowInfo;
+            }
+
+            if (skuCode) {
+                // Colored badge for search results
+                mainCodeHtml = `<span class="sku-badge" style="background:${sColor}15; color:${sColor}; border:1px solid ${sColor}40;">[${skuCode}]</span>`;
+            }
+        }
+
+        // Sub-items
+        if (p.name.includes('(') && p.name.includes(')')) {
+            let subMap = new Map();
+            extractAndAddScrewNutsToMap(p.name, 1, parseInt(p.series), subMap);
+            if (subMap.size > 0) {
+                subItemsHtml = `<div style="margin-top:4px; padding-left:10px; border-left:2px solid #ddd;">`;
+                subMap.forEach((qty, key) => {
+                    let partMatch = findB2BItem(key);
+                    let subSku = partMatch ? parseSKU(partMatch.name) : '';
+                    let cleanPartName = key.replace(/^\d+-/, '');
+                    subItemsHtml += `<div class="b2b-sub-item-row">${cleanPartName} <span style="font-weight:bold; margin-left:5px;">x${qty}</span></div>`;
+                });
+                subItemsHtml += `</div>`;
+            }
+        }
+
+        let priceDisplay = p.price;
+        let unitDisplay = p.unit || '個';
+        if (p.type === '鋁材') unitDisplay = 'cm';
+
+        // Weight Display for Left Panel
+        let weightHtml = '';
+        if (p.type === '鋁材') {
+            let wm = weightMap[p.name];
+            if (wm) {
+                weightHtml = `<span style="font-size:0.75rem; color:#888; margin-left:5px; background:#f0f0f0; padding:1px 4px; border-radius:3px;">${wm} kg/m</span>`;
+            }
+        }
+
+        // Accordion Content HTML (Hidden by default)
+        let rowId = 'search-batch-' + Math.random().toString(36).substr(2, 5);
+        let accordionHtml = '';
+
+        if (p.type === '鋁材') {
+            accordionHtml = `
+                <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:#f8f9fa; border-radius:8px; border:1px dashed #ddd;">
+                     <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
+                         <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                              <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;" onclick="event.stopPropagation()">
+                              <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;" onclick="event.stopPropagation()">
+                         </div>
+                     </div>
+                     
+                     <div style="display:flex; gap:10px; padding-top:10px; border-top:1px solid #eee;">
+                         <button onclick="event.stopPropagation(); addBatchRow('${rowId}')" class="btn-secondary" style="flex:1; padding:8px; border:1px solid #ccc; background:white; color:#555; border-radius:4px; cursor:pointer;">
+                             <i class="fas fa-plus"></i> 新增規格
+                         </button>
+                         <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="flex:2; padding:8px; background:#2c3e50; color:white; border:none; border-radius:4px; cursor:pointer;">
+                             加入清單 <i class="fas fa-arrow-right"></i>
+                         </button>
+                     </div>
+                     <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:5px; font-weight:bold;">
+                        <i class="fas fa-check"></i> 已加入
+                    </div>
+                </div>`;
+        } else {
+            accordionHtml = `
+                <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:#f8f9fa; border-radius:8px; border:1px dashed #ddd;">
+                     <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
+                         <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                              <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:100%;" onclick="event.stopPropagation()">
+                         </div>
+                     </div>
+                     <div style="padding-top:10px; border-top:1px solid #eee;">
+                         <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="width:100%; padding:8px; background:#2c3e50; color:white; border:none; border-radius:4px; cursor:pointer;">
+                             加入清單
+                         </button>
+                     </div>
+                      <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:5px; font-weight:bold;">
+                        <i class="fas fa-check"></i> 已加入
+                    </div>
+                </div>`;
+        }
+
+        html += `
+        <div class="b2b-product-row" 
+             style="padding:0; border-bottom:1px solid #f1f2f6;">
+             
+             <div style="display:flex; padding:12px 0; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
+                <div class="col-img" style="flex:0 0 65px; position:relative;">
+                    <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:4px; object-fit: cover;">
+                    <div style="position:absolute; bottom:0; padding:1px 4px; border-radius:4px 0 0 0; background:${sColor}; color:white; font-size:0.7rem; font-weight:bold;">${p.series}</div>
+                </div>
+                <div class="col-name" style="padding-left:12px; min-width:0; flex:1;">
+                    <div style="font-weight:bold; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
+                    <div style="font-size:0.8rem; color:#666; font-weight:500;">${mainCodeHtml} ${weightHtml}</div>
+                    ${subItemsHtml}
+                </div>
+                <div class="col-price" style="flex:0 0 90px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:0.9rem; font-weight:600; color:#444;">
+                    <div><span style="color:#e74c3c;">$${priceDisplay}</span> / ${unitDisplay}</div>
+                    <i class="fas fa-chevron-down accordion-arrow" style="margin-top:5px; color:#ddd; transition:transform 0.3s;"></i>
+                </div>
+            </div>
+
+            <!-- Accordion Content -->
+            ${accordionHtml}
+            
+        </div>`;
+    });
+
+    html += `</div>`;
+    mainEl.innerHTML = html;
+}
+
+// ============================================
+// VISUAL AI CUTTING SIMULATION (Step 2)
+// ============================================
+
+window.renderCuttingVisualsPreview = function () {
+    // 1. Check if we have aluminum profiles
+    let alItems = cart.filter(i => i.type === '鋁材' && i.len > 0);
+    if (alItems.length === 0) return '';
+
+    // 2. Solve Cutting
+    // Logic reused/duplicated from simple solver to keep it purely visual here
+    // Or we can assume 'cutter' exists in scope if we call this from renderAnalysis
+    // Let's create a local cutter for safety/independence
+    class VisualCutter {
+        constructor(stockLength = 600, kerf = 0.5) { this.stockLength = stockLength; this.kerf = kerf; }
+        solve(items) {
+            let profiles = [];
+            items.forEach(item => { for (let i = 0; i < item.qty; i++) profiles.push({ len: item.len }); });
+            profiles.sort((a, b) => b.len - a.len);
+            let bins = [];
+            profiles.forEach(p => {
+                let placed = false;
+                for (let bin of bins) {
+                    if (bin.rem >= p.len + this.kerf) { bin.cuts.push(p.len); bin.rem -= (p.len + this.kerf); placed = true; break; }
+                }
+                if (!placed) { bins.push({ rem: this.stockLength - p.len, cuts: [p.len] }); }
+            });
+            return bins;
+        }
+    }
+
+    let cutter = new VisualCutter();
+
+    // Group by Profile Name (e.g. 2020, 3030) as they use different stock
+    let groups = {};
+    alItems.forEach(i => {
+        if (!groups[i.name]) groups[i.name] = [];
+        groups[i.name].push(i);
+    });
+
+    let html = `
+        <div style="margin-bottom:20px; background:white; border-radius:8px; border:1px solid #e1e4e8; overflow:hidden;">
+            <div style="background:#2c3e50; color:white; padding:8px 12px; font-size:0.9rem; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+                <span><i class="fas fa-microchip"></i> AI 切割排版模擬</span>
+                <span style="font-size:0.75rem; background:#27ae60; padding:2px 8px; border-radius:10px;">Smart Plan</span>
+            </div>
+            <div style="padding:15px; max-height:250px; overflow-y:auto;">
+    `;
+
+    for (let name in groups) {
+        let bins = cutter.solve(groups[name]);
+        let totalLen = bins.length * 600;
+        let usedLen = 0;
+        bins.forEach(b => b.cuts.forEach(c => usedLen += c));
+        let efficiency = Math.round((usedLen / totalLen) * 100);
+
+        let series = groups[name][0].series || '20';
+        let barColor = (series === '30') ? '#e67e22' : (series === '40') ? '#2ecc71' : '#3498db';
+
+        html += `
+            <div style="margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#555; margin-bottom:4px;">
+                    <span style="font-weight:bold;">${name}</span>
+                    <span>利用率: <b style="color:${efficiency > 85 ? '#27ae60' : '#e67e22'}">${efficiency}%</b> (${bins.length}支原料)</span>
+                </div>
+        `;
+
+        // Render Bars (Limit to first 5 bars to save space if huge order)
+        let displayBins = bins.slice(0, 5);
+
+        displayBins.forEach((bin, idx) => {
+            html += `<div style="display:flex; height:18px; background:#f0f0f0; border-radius:3px; margin-bottom:4px; overflow:hidden; border:1px solid #ddd;">`;
+
+            bin.cuts.forEach(cut => {
+                let widthPct = (cut / 600) * 100;
+                html += `<div style="width:${widthPct}%; background:${barColor}; border-right:1px solid white; display:flex; align-items:center; justify-content:center; color:white; font-size:0.6rem; opacity:0.9;" title="${cut}cm">${cut}</div>`;
+            });
+
+            // Remainder
+            if (bin.rem > 0) {
+                html += `<div style="flex:1; background:#f0f0f0; color:#aaa; font-size:0.6rem; display:flex; align-items:center; justify-content:center;">餘 ${Math.round(bin.rem * 10) / 10}</div>`;
+            }
+
+            html += `</div>`;
+        });
+
+        if (bins.length > 5) {
+            html += `<div style="text-align:center; font-size:0.8rem; color:#999;">... 還有 ${bins.length - 5} 支原料 ...</div>`;
+        }
+
+        html += `</div>`;
+    }
+
+    html += `</div><div style="background:#f8f9fa; padding:8px; font-size:0.75rem; color:#666; text-align:center; border-top:1px solid #eee;">
+        * 此模擬為「單筆訂單」優先排版，實際生產可能會與其他工單合併裁切以優化利用率。
+    </div></div>`;
+
+    return html;
+}
+
 // Old Sidebar functions removed (renderB2BSidebarTree, toggleTree, b2bFilter)
 
+
+// ============================================
+// DASHBOARD (Middle Panel - "Cockpit")
+// ============================================
+
+window.renderB2BDashboard = function () {
+    const detailEl = document.getElementById('b2b-product-detail');
+    if (!detailEl) return;
+
+    // 1. Data Analysis (Global Stock/Catalog)
+    let totalItems = products.length;
+    let seriesCounts = { '20': 0, '30': 0, '40': 0, 'Accessory': 0 };
+
+    products.forEach(p => {
+        if (p.type === '鋁材') {
+            if (p.series.startsWith('20')) seriesCounts['20']++;
+            if (p.series.startsWith('30')) seriesCounts['30']++;
+            if (p.series.startsWith('40')) seriesCounts['40']++;
+        } else {
+            seriesCounts['Accessory']++;
+        }
+    });
+
+    // 2. Dashboard HTML Structure: Split into Display (Top) and Stats (Bottom)
+    let html = `
+        <div id="b2b-middle-display" style="padding:10px 10px 0 10px; text-align:center;">
+             <div style="font-size:1.2rem; font-weight:800; margin-bottom:2px; letter-spacing:1px; color:#2c3e50;">
+                LUTU <span class="pro-tag" style="background:#2c3e50; color:white; font-size:0.75rem; padding:1px 5px;">PRO</span> 訂單數據中心
+            </div>
+            <div style="color:#7f8c8d; margin-bottom:5px; font-size:0.8rem;">請從左側選擇商品，或直接匯入 BOM 表</div>
+
+        </div>
+        
+        <div id="b2b-middle-stats" style="margin-top:5px; border-top:1px solid #eee; padding-top:10px; transition:all 0.3s;">
+             <!-- Stats will be injected here by renderAnalysisAndManifest -->
+             <div style="text-align:center; color:#999; font-size:0.9rem;">
+                <i class="fas fa-chart-pie"></i> 購物車為空，尚無分析數據
+             </div>
+        </div>
+    `;
+
+    detailEl.innerHTML = html;
+
+    // Attempt to render stats if cart has items
+    if (cart.length > 0) {
+        renderAnalysisAndManifest();
+    }
+};
 
 // Render the Table View for a Series (Unified with Code Injection)
 function renderSeriesOverview(series) {
@@ -1845,29 +2173,252 @@ function renderSeriesOverview(series) {
             unitDisplay = 'cm';
         }
 
+        // Weight Display for Left Panel
+        let weightHtml = '';
+        if (p.type === '鋁材') {
+            let wm = weightMap[p.name]; // weightMap is global
+            if (wm) {
+                weightHtml = `<span style="font-size:0.75rem; color:#888; margin-left:5px; background:#f0f0f0; padding:1px 4px; border-radius:3px;">${wm} kg/m</span>`;
+            }
+        }
+
+        // Accordion Content HTML (Hidden by default)
+        let rowId = 'batch-' + Math.random().toString(36).substr(2, 5);
+        let accordionHtml = '';
+
+        if (p.type === '鋁材') {
+            accordionHtml = `
+                <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:#f8f9fa; border-radius:8px; border:1px dashed #ddd;">
+                     <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
+                         <!-- Default Row 1 -->
+                         <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                              <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
+                              <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
+                         </div>
+                     </div>
+                     
+                     <div style="display:flex; gap:10px; padding-top:10px; border-top:1px solid #eee;">
+                         <button onclick="event.stopPropagation(); addBatchRow('${rowId}')" class="btn-secondary" style="flex:1; padding:8px; border:1px solid #ccc; background:white; color:#555; border-radius:4px; cursor:pointer;">
+                             <i class="fas fa-plus"></i> 新增規格
+                         </button>
+                         <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="flex:2; padding:8px; background:#2c3e50; color:white; border:none; border-radius:4px; cursor:pointer;">
+                             加入清單 <i class="fas fa-arrow-right"></i>
+                         </button>
+                     </div>
+                     <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:5px; font-weight:bold;">
+                        <i class="fas fa-check"></i> 已加入
+                    </div>
+                </div>`;
+        } else {
+            // Accessories: Just Qty
+            accordionHtml = `
+                <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:#f8f9fa; border-radius:8px; border:1px dashed #ddd;">
+                     <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
+                         <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                              <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:100%;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
+                         </div>
+                     </div>
+                     <div style="padding-top:10px; border-top:1px solid #eee;">
+                         <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="width:100%; padding:8px; background:#2c3e50; color:white; border:none; border-radius:4px; cursor:pointer;">
+                             加入清單
+                         </button>
+                     </div>
+                      <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:5px; font-weight:bold;">
+                        <i class="fas fa-check"></i> 已加入
+                    </div>
+                </div>`;
+        }
+
+
         html += `
         <div class="b2b-product-row" 
              data-product-name="${p.name}"
-             onclick="selectProductInList('${p.name}')" 
-             style="cursor:pointer; padding:12px 0; border-bottom:1px solid #f1f2f6;">
-            <div class="col-img" style="flex:0 0 65px;"><img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:4px; object-fit: cover;"></div>
-            <div class="col-name" style="padding-left:12px; min-width:0;">
-                <div style="font-weight:bold; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
-                <div style="font-size:0.8rem; color:#666; font-weight:500;">${mainCodeHtml}</div>
-                ${subItemsHtml}
+             style="padding:0; border-bottom:1px solid #f1f2f6; transition:all 0.2s;">
+            
+            <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement, '${p.name}')">
+                <div class="col-img" style="flex:0 0 65px;"><img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:4px; object-fit: cover;"></div>
+                <div class="col-name" style="padding-left:12px; min-width:0; flex:1;">
+                    <div style="font-weight:bold; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
+                    <div style="font-size:0.8rem; color:#666; font-weight:500;">${mainCodeHtml} ${weightHtml}</div>
+                    ${subItemsHtml}
+                </div>
+                <div class="col-price" style="flex:0 0 90px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:0.9rem; font-weight:600; color:#444;">
+                    <div><span style="color:#e74c3c;">$${priceDisplay}</span></div>
+                    <div style="font-size:0.75rem; color:#999; font-weight:normal;">/${unitDisplay}</div>
+                    <i class="fas fa-chevron-down accordion-arrow" style="margin-top:5px; color:#ddd; transition:transform 0.3s;"></i>
+                </div>
             </div>
-            <div class="col-price" style="font-size:0.9rem; font-weight:600; color:#444; text-align:right; padding-right:8px;">
-                <span style="color:#e74c3c;">NT$ ${priceDisplay}</span> / <span style="color:#444; font-weight:normal;">${unitDisplay}</span>
-            </div>
-            <div class="col-action" style="flex:0 0 20px; text-align:right;">
-                <i class="fas fa-chevron-right" style="color:#eee; font-size:0.75rem;"></i>
-            </div>
+            
+            ${accordionHtml}
         </div>`;
     });
 
     html += `</div>`;
     mainEl.innerHTML = html;
 }
+
+// ===== ACCORDION LOGIC (Left Panel) =====
+
+window.toggleProductAccordion = function (rowEl, productName) {
+    // 0. SAFETY: Prevent toggling if clicking inside the content (Inputs, Buttons)
+    // Use window.event for inline handler compatibility
+    let e = window.event;
+    if (e && e.target) {
+        if (e.target.closest('.product-accordion-content')) return;
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+    }
+
+    // 1. Determine current state
+    let wasActive = rowEl.classList.contains('active-row');
+
+    // 2. Close OTHER rows only
+    document.querySelectorAll('.b2b-product-row').forEach(row => {
+        if (row !== rowEl && row.classList.contains('active-row')) {
+            let c = row.querySelector('.product-accordion-content');
+            let a = row.querySelector('.accordion-arrow');
+            if (c) c.style.display = 'none';
+            if (a) a.style.transform = 'rotate(0deg)';
+            row.classList.remove('active-row');
+        }
+    });
+
+    // 3. Toggle CURRENT row
+    let content = rowEl.querySelector('.product-accordion-content');
+    let arrow = rowEl.querySelector('.accordion-arrow');
+
+    if (wasActive) {
+        // It was open, now Close it
+        if (content) content.style.display = 'none';
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+        rowEl.classList.remove('active-row');
+    } else {
+        // It was closed, now Open it
+        if (content) content.style.display = 'block';
+        if (arrow) arrow.style.transform = 'rotate(180deg)';
+        rowEl.classList.add('active-row');
+    }
+};
+
+window.addToCartSimple = function (productName, btnEl) {
+    // 1. Find Inputs
+    let container = btnEl.parentElement; // .product-accordion-content
+    let qtyInput = container.querySelector('.input-qty');
+    let lenInput = container.querySelector('.input-len');
+
+    let qty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
+    let len = lenInput ? parseFloat(lenInput.value) : 0;
+
+    if (lenInput && (isNaN(len) || len < 10)) {
+        alert("請輸入有效長度 (最小 10cm)");
+        return;
+    }
+
+    // 2. Add to Cart (Reuse global addToCart logic manually or call standard func?)
+    // Standard addToCart takes (id, qty, len, name...).
+    // Let's find product first.
+    let product = products.find(p => p.name === productName);
+    if (!product) return;
+
+    // Construct item object
+    let newItem = {
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 5), // Unique Instance ID
+        productId: product.id, // Keep reference to original product ID
+        name: product.name,
+        price: product.price,
+        type: product.type, // '鋁材' or '配件'
+        series: product.series,
+        len: len,
+        qty: qty,
+        unit: product.unit || '個',
+        img: product.img2d
+    };
+
+    // Logic from original addToCart
+    // We need to push to 'cart' array and refresh.
+    // Check duplicates? Original logic allows duplicates for different lengths.
+    // For simplicity, just push.
+    cart.push(newItem);
+
+    // 3. Feedback
+    // Show checkmark
+    let feedback = container.querySelector('.add-feedback');
+    if (feedback) {
+        feedback.style.display = 'block';
+        setTimeout(() => feedback.style.display = 'none', 2000);
+    }
+
+    // Reset inputs? Maybe keep for rapid entry.
+
+    // 4. BIG UPDATE: Refresh RIGHT PANEL (Cart) and MIDDLE PANEL (Visuals)
+    renderAnalysisAndManifest();
+};
+
+// Render Product Display to Middle Panel (Pure Display)
+window.renderProductDisplayToMiddle = function (productName) {
+    const container = document.getElementById('b2b-product-detail');
+    if (!container) return;
+
+    let product = products.find(p => p.name === productName);
+    if (!product) return;
+
+    let imgUrl = (product.img2d) ? `assets/${product.img2d}` : 'https://placehold.co/400x400?text=' + encodeURIComponent(product.name);
+
+    // Toggle 3D visual logic
+    // Same ID as before to reuse logic, or simplified
+    let toggleBtnHtml = '';
+    if (product.img3d) {
+        toggleBtnHtml = `
+            <button onclick="toggle3DView(this, 'assets/${product.img2d}', 'assets/${product.img3d}')"
+                    style="position:absolute; bottom:20px; right:20px; background:white; border:none; padding:8px 15px; border-radius:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1); font-weight:bold; color:#2c3e50; cursor:pointer;">
+                <i class="fas fa-cube"></i> 切換 3D
+            </button>`;
+    }
+
+    let html = `
+        <div style="padding:40px; text-align:center; animation: fadeIn 0.3s ease;">
+            <div style="background:white; border-radius:12px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05); position:relative; display:inline-block; max-width:100%;">
+                <div class="b2b-detail-img-container" style="height:300px; display:flex; align-items:center; justify-content:center;">
+                    <img src="${imgUrl}" style="max-height:100%; max-width:100%; object-fit:contain;">
+                    ${toggleBtnHtml}
+                </div>
+            </div>
+            
+            <div style="margin-top:30px;">
+                <span style="background:#2c3e50; color:white; padding:4px 12px; border-radius:20px; font-size:0.8rem; letter-spacing:1px;">${product.series} SERIES</span>
+                <h1 style="color:#2c3e50; font-size:1.8rem; margin:15px 0 10px 0;">${product.name}</h1>
+                <div style="color:#7f8c8d; font-size:1rem;">
+                    單價: <span style="color:#e74c3c; font-weight:bold;">$${product.price}</span> / ${product.unit || '個'}
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Check if we also need to show Stats (Sticky Top?)
+    // This function REPLACES content, so it might overwrite Stats if they are in the same container.
+    // Wait! The plan is: Middle Panel = Visuals/Stats + Product Display.
+    // If I overwrite innerHTML, the stats are gone.
+    // I should create TWO sections in the middle panel: #b2b-stats-area and #b2b-display-area.
+
+    // But currently `b2b-product-detail` is one big div.
+    // I will dynamically check if the structure exists, if not create it.
+    // OR: simpler approach -> The "Intelligence Hub" is the DEFAULT view.
+    // When a product is selected, we show product info ABOVE or RELOW the stats?
+    // User said: "Middle can fix more images and info display".
+    // AND "Move cutting visuals to middle".
+
+    // Ideally: Top of Middle = Product Display (if selected). Bottom of Middle = Cutting Stats (Always).
+    // Let's implement that structure.
+
+    // 1. Get current content. If it doesn't have the split structure, build it.
+    if (!container.querySelector('#b2b-middle-display')) {
+        container.innerHTML = `
+            <div id="b2b-middle-display"></div>
+            <div id="b2b-middle-stats" style="margin-top:20px; border-top:1px solid #eee; padding-top:20px;"></div>
+        `;
+    }
+
+    document.getElementById('b2b-middle-display').innerHTML = html;
+};
 
 // B2B Sidebar also should use 'products' (Unified)
 function renderB2BSidebarTree() {
@@ -1956,11 +2507,6 @@ window.selectProductInList = function (productName) {
 function renderProductDetailPanel(p) {
     const container = document.getElementById('b2b-product-detail');
     if (!container) return;
-
-    // Auto-switch to detail view on mobile when a product is clicked
-    if (typeof switchB2BView === 'function') {
-        switchB2BView('detail');
-    }
 
     let isProfile = (p.type === '鋁材');
     // Default to 3D if available
@@ -2515,204 +3061,149 @@ function addToCartB2B(id) { } // Replaced by addToCartFocus
 
 // Consolidated Analysis & Manifest Render
 function renderAnalysisAndManifest() {
+    // 1. Right Panel List
     const listEl = document.getElementById('b2b-cart-list');
-    const totalEl = document.getElementById('b2b-total-price');
-    const chartEl = document.getElementById('b2b-analysis-charts');
 
-    if (!listEl || !totalEl || !chartEl) return; // Ensure all elements exist
+    // 2. Middle Panel Stats (New Target)
+    const middleStatsEl = document.getElementById('b2b-middle-stats');
 
-    // 1. Render Manifest (Cart List) - Grouped by Project
+    // 3. Fallback (Old Right Panel Charts)
+    const legacyChartEl = document.getElementById('b2b-analysis-charts');
+
+    if (!listEl) return;
+
+    // --- Generate Manifest (Cart List) ---
+    // Group by Projects (if supported) or just flat
+    let groupedCart = { '未分類工單': [] };
     let total = 0;
+    let totalWeight = 0;
 
-    // Group items by project
-    let groupedCart = {};
+    // Cutting Logic Prep
+    let cuts = [];
+    let efficiency = 0;
+    let rawBarsNeeded = 0;
+    let maxLen = 0; // Track max length for shipping logic
+    // Map same as Step 293
+    // Use Global Weight Map if available, else local fallback
+    // weightMap is defined above at line 2923
+
+    // Populate Grouped Cart & Calc Total Price
     cart.forEach(item => {
-        let pName = item.project || '未分類專案';
+        let pName = '未分類工單'; // TODO: Support Project tagging
         if (!groupedCart[pName]) groupedCart[pName] = [];
         groupedCart[pName].push(item);
+
+        let sub = (item.type === '鋁材') ? item.price * item.len * item.qty : item.price * item.qty;
+        total += sub;
+
+        if (item.type === '鋁材') {
+            let w = weightMap[item.name] || 1;
+            totalWeight += (w * (item.len / 100) * item.qty); // len in cm, w in kg/m
+            if (item.len > maxLen) maxLen = item.len;
+
+            // Add to cuts for simulation
+            for (let i = 0; i < item.qty; i++) {
+                cuts.push({ length: item.len, name: item.name });
+            }
+        } else {
+            totalWeight += (0.05 * item.qty); // Est. accessory weight
+        }
     });
 
-    let html = '';
+    let totalEl = document.getElementById('b2b-total-price');
+    if (totalEl) totalEl.innerText = `NT$ ${Math.round(total)}`;
 
-    // Also Data Collection for Analysis
-    let totalWeight = 0;
-    let maxLen = 0;
-    let cost20 = 0;
-    let cost30 = 0;
-    let cost40 = 0;
-    let seriesSet = new Set();
+    // Render List HTML
+    let listHtml = '';
+    for (let [groupName, items] of Object.entries(groupedCart)) {
+        if (items.length === 0) continue;
+        // Group Header? Optional. For now flat list look is cleaner.
+        items.forEach((item, index) => {
+            let spec = (item.type === '鋁材') ? `L:${item.len}` : '';
 
-    // Iterate groups
-    for (let [projectName, items] of Object.entries(groupedCart)) {
-        // Project Header
-        let isDefault = (projectName === '未分類專案');
-        let headerStyle = isDefault ? 'background:#f8f9fa; color:#666;' : 'background:#e3f2fd; color:#0d47a1; border-left:4px solid #2196f3;';
-
-        html += `<div style="padding:8px 12px; margin-top:10px; font-weight:bold; font-size:0.9rem; ${headerStyle} border-radius:4px;">
-            <i class="fas fa-folder-open"></i> ${projectName}
-            <span style="font-size:0.8rem; font-weight:normal; float:right;">${items.length} 項</span>
-        </div>`;
-
-        items.forEach(item => {
-            let isAl = (item.type === '鋁材' && item.unit === 'cm');
-            let sub = isAl ? item.price * item.len * item.qty : item.price * item.qty;
-            total += sub;
-
-            // Analysis Data
-            if (item.series) {
-                seriesSet.add(item.series);
-                let sPrefix = item.series.substring(0, 2);
-                if (sPrefix === '20') cost20 += sub;
-                else if (sPrefix === '30') cost30 += sub;
-                else if (sPrefix === '40') cost40 += sub;
-            }
-
-            if (isAl) {
-                if (item.len > maxLen) maxLen = item.len;
+            // Weight Calc for Right Panel
+            let weightInfo = '';
+            if (item.type === '鋁材') {
                 let w = weightMap[item.name] || 0;
-                totalWeight += (parseFloat(w) * (item.len / 100) * item.qty);
-            } else {
-                totalWeight += (0.03 * item.qty);
+                let unitW = (w * (item.len / 100)); // kg per piece
+                if (w > 0) weightInfo = `<span style="color:#7f8c8d; margin-left:5px;">(${unitW.toFixed(2)}kg)</span>`;
             }
 
-            let spec = isAl ? `L: ${item.len} cm` : '-';
+            // SKU Logic
+            let skuHtml = '';
+            let match = findB2BItem(item.name);
+            if (match) {
+                let code = parseSKU(match.name);
+                if (code) {
+                    let sColor = (item.series === '20') ? '#3498db' : (item.series === '30' ? '#e67e22' : '#2ecc71');
+                    if (item.series === 'Accessory' || !item.series) sColor = '#999';
+                    skuHtml = `<span style="font-size:0.75rem; color:${sColor}; border:1px solid ${sColor}40; padding:0 3px; border-radius:3px; margin-left:5px;">${code}</span>`;
+                }
+            }
 
-            let itemColor = '#2c3e50'; // Default text color
-            if (item.series === '20') itemColor = '#0369a1';
-            else if (item.series === '30') itemColor = '#b45309';
-            else if (item.series === '40') itemColor = '#15803d';
+            let sub = (item.type === '鋁材') ? item.price * item.len * item.qty : item.price * item.qty;
+            let itemColor = (item.series === '20') ? '#0369a1' : (item.series === '30' ? '#b45309' : '#15803d');
+            if (item.type !== '鋁材') itemColor = '#555';
 
-            html += `
-            <div class="b2b-cart-item" style="padding-left:20px; border-left:2px solid ${itemColor}40; color: ${itemColor};">
-                <div style="flex:2; font-weight: 500;">
-                    ${item.name} 
-                    <span style="font-size:0.8rem; opacity: 0.7; display:block;">${spec}</span>
-                </div>
-                <div style="flex:1;text-align:center; font-weight: bold;">x ${item.qty}</div>
-                <div style="flex:1;text-align:right; font-weight: bold;">$${Math.round(sub)}</div>
-                <div style="width:30px;text-align:right;">
-                     <i class="fas fa-times" style="cursor:pointer;color:#e74c3c;" onclick="removeFromCartB2B('${item.id}')"></i>
-                </div>
-            </div>`;
+            listHtml += `
+                 <div class="b2b-cart-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f0f0f0;">
+                     <div style="flex:1;">
+                        <div style="font-weight:bold; color:${itemColor}; line-height:1.2;">
+                            ${item.name} 
+                            ${skuHtml}
+                        </div>
+                        <div style="font-size:0.8rem; color:#999; margin-top:2px;">${spec} ${weightInfo}</div>
+                     </div>
+                     <div style="text-align:right;">
+                        <div style="font-weight:bold;">x${item.qty}</div>
+                        <div style="color:#e74c3c; font-size:0.9rem;">$${Math.round(sub)}</div>
+                     </div>
+                     <button onclick="removeFromCartB2B('${item.id || index}')" style="background:none; border:none; color:#ddd; cursor:pointer; margin-left:10px;">
+                        <i class="fas fa-times"></i>
+                     </button>
+                 </div>
+             `;
         });
     }
+    listEl.innerHTML = listHtml;
 
-    listEl.innerHTML = html;
 
-    // 2. Logistics Analysis & Weight Display
-    let shippingSuggestion = '';
-    let shippingIcon = '';
-    let shippingColor = '';
+    // --- Think & Render Visuals (Logic ported from previous steps) ---
+    // If we have stats container
+    let statsTarget = middleStatsEl || legacyChartEl;
+    if (statsTarget) {
 
-    if (totalWeight < 30) {
-        shippingSuggestion = '公司配送 (小貨車)';
-        shippingIcon = 'fa-truck-pickup'; // Changed icon to represent small truck
-        shippingColor = '#2980b9'; // Blue
-    } else {
-        shippingSuggestion = '公司配送 (大貨車)';
-        shippingIcon = 'fa-truck-moving';
-        shippingColor = '#e67e22'; // Orange
-    }
-
-    // Update Footer with Weight Info
-    // Note: We are replacing the inner text setup with a more complex HTML injection
-    totalEl.innerHTML = `NT$${Math.round(total)} 
-        <div style="font-size:0.8rem; color:#666; font-weight:normal; margin-top:4px; text-align:right;">
-            <i class="fas fa-weight-hanging"></i> 約 ${totalWeight.toFixed(1)} kg <br>
-            <span style="color:${shippingColor}; font-weight:bold; font-size:0.75rem;">
-                <i class="fas ${shippingIcon}"></i> ${shippingSuggestion}
-            </span>
-        </div>`;
-
-    // 2. Render Charts (Analysis)
-    // Reuse ThinkingCutterLite
-    class ThinkingCutterLite {
-        constructor(stockLength = 600, kerf = 0.5) { this.stockLength = stockLength; this.kerf = kerf; }
-        solve(items) {
-            let profiles = [];
-            items.forEach(item => {
-                if (item.type === '鋁材' && item.len > 0) {
-                    for (let i = 0; i < item.qty; i++) { profiles.push({ len: item.len }); }
-                }
-            });
-            profiles.sort((a, b) => b.len - a.len);
-            let bins = [];
-            profiles.forEach(p => {
-                let placed = false;
-                for (let bin of bins) {
-                    if (bin.rem >= p.len + this.kerf) { bin.cuts.push(p.len); bin.rem -= (p.len + this.kerf); placed = true; break; }
-                }
-                if (!placed) { bins.push({ rem: this.stockLength - p.len, cuts: [p.len] }); }
-            });
-            return bins;
+        // 1. Generate Visuals
+        let visualsHtml = "";
+        if (typeof renderCuttingVisualsPreview === 'function') {
+            visualsHtml = renderCuttingVisualsPreview();
         }
-    }
 
-    let cutter = new ThinkingCutterLite();
-
-    // Group profiles by their specific name/type for separate calculation
-    let profileGroups = {};
-    cart.forEach(item => {
-        if (item.type === '鋁材' && item.len > 0) {
-            if (!profileGroups[item.name]) profileGroups[item.name] = [];
-            profileGroups[item.name].push(item);
-        }
-    });
-
-    let totalBins = [];
-    for (let name in profileGroups) {
-        let groupItems = profileGroups[name];
-        // Solve for each profile type independently
-        let groupBins = cutter.solve(groupItems);
-        totalBins = totalBins.concat(groupBins);
-    }
-
-    let rawBarsNeeded = totalBins.length;
-    let totalUsedLen = 0;
-    totalBins.forEach(b => {
-        // Correct efficiency calculation: sum of actual cuts in the bar
-        b.cuts.forEach(c => totalUsedLen += c);
-    });
-
-    let totalRawLen = rawBarsNeeded * 600;
-    let efficiency = (totalRawLen > 0) ? Math.round((totalUsedLen / totalRawLen) * 100) : 0;
-
-    let pct20 = (total > 0) ? Math.round((cost20 / total) * 100) : 0;
-    let pct30 = (total > 0) ? Math.round((cost30 / total) * 100) : 0;
-    let pct40 = (total > 0) ? (100 - pct20 - pct30) : 0;
-    if (total > 0 && pct40 < 0) pct40 = 0; // Guard
-
-    let healthMsg = '';
-    if (seriesSet.size > 1) healthMsg += `<div>⚠️ 系列混搭 (${Array.from(seriesSet).join(',')})</div>`;
-
-    // Check if accessories are missing for the profiles present
-    let hasAl = cart.some(i => i.type === '鋁材');
-    let hasAcc = cart.some(i => i.type !== '鋁材');
-    if (hasAl && !hasAcc) healthMsg += `<div>⚠️ 未選購配件</div>`;
-
-    chartEl.innerHTML = `
-        <div style="display:flex; gap:20px; margin-bottom:15px;">
-            <div class="analysis-item" style="flex:1; text-align:center;">
-                <div class="analysis-label" style="font-size:0.85rem; color:#666; margin-bottom:5px;">總重 (kg)</div>
-                <div class="analysis-value" style="font-size:1.5rem; font-weight:bold; color:#2c3e50;">${totalWeight.toFixed(1)}</div>
+        // 2. Generate Weight Stats
+        let statsHtml = `
+            <div style="display:flex; align-items:center; justify-content:space-around; background:#f8f9fa; padding:15px; border-radius:8px; margin-top:20px;">
+                <div style="text-align:center;">
+                    <div style="font-size:0.8rem; color:#7f8c8d;">預估總重</div>
+                    <div style="font-size:1.5rem; font-weight:bold; color:#2c3e50;">${totalWeight.toFixed(1)} <span style="font-size:0.9rem;">kg</span></div>
+                </div>
+                 <div style="text-align:center;">
+                    <div style="font-size:0.8rem; color:#7f8c8d;">物流建議</div>
+                    <div style="font-size:1.1rem; font-weight:bold; color:#2980b9;">
+                        ${(maxLen > 250 || totalWeight > 50) ? '<i class="fas fa-truck-moving"></i> 公司配送大貨車' : '<i class="fas fa-truck-pickup"></i> 公司配送小貨車'}
+                    </div>
+                </div>
             </div>
-             <div class="analysis-item" style="flex:1; text-align:center;">
-                <div class="analysis-label" style="font-size:0.85rem; color:#666; margin-bottom:5px;">原料支數 (6M) / 利用率</div>
-                <div class="analysis-value" style="font-size:1.5rem; font-weight:bold; color:#2c3e50;">${rawBarsNeeded} <span style="font-size:0.9rem;font-weight:normal;">(${efficiency}%)</span></div>
-            </div>
-        </div>
-        
-        <div class="structure-bar" style="margin-bottom:5px; display:flex; height:12px; background:#eee; border-radius:6px; overflow:hidden;">
-             <div class="seg-20" style="width: ${pct20}%; background:#0369a1; transition: width 0.3s;"></div>
-             <div class="seg-30" style="width: ${pct30}%; background:#b45309; transition: width 0.3s;"></div>
-             <div class="seg-40" style="width: ${pct40}%; background:#15803d; transition: width 0.3s;"></div>
-        </div>
-        <div class="structure-legend">
-            <span style="font-size:0.75rem; color:#666;">資金佔比: 20系 ${pct20}% | 30系 ${pct30}% | 40系 ${pct40}%</span>
-        </div>
-        ${healthMsg ? `<div class="health-alert" style="margin-top:5px; padding:5px;">${healthMsg}</div>` : ''}
-    `;
+        `;
+
+        // Combine (Visuals + Stats)
+        statsTarget.innerHTML = visualsHtml + statsHtml;
+    }
 }
+
+
+
+
+
 
 window.removeFromCartB2B = function (id) {
     cart = cart.filter(i => i.id !== id);
@@ -2875,13 +3366,11 @@ function updatePreview(headerRow) {
 
         const isInstruction = row.some(cell => cell && cell.toString().includes('💡'));
         if (isInstruction || rawName.toString().includes('請勿更動') || rawName.toString().includes('填寫說明')) {
-            if (rowIndex < 20) {
-                html += `<tr style="border-bottom:1px solid #f1f2f6; background:#fff9db; opacity:0.8;">`;
-                html += `<td style="padding:5px;">${rawName || '說明'}</td>`;
-                html += `<td style="padding:5px;">L:${rawLen} / Q:-</td>`;
-                html += `<td style="padding:5px; color:#f39c12;"><i>說明列 (已略過)</i></td>`;
-                html += `</tr>`;
-            }
+            html += `<tr style="border-bottom:1px solid #f1f2f6; background:#fff9db; opacity:0.8;">`;
+            html += `<td style="padding:5px;">${rawName || '說明'}</td>`;
+            html += `<td style="padding:5px;">L:${rawLen} / Q:-</td>`;
+            html += `<td style="padding:5px; color:#f39c12;"><i>說明列 (已略過)</i></td>`;
+            html += `</tr>`;
             return;
         }
 
@@ -2904,13 +3393,12 @@ function updatePreview(headerRow) {
             errorCount++;
         }
 
-        if (rowIndex < 20) {
-            html += `<tr style="border-bottom:1px solid #f1f2f6;">`;
-            html += `<td style="padding:5px;">${rawName}</td>`;
-            html += `<td style="padding:5px;">L:${rawLen || '-'} / Q:${qVal || '-'}</td>`;
-            html += `<td style="padding:5px;">${statusHtml}</td>`;
-            html += `</tr>`;
-        }
+        // Show all rows
+        html += `<tr style="border-bottom:1px solid #f1f2f6;">`;
+        html += `<td style="padding:5px;">${rawName}</td>`;
+        html += `<td style="padding:5px;">L:${rawLen || '-'} / Q:${qVal || '-'}</td>`;
+        html += `<td style="padding:5px;">${statusHtml}</td>`;
+        html += `</tr>`;
     });
 
     html += '</tbody></table>';
@@ -3074,12 +3562,18 @@ window.processBOMImport = function processBOMImport() {
             }
 
             // Unit conversion for aluminum (mm to cm)
-            if (type === '鋁材' && len >= 100) len = len / 10;
+            if (type === '鋁材') {
+                // Smart mm detection: Only convert if > 600 (Max Valid CM)
+                if (len > 600) len = len / 10;
 
-            // Enforcement: Skip if > 600cm
-            if (type === '鋁材' && (len < 10 || len > 600)) {
-                skipCount++;
-                return;
+                // Round to 1 decimal place to avoid precision issues
+                len = Math.round(len * 10) / 10;
+
+                // Enforcement: Skip if < 10 or > 600
+                if (len < 10 || len > 600) {
+                    skipCount++;
+                    return;
+                }
             }
 
             addToCart(p, qty, len, false);
@@ -3184,7 +3678,7 @@ window.downloadBOMTemplate = function () {
     const headers = ["產品分類", "系列別", "官方品項名稱", "長度(cm)", "預計訂購數量"];
 
     // 第一行增加填寫說明 (讓客人知道填哪裏)
-    const instructionRow = ["💡 填寫指引：", "<- 自動分類", "<- 請勿更動文字", "鋁材請輸入長度", "請在此輸入數量"];
+    const instructionRow = ["💡 填寫指引：", "<- 自動分類", "<- 請勿更動文字", "請輸入長度 (cm, 10~600, 可小數)", "請在此輸入數量"];
 
     // Generate product rows from b2bRawData
     const productRows = b2bRawData.map(item => {
@@ -3225,3 +3719,308 @@ window.downloadBOMTemplate = function () {
     link.click();
     document.body.removeChild(link);
 };
+
+// ===========================================
+// BATCH INPUT LOGIC (Step 34)
+// ===========================================
+
+window.addBatchRow = function (containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Create new row
+    let div = document.createElement('div');
+    div.className = 'batch-row';
+    div.style.display = 'flex';
+    div.style.gap = '10px';
+    div.style.alignItems = 'center';
+    div.style.marginBottom = '10px';
+    div.innerHTML = `
+        <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;">
+        <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;">
+        <button onclick="this.parentElement.remove(); event.stopPropagation();" style="border:none; background:none; color:#e74c3c; cursor:pointer;" title="移除此行">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    // Append
+    container.appendChild(div);
+}
+
+window.addToCartBatch = function (productName, containerId, btnEl) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    let product = products.find(p => p.name === productName);
+    if (!product) return;
+
+    let rows = container.querySelectorAll('.batch-row');
+    let addedCount = 0;
+
+    rows.forEach(row => {
+        let lenInput = row.querySelector('.input-len');
+        let qtyInput = row.querySelector('.input-qty');
+
+        let qty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
+        let len = lenInput ? parseFloat(lenInput.value) : 0;
+
+        // Validate
+        if (product.type === '鋁材' && (isNaN(len) || len < 10)) {
+            return; // Skip invalid
+        }
+
+        // MERGE LOGIC: Check if exact item exists
+        let existingItem = null;
+
+        if (product.type === '鋁材') {
+            // For Aluminum: Match Name + Length
+            existingItem = cart.find(i => i.name === product.name && Math.abs(i.len - len) < 0.01);
+        } else {
+            // For Accessories: Match Name
+            existingItem = cart.find(i => i.name === product.name);
+        }
+
+        if (existingItem) {
+            existingItem.qty += qty;
+        } else {
+            // Create New
+            let newItem = {
+                id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                productId: product.id,
+                name: product.name,
+                price: product.price,
+                type: product.type,
+                series: product.series,
+                len: len,
+                qty: qty,
+                unit: product.unit || '個',
+                img: product.img2d
+            };
+            cart.push(newItem);
+        }
+        addedCount++;
+    });
+
+    if (addedCount > 0) {
+        // Show Feedback
+        let parent = container.parentElement;
+        let feedback = parent.querySelector('.add-feedback');
+        if (feedback) {
+            feedback.innerHTML = `<i class="fas fa-check"></i> 已加入 ${addedCount} 筆資料`;
+            feedback.style.display = 'block';
+            setTimeout(() => feedback.style.display = 'none', 2000);
+        }
+
+        // Refresh Cart logic
+        renderAnalysisAndManifest();
+
+        // Reset: keep one empty row
+        container.innerHTML = `
+            <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;">
+                <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;">
+            </div>
+         `;
+        if (product.type !== '鋁材') {
+            container.innerHTML = `
+                <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                    <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:100%;">
+                </div>
+             `;
+        }
+    } else {
+        alert("請輸入有效的數量或長度");
+    }
+}
+
+// ===============================================
+// BATCH INPUT HELPERS (Restored)
+// ===============================================
+
+window.addBatchRow = function (containerId) {
+    let container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Create new row
+    let div = document.createElement('div');
+    div.className = 'batch-row';
+    div.style.cssText = 'display:flex; gap:10px; align-items:center; margin-bottom:10px;';
+
+    // Check if it's Aluminum (has .input-len)
+    let firstRow = container.querySelector('.batch-row');
+    let isAl = firstRow && firstRow.querySelector('.input-len');
+
+    if (isAl) {
+        div.innerHTML = `
+            <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
+            <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
+            <button onclick="event.stopPropagation(); this.parentElement.remove()" style="border:none; background:none; color:#e74c3c; cursor:pointer;" title="移除"><i class="fas fa-minus-circle"></i></button>
+        `;
+    } else {
+        div.innerHTML = `
+            <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:100%;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
+            <button onclick="event.stopPropagation(); this.parentElement.remove()" style="border:none; background:none; color:#e74c3c; cursor:pointer;" title="移除"><i class="fas fa-minus-circle"></i></button>
+        `;
+    }
+
+    container.appendChild(div);
+};
+
+window.addToCartBatch = function (productName, containerId, btnEl) {
+    if (window.event) window.event.stopPropagation();
+
+    let container = document.getElementById(containerId);
+    if (!container) return;
+
+    let rows = container.querySelectorAll('.batch-row');
+    let product = products.find(p => p.name === productName);
+    if (!product) return;
+
+    let addedCount = 0;
+
+    rows.forEach(row => {
+        let qtyInput = row.querySelector('.input-qty');
+        let lenInput = row.querySelector('.input-len');
+
+        let qty = parseInt(qtyInput ? qtyInput.value : 0);
+        let len = lenInput ? parseFloat(lenInput.value) : 0;
+
+        if (qty > 0) {
+            if (product.type === '鋁材') {
+                if (len > 0 && len <= 600) {
+                    addToCart(product, qty, len, false);
+                    addedCount++;
+                    if (lenInput) lenInput.value = '';
+                    qtyInput.value = 1;
+                }
+            } else {
+                addToCart(product, qty, 0, false);
+                addedCount++;
+                if (qtyInput) qtyInput.value = 1;
+            }
+        }
+    });
+
+    if (addedCount > 0) {
+        let parent = btnEl.closest('.product-accordion-content');
+        let feedback = parent ? parent.querySelector('.add-feedback') : null;
+
+        if (feedback) {
+            feedback.innerHTML = `<i class="fas fa-check"></i> 已加入 ${addedCount} 筆`;
+            feedback.style.display = 'block';
+            setTimeout(() => feedback.style.display = 'none', 2000);
+        }
+
+        renderAnalysisAndManifest();
+    } else {
+        alert("請輸入有效的數量或長度");
+    }
+};
+
+// ===============================================
+// AI CUTTING SIMULATION (Visuals) - Ported & Fixed
+// ===============================================
+
+window.renderCuttingVisualsPreview = function () {
+    // 1. Filter Aluminum Items
+    let alItems = cart.filter(i => i.type === '鋁材' && i.len > 0);
+    if (alItems.length === 0) return '';
+
+    // 2. Identify All Series Present
+    let seriesLoad = {};
+    alItems.forEach(i => {
+        let sc = i.series || '20';
+        if (!seriesLoad[sc]) seriesLoad[sc] = 0;
+        seriesLoad[sc] += (i.len * i.qty);
+    });
+
+    let activeSeriesList = Object.keys(seriesLoad).sort(); // ['20', '30', '40']
+
+    // Constant
+    const BAR_LEN = 600;
+    const KERF = 0.5;
+    let colorMap = { '20': '#3498db', '30': '#e67e22', '40': '#2ecc71' };
+
+    let finalHtml = `
+        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; overflow:hidden; margin-bottom:15px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+            <div style="background:#2c3e50; color:white; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-weight:bold; font-size:0.9rem;"><i class="fas fa-microchip"></i> AI 切割排版模擬</div>
+                <div style="background:#27ae60; color:white; padding:2px 8px; border-radius:10px; font-size:0.75rem;">Smart Plan</div>
+            </div>
+            <div style="padding:12px; max-height:300px; overflow-y:auto;">
+    `;
+
+    // 3. Loop through each series
+    activeSeriesList.forEach((series, sIdx) => {
+        // Prepare Cuts for this series
+        let cuts = [];
+        alItems.filter(i => (i.series === series)).forEach(i => {
+            for (let k = 0; k < i.qty; k++) cuts.push(i.len);
+        });
+
+        // Sort descending
+        cuts.sort((a, b) => b - a);
+
+        // Greedy Packing
+        let bars = [];
+
+        cuts.forEach(cutLen => {
+            let cost = cutLen + KERF;
+            let bar = bars.find(b => (b.filled + cost) <= BAR_LEN);
+            if (bar) {
+                bar.filled += cost;
+                bar.parts.push(cutLen);
+            } else {
+                bars.push({ filled: cost, parts: [cutLen] });
+            }
+        });
+
+        if (bars.length === 0) return;
+
+        // Calc Efficiency
+        let totalUsed = bars.reduce((acc, b) => acc + b.filled, 0);
+        let totalCapacity = bars.length * BAR_LEN;
+        let efficiency = Math.round((totalUsed / totalCapacity) * 100);
+        let barColor = colorMap[series] || '#999';
+
+        // Generate Bars HTML
+        let barsHtml = '';
+        bars.forEach((bar) => {
+            let partsHtml = '';
+            bar.parts.forEach(p => {
+                let pct = (p / BAR_LEN) * 100;
+                partsHtml += `<div style="width:${pct}%; background:${barColor}; color:white; font-size:0.75rem; display:flex; align-items:center; justify-content:center; border-right:1px solid rgba(255,255,255,0.3); overflow:hidden;" title="${p}cm">${p}</div>`;
+            });
+            let remain = BAR_LEN - bar.filled;
+            let remainPct = (remain / BAR_LEN) * 100;
+            if (remain > 0) {
+                partsHtml += `<div style="width:${remainPct}%; background:#ecf0f1; color:#bdc3c7; font-size:0.75rem; display:flex; align-items:center; justify-content:center; overflow:hidden;" title="餘料 ${remain}cm">餘 ${remain}</div>`;
+            }
+            barsHtml += `
+            <div style="height:24px; width:100%; background:#ecf0f1; border-radius:4px; margin-bottom:5px; display:flex; overflow:hidden;">
+                ${partsHtml}
+            </div>`;
+        });
+
+        // Append Series Block
+        let topBorder = sIdx > 0 ? 'border-top:1px dashed #eee; margin-top:15px; padding-top:10px;' : '';
+
+        finalHtml += `
+            <div style="${topBorder}">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem; color:#555;">
+                    <div style="font-weight:bold; color:${barColor};">${series} 系列</div>
+                    <div>利用率: <span style="font-weight:bold;">${efficiency}%</span> (${bars.length} 支原料)</div>
+                </div>
+                <div>${barsHtml}</div>
+            </div>
+        `;
+    });
+
+    finalHtml += `
+            <div style="margin-top:10px; font-size:0.75rem; color:#999; text-align:center; border-top:1px solid #f0f0f0; padding-top:8px;">
+                * 此模擬為「單筆訂單」優先排版，實際生產可能會與其他工單合併裁切以優化利用率。
+            </div>
+        </div>
+    </div>`;
+
+    return finalHtml;
+}

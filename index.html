@@ -306,14 +306,23 @@
                     </div>
 
                     <!-- Right: Actions (Import + Template + Search + Exit) -->
-                    <div style="display:flex; gap:12px; align-items:center; margin-left:auto;">
+                    <div style="display:flex; gap:12px; align-items:center; margin-left:auto; flex-wrap:wrap;">
+                        <!-- Global Search Input -->
+                        <div class="b2b-search-box" style="position:relative;">
+                            <i class="fas fa-search"
+                                style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:#999;"></i>
+                            <input type="text" id="b2b-search-input" placeholder="搜尋全域商品 (如: M6, 鋁材...)"
+                                oninput="handleB2BSearch(this.value)"
+                                style="padding:8px 12px 8px 32px; border:1px solid #ddd; border-radius:20px; outline:none; font-size:0.9rem; width:220px; transition:all 0.3s;">
+                        </div>
+
                         <button class="btn-xs btn-outline" onclick="openBOMUploadModal()"
                             style="color:#2980b9; border-color:#2980b9; background: white; white-space:nowrap; padding: 8px 12px; font-weight: bold;">
                             <i class="fas fa-file-upload"></i> 匯入 Excel
                         </button>
-                        <button class="btn-xs btn-outline" onclick="downloadBOMTemplate()"
+                        <button class="btn-xs btn-outline desktop-only" onclick="downloadBOMTemplate()"
                             style="color:#27ae60; border-color:#27ae60; background: white; white-space:nowrap; padding: 8px 12px; font-weight: bold;">
-                            <i class="fas fa-file-download"></i> 下載公版範本
+                            <i class="fas fa-file-download"></i> 下載範本
                         </button>
 
                         <button onclick="openOrderQueryModal()"
@@ -328,22 +337,6 @@
                             <i class="fas fa-sign-out-alt"></i> 退出
                         </button>
                     </div>
-                </div>
-
-                <!-- NEW: Mobile View Selector (Tabbed Navigation) -->
-                <div class="b2b-mobile-nav" id="b2b-mobile-tabs">
-                    <button class="b2b-nav-item active" onclick="switchB2BView('list')" id="m-tab-list">
-                        <i class="fas fa-th-list"></i>
-                        <span>商品列表</span>
-                    </button>
-                    <button class="b2b-nav-item" onclick="switchB2BView('detail')" id="m-tab-detail">
-                        <i class="fas fa-search-plus"></i>
-                        <span>商品詳情</span>
-                    </button>
-                    <button class="b2b-nav-item" onclick="switchB2BView('bom')" id="m-tab-bom">
-                        <i class="fas fa-clipboard-check"></i>
-                        <span>擬定工單</span>
-                    </button>
                 </div>
             </div>
 
@@ -417,14 +410,15 @@
             </div>
 
             <div id="upload-step-2" style="display:none;">
-                <div style="margin-bottom:15px; font-weight:bold; color:#2c3e50;">
+                <div style="margin-bottom:15px; font-weight:bold; color:#2c3e50; display:none !important;">
                     欄位對應確認
                     <span style="font-size:0.8rem; color:#e67e22; font-weight:normal; margin-left:10px;">
                         <i class="fas fa-info-circle"></i> AI 已自動識別欄位
                     </span>
                 </div>
 
-                <div style="background:#f8f9fa; padding:15px; border-radius:6px; margin-bottom:20px;">
+                <div
+                    style="background:#f8f9fa; padding:15px; border-radius:6px; margin-bottom:20px; display:none !important;">
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
                         <div>
                             <label style="font-size:0.8rem; display:block; color:#7f8c8d;">產品大類 (選填)</label>
