@@ -64,7 +64,12 @@
     </div>
 
     <div class="app-container">
-        <aside class="sidebar">
+        <!-- Mobile Hamburger Menu Button (B2C) -->
+        <button class="mobile-hamburger" id="mobileHamburger" onclick="toggleMobileSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <aside class="sidebar" id="b2cSidebar">
             <div class="brand" onclick="returnToHub()" title="返回首頁選擇身份" style="cursor: pointer;">
                 <i class="fas fa-chevron-left" style="font-size: 0.8em; margin-right: 5px;"></i> LUTU 鋁圖
             </div>
@@ -96,6 +101,8 @@
             </div>
             <!-- Height Visualization Removed -->
         </aside>
+        <!-- Mobile Sidebar Overlay Backdrop -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
         <main class="main-content">
             <div id="view-product" class="content-view">
                 <header class="page-header">
@@ -306,35 +313,25 @@
                     </div>
 
                     <!-- Right: Actions (Import + Template + Search + Exit) -->
-                    <div style="display:flex; gap:12px; align-items:center; margin-left:auto; flex-wrap:wrap;">
+                    <div class="b2b-action-group">
                         <!-- Global Search Input -->
-                        <div class="b2b-search-box" style="position:relative;">
-                            <i class="fas fa-search"
-                                style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:#999;"></i>
+                        <div class="b2b-search-box">
+                            <i class="fas fa-search"></i>
                             <input type="text" id="b2b-search-input" placeholder="搜尋全域商品 (如: M6, 鋁材...)"
-                                oninput="handleB2BSearch(this.value)"
-                                style="padding:8px 12px 8px 32px; border:1px solid #ddd; border-radius:20px; outline:none; font-size:0.9rem; width:220px; transition:all 0.3s;">
+                                oninput="handleB2BSearch(this.value)">
                         </div>
 
                         <button class="btn-xs btn-outline" onclick="openBOMUploadModal()"
                             style="color:#2980b9; border-color:#2980b9; background: white; white-space:nowrap; padding: 8px 12px; font-weight: bold;">
                             <i class="fas fa-file-upload"></i> 匯入 Excel
                         </button>
-                        <button class="btn-xs btn-outline desktop-only" onclick="downloadBOMTemplate()"
+                        <button class="btn-xs btn-outline" onclick="downloadBOMTemplate()"
                             style="color:#27ae60; border-color:#27ae60; background: white; white-space:nowrap; padding: 8px 12px; font-weight: bold;">
                             <i class="fas fa-file-download"></i> 下載範本
                         </button>
 
-                        <button onclick="openOrderQueryModal()"
-                            style="background: #545454; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.2s;"
-                            onmouseover="this.style.background='#3d3d3d'; this.style.transform='translateY(-1px)';"
-                            onmouseout="this.style.background='#545454'; this.style.transform='translateY(0)';">
+                        <button class="btn-query" onclick="openOrderQueryModal()">
                             <i class="fas fa-search"></i> 查詢訂單
-                        </button>
-
-                        <button class="btn-xs btn-outline" onclick="returnToHub()"
-                            style="border-color:#e74c3c; color:#e74c3c; background: white; white-space:nowrap; padding: 8px 12px; font-weight: bold;">
-                            <i class="fas fa-sign-out-alt"></i> 退出
                         </button>
                     </div>
                 </div>
@@ -515,6 +512,12 @@
                 </button>
             </form>
         </div>
+    </div>
+
+    <!-- Standard Image Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <button class="close-lightbox" onclick="closeLightbox()">&times;</button>
+        <img id="lightbox-img" src="" onclick="event.stopPropagation()">
     </div>
 
     <script src="script.js?v=20260201_V2"></script>

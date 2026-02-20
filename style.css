@@ -54,9 +54,10 @@
 
 .b2b-search-box {
     position: relative;
-    width: 280px;
-    /* Slightly wider */
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    width: 250px;
+    /* Reduced slightly for more breathing room */
+    transition: none;
+    /* Instant for stability */
 }
 
 .b2b-search-box input {
@@ -75,6 +76,7 @@
         inset 0 1px 2px rgba(255, 255, 255, 0.8);
     font-family: 'Noto Sans TC', sans-serif;
     letter-spacing: 0.5px;
+    box-sizing: border-box !important;
 }
 
 /* Icon Style */
@@ -92,10 +94,9 @@
 /* Focus State - The "AI Glow" */
 .b2b-search-box input:focus {
     background: #ffffff;
-    width: 320px;
-    /* Expand on focus */
+    width: 100%;
+    /* Stay within container */
     border-color: rgba(59, 130, 246, 0.5);
-    /* Soft Blue */
     box-shadow:
         0 4px 20px rgba(59, 130, 246, 0.15),
         0 0 0 4px rgba(59, 130, 246, 0.05);
@@ -116,6 +117,34 @@
 .b2b-search-box:hover input {
     border-color: rgba(0, 0, 0, 0.2);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* B2B Header Action Group (Desktop) */
+.b2b-action-group {
+    display: flex !important;
+    gap: 12px !important;
+    align-items: center !important;
+    margin-left: auto !important;
+}
+
+.btn-query {
+    background: #545454 !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 18px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.2s !important;
+}
+
+.btn-query:hover {
+    background: #3d3d3d !important;
+    transform: translateY(-1px) !important;
 }
 
 /* Mobile Responsiveness */
@@ -4126,6 +4155,10 @@ body.mode-b2b .profile-card {
     margin-bottom: 15px;
 }
 
+#b2b-total-price {
+    color: #e74c3c !important;
+}
+
 .b2b-btn-submit {
     width: 100%;
     padding: 12px;
@@ -4375,11 +4408,27 @@ body.mode-b2b .profile-card {
    B2B SPLIT-SCREEN LAYOUT ENHANCEMENTS
    ========================================================================= */
 
-/* Product Row Selected State */
-.b2b-product-row.selected {
-    background: linear-gradient(90deg, #fee2e2 0%, #fff 100%) !important;
-    border-left: 4px solid #e74c3c;
-    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
+/* Series-Specific Selection Highlights (Blue/Orange/Green) */
+.b2b-product-row.b2b-series-20.active-row {
+    background: linear-gradient(90deg, #e3f2fd 0%, #fff 100%) !important;
+    border-left: 4px solid #3498db !important;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+}
+
+.b2b-product-row.b2b-series-30.active-row {
+    background: linear-gradient(90deg, #fff3e0 0%, #fff 100%) !important;
+    border-left: 4px solid #e67e22 !important;
+    box-shadow: 0 2px 8px rgba(230, 126, 34, 0.2);
+}
+
+.b2b-product-row.b2b-series-40.active-row {
+    background: linear-gradient(90deg, #e8f5e9 0%, #fff 100%) !important;
+    border-left: 4px solid #2ecc71 !important;
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.2);
+}
+
+/* Base transform for any active row */
+.b2b-product-row.active-row {
     transform: translateX(2px);
 }
 
@@ -4889,5 +4938,787 @@ body.mode-b2b {
     .b2b-analysis-panel {
         height: auto;
         min-height: 400px;
+    }
+}
+
+/* =========================================================================
+   UNIFIED RESPONSIVE OVERHAUL — 2026/02/20
+   
+   Strategy: ADDITIVE ONLY — zero changes to existing desktop rules above.
+   These blocks override scattered earlier @media rules with higher-
+   specificity selectors or later-source-order cascade wins.
+   
+   Breakpoints:
+     1280px — Tablet Landscape / Small Desktop
+     1024px — Tablet Portrait
+      768px — Phone
+   ========================================================================= */
+
+/* ---- Hamburger Button (default hidden on desktop) ---- */
+.mobile-hamburger {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1050;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    background: #545454;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-hamburger:active {
+    transform: scale(0.92);
+}
+
+/* ---- Mobile Sidebar Overlay Backdrop ---- */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1039;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ==========================================================
+   1. TABLET LANDSCAPE / SMALL DESKTOP  (max-width: 1280px)
+   ========================================================== */
+@media (max-width: 1280px) {
+
+    /* B2C: 3 columns instead of 4 */
+    .aluminum-grid-container,
+    .accessories-container {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 18px !important;
+    }
+
+    .profile-card,
+    .acc-card {
+        width: 100% !important;
+    }
+
+    /* Sidebar slightly narrower */
+    .sidebar {
+        width: 210px;
+    }
+
+    /* Input panel fit */
+    .input-panel {
+        max-width: 100%;
+    }
+}
+
+/* ==========================================================
+   2. TABLET PORTRAIT  (max-width: 1024px)
+   ========================================================== */
+@media (max-width: 1024px) {
+
+    /* ---- B2C Sidebar → Hamburger Overlay ---- */
+    .mobile-hamburger {
+        display: flex !important;
+    }
+
+    .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: -280px !important;
+        width: 260px !important;
+        height: 100vh !important;
+        z-index: 1040 !important;
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        transition: left 0.35s cubic-bezier(0.25, 1, 0.5, 1) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-bottom: none !important;
+        padding: 24px 16px !important;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .sidebar.mobile-open {
+        left: 0 !important;
+    }
+
+    /* Restore vertical sidebar styles that 1200px breakpoint may have overridden */
+    .sidebar .brand {
+        margin-bottom: 20px;
+        text-align: left;
+        width: 100%;
+    }
+
+    .nav-tabs {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .nav-item {
+        width: 100% !important;
+        text-align: left !important;
+        padding: 12px 14px !important;
+        font-size: 0.95rem !important;
+        justify-content: flex-start !important;
+        border-radius: 8px !important;
+        margin-bottom: 0 !important;
+        white-space: normal !important;
+    }
+
+    .separator {
+        display: block !important;
+        height: 1px !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        margin: 10px 0 !important;
+    }
+
+    .social-links {
+        display: flex !important;
+    }
+
+    /* App container: remove sidebar space */
+    .app-container {
+        flex-direction: column !important;
+        height: auto !important;
+    }
+
+    .main-content {
+        padding: 20px !important;
+        padding-top: 60px !important;
+    }
+
+    /* B2C Grid: 2 columns */
+    .aluminum-grid-container,
+    .accessories-container {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px !important;
+    }
+
+    .profile-card,
+    .acc-card {
+        width: 100% !important;
+    }
+
+    /* Page title smaller */
+    #page-title {
+        font-size: 2rem !important;
+    }
+
+    /* Input panel stacks */
+    .input-top-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    .input-group {
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+
+    .input-group input {
+        flex: 1 !important;
+        min-width: 80px !important;
+    }
+
+    /* Floating cart button */
+    .floating-cart-btn {
+        bottom: 20px !important;
+        right: 20px !important;
+        padding: 14px 20px !important;
+    }
+
+    /* Project/Case rows stack vertically */
+    .project-row,
+    .custom-case-row {
+        flex-direction: column !important;
+    }
+
+    .case-info,
+    .project-info,
+    .case-material,
+    .project-scene,
+    .case-collage,
+    .project-steps {
+        flex: auto !important;
+        width: 100% !important;
+    }
+
+    /* B2B Header: wrap on tablet */
+    .b2b-header-compact {
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+
+    .b2b-series-tabs {
+        order: 2;
+        width: 100%;
+    }
+
+    .b2b-tab-btn {
+        flex: 1;
+        text-align: center;
+    }
+
+    /* B2B Content stacks */
+    .b2b-content {
+        flex-direction: column !important;
+        height: auto !important;
+        overflow-y: visible !important;
+    }
+
+    .b2b-product-panel,
+    .b2b-detail-panel,
+    .b2b-analysis-panel {
+        height: auto !important;
+        min-height: auto !important;
+        width: 100% !important;
+    }
+
+    .b2b-analysis-panel {
+        position: static !important;
+        overflow: visible !important;
+    }
+
+    body.mode-b2b {
+        overflow: auto !important;
+    }
+
+    /* Hot sales hidden in sidebar on tablet (shown via sidebar overlay) */
+    #hot-sales-container {
+        display: block !important;
+    }
+}
+
+/* ==========================================================
+   3. PHONE  (max-width: 768px)
+   ========================================================== */
+@media (max-width: 768px) {
+
+    /* ---- Hamburger adjustments ---- */
+    .mobile-hamburger {
+        top: 8px;
+        left: 8px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    /* ---- Main content full-screen ---- */
+    .main-content {
+        padding: 12px !important;
+        padding-top: 56px !important;
+    }
+
+    /* ---- Single Column Grid ---- */
+    .aluminum-grid-container,
+    .accessories-container,
+    .projects-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    /* Page title compact */
+    #page-title {
+        font-size: 1.5rem !important;
+        margin-bottom: 10px !important;
+    }
+
+    /* Section titles smaller */
+    .section-title {
+        font-size: 1.1rem !important;
+        margin-bottom: 12px !important;
+    }
+
+    /* Input panel: touch-friendly */
+    .input-panel {
+        padding: 12px !important;
+    }
+
+    .input-group {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .input-group input {
+        width: 100% !important;
+        min-width: unset !important;
+        padding: 12px 14px !important;
+        font-size: 1rem !important;
+    }
+
+    #profile-len,
+    #profile-qty {
+        width: 100% !important;
+    }
+
+    .btn-add {
+        width: 100% !important;
+        padding: 14px !important;
+        font-size: 1.05rem !important;
+        border-radius: 10px !important;
+    }
+
+    /* Cart sidebar: full width */
+    .cart-sidebar {
+        width: 100% !important;
+        right: -100% !important;
+    }
+
+    .cart-sidebar.open {
+        right: 0 !important;
+    }
+
+    /* Floating buttons: centered bottom bar feel */
+    .floating-cart-btn {
+        bottom: 16px !important;
+        right: 16px !important;
+        left: auto !important;
+        padding: 12px 20px !important;
+        font-size: 1rem !important;
+        border-radius: 50px !important;
+    }
+
+    .floating-hot-btn {
+        bottom: 72px !important;
+        right: 16px !important;
+        padding: 10px 16px !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Spec rows: touch-friendly */
+    .spec-row {
+        padding: 10px 12px !important;
+        gap: 10px !important;
+        flex-wrap: wrap !important;
+    }
+
+    .spec-info {
+        font-size: 0.9rem !important;
+    }
+
+    /* Accessory card: larger touch targets */
+    .acc-controls {
+        gap: 8px !important;
+    }
+
+    .btn-qty,
+    .input-qty-no-arrow {
+        height: 36px !important;
+        font-size: 1rem !important;
+    }
+
+    /* Project/Custom case image containers */
+    .collage-left {
+        flex-direction: column !important;
+    }
+
+    .collage-left .collage-item {
+        height: auto !important;
+    }
+
+    /* B2B specific phone header cleanup */
+    .b2b-header-compact {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+
+    /* Row 1: Title + Exit Button */
+    .b2b-header-compact>h2 {
+        display: flex !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        font-size: 1.3rem !important;
+        align-items: center !important;
+    }
+
+    /* Move Exit button to be next to title visually via order or absolute, 
+       but here we can just use flex order if we change HTML structure? 
+       Actually, let's just make the container wrap naturally but force line breaks.
+    */
+
+    /* Better Strategy: Grid Layout for Header */
+    .b2b-header-compact {
+        display: grid !important;
+        grid-template-columns: 1fr auto !important;
+        grid-template-areas:
+            "title exit"
+            "tabs tabs"
+            "search search"
+            "actions actions";
+        gap: 10px !important;
+    }
+
+    .b2b-header-compact>h2 {
+        grid-area: title;
+    }
+
+    /* We need to target the Exit button specifically. 
+       Currently it's inside the "Right Actions" div.
+       Let's style the "Right Actions" div to unwrap contents into our grid?
+       The structure is: H2, Div(Series), Div(Actions [Search, Import, Template, Query, Exit])
+       This HTML structure is hard to grid without changing HTML.
+       
+       Let's stick to Flex Column for the main container, and reorganize children.
+    */
+    .b2b-header-compact {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* 1. Title Row */
+    .b2b-header-compact>h2 {
+        width: 100%;
+        margin-bottom: 5px !important;
+    }
+
+    /* 2. Series Tabs Row */
+    .b2b-series-tabs {
+        width: 100% !important;
+        order: 2 !important;
+        display: flex !important;
+        gap: 8px !important;
+    }
+
+    .b2b-tab-btn {
+        flex: 1 !important;
+        text-align: center !important;
+        padding: 8px 0 !important;
+    }
+
+    /* 3. Action Group Container (Search + Buttons) */
+    /* 3. Action Group Container (Unified Grid Alignment) */
+    .b2b-action-group {
+        width: 100% !important;
+        order: 3 !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+        margin-left: 0 !important;
+        margin-top: 5px !important;
+    }
+
+    /* Common styles for all 4 boxes to ensure perfect sync */
+    .b2b-search-box,
+    .b2b-action-group .btn-xs,
+    .btn-query {
+        height: 42px !important;
+        margin: 0 !important;
+        border-radius: 6px !important;
+        border: 1px solid #ccc !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 0.85rem !important;
+        min-width: 0 !important;
+        padding: 0 8px !important;
+        box-shadow: none !important;
+    }
+
+    /* Row 1, Col 1: Search */
+    .b2b-search-box {
+        grid-column: 1;
+        grid-row: 1;
+        position: relative !important;
+        background: #fff !important;
+        padding: 0 !important;
+    }
+
+    .b2b-search-box input {
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 8px 0 32px !important;
+        font-size: 0.85rem !important;
+        outline: none !important;
+    }
+
+    .b2b-search-box i {
+        position: absolute !important;
+        left: 10px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #999 !important;
+        pointer-events: none !important;
+    }
+
+    /* Row 1, Col 2: Query */
+    .btn-query {
+        grid-column: 2;
+        grid-row: 1;
+        background: #545454 !important;
+        color: white !important;
+        border-color: #545454 !important;
+        white-space: nowrap !important;
+    }
+
+    /* Row 2, Col 1: Import */
+    .b2b-action-group .btn-xs:nth-of-type(1) {
+        grid-column: 1;
+        grid-row: 2;
+        color: #2980b9 !important;
+        border-color: #2980b9 !important;
+        background: white !important;
+    }
+
+    /* Row 2, Col 2: Template */
+    .b2b-action-group .btn-xs:nth-of-type(2) {
+        grid-column: 2;
+        grid-row: 2;
+        color: #27ae60 !important;
+        border-color: #27ae60 !important;
+        background: white !important;
+    }
+
+
+    /* B2B columns hide on small */
+    /* Restore Image! User wants it. */
+    .col-img {
+        display: block !important;
+        width: 60px !important;
+        flex: 0 0 60px !important;
+        height: 60px !important;
+        margin-right: 10px !important;
+    }
+
+    .col-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        background: #fff;
+    }
+
+    /* B2B List Item: Card Layout for Mobile (Final Polish) */
+    .b2b-list-item {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        padding: 12px !important;
+        align-items: flex-start !important;
+        position: relative !important;
+        border-bottom: 1px solid #eee !important;
+    }
+
+    /* 1. Image: Top Left fixed */
+    .col-img {
+        flex: 0 0 60px !important;
+        width: 60px !important;
+        height: 60px !important;
+        margin-right: 12px !important;
+        margin-bottom: auto !important;
+        /* Stay at top */
+    }
+
+    /* 2. Top Section: Name & Specs */
+    .col-name {
+        flex: 1 1 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        /* Force vertical stack */
+        align-items: flex-start !important;
+        margin-bottom: 8px !important;
+        padding-right: 4px !important;
+    }
+
+    /* Name Title Style */
+    .col-name-title {
+        font-size: 1rem !important;
+        font-weight: bold !important;
+        line-height: 1.3 !important;
+        color: #333 !important;
+        margin-bottom: 4px !important;
+    }
+
+    /* Hide redundant BRs in flex column mode */
+    .col-name br {
+        display: none !important;
+    }
+
+    /* Specs Container */
+    .sku-badge {
+        white-space: nowrap !important;
+        display: block !important;
+        /* Occupy independent line */
+        width: fit-content !important;
+        margin-bottom: 4px !important;
+        margin-top: 2px !important;
+    }
+
+    /* Force Accessory Rows to new lines & internal vertical stack */
+    .b2b-sub-item-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        width: 100% !important;
+        margin-top: 4px !important;
+        font-size: 0.9rem !important;
+        color: #666 !important;
+    }
+
+    /* Hide series index header on mobile - redundant with tabs */
+    .b2b-series-index-header {
+        display: none !important;
+    }
+
+    .col-name span,
+    .col-name div,
+    .col-name small {
+        display: block !important;
+        /* Stack weights and other info */
+        white-space: normal !important;
+        word-break: break-word !important;
+        font-weight: normal !important;
+        font-size: 0.9rem !important;
+        color: #666 !important;
+        line-height: 1.4 !important;
+        margin-bottom: 2px !important;
+    }
+
+    /* ... name styles ... */
+
+    /* 3. Price: Right aligned, auto width */
+    .col-price {
+        flex: 0 0 auto !important;
+        /* Only take needed space */
+        width: auto !important;
+        text-align: right !important;
+        margin-left: auto !important;
+        /* Push to right if wrapping */
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-end !important;
+        justify-content: flex-start !important;
+    }
+
+    .col-input {
+        order: 4 !important;
+        width: 110px !important;
+        flex: 0 0 110px !important;
+        margin-left: auto !important;
+        /* Push to right */
+    }
+
+    .col-input input {
+        width: 100% !important;
+        padding: 8px !important;
+        text-align: center !important;
+        font-size: 1rem !important;
+        border: 1px solid #ddd !important;
+        border-radius: 6px !important;
+    }
+
+    /* Hide Action Button */
+    .col-action {
+        display: none !important;
+    }
+
+    /* B2B Detail hero stack */
+    .b2b-detail-hero {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    .b2b-detail-img-container {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 200px !important;
+    }
+
+    .detail-row-flex {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .detail-row-flex input {
+        width: 100% !important;
+    }
+
+    /* Hub cards stack on phone */
+    .hub-cards {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .hub-card {
+        width: 100% !important;
+        max-width: 340px !important;
+    }
+
+    .hub-title {
+        font-size: 1.8rem !important;
+    }
+
+    .hub-subtitle {
+        font-size: 1rem !important;
+    }
+
+    /* Top banner: adjust spacing for hamburger */
+    .top-banner {
+        padding-left: 60px !important;
+    }
+
+    /* Order query modal */
+    .modal-content {
+        width: 95% !important;
+    }
+
+    /* Selection wrapper for height vis */
+    .selection-wrapper {
+        flex-direction: column !important;
+    }
+
+    .vis-container {
+        width: 100% !important;
+        height: 200px !important;
+    }
+
+    /* Loading animation responsive */
+    .process-step {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .process-step .icon {
+        font-size: 2rem !important;
+    }
+
+    .process-step .label {
+        font-size: 0.75rem !important;
+    }
+
+    /* Page header stack */
+    .page-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    /* B2B Actions wrap better */
+    .desktop-only {
+        display: none !important;
     }
 }

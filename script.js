@@ -1905,13 +1905,13 @@ window.handleB2BSearch = function (keyword) {
         }
 
         html += `
-        <div class="b2b-product-row" 
+        <div class="b2b-product-row b2b-series-${p.series.split('-')[0]}" 
              style="padding:0; border-bottom:1px solid #f1f2f6;">
              
-             <div style="display:flex; padding:12px 0; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
+             <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
                 <div class="col-img" style="flex:0 0 65px; position:relative;">
-                    <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:4px; object-fit: cover;">
-                    <div style="position:absolute; bottom:0; padding:1px 4px; border-radius:4px 0 0 0; background:${sColor}; color:white; font-size:0.7rem; font-weight:bold;">${p.series}</div>
+                    <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:4px; object-fit: cover; cursor:zoom-in;" onclick="event.stopPropagation(); showLightbox(this.src)">
+                    <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:${sColor}; color:white; font-size:0.7rem; font-weight:bold;">${p.series.split('-')[0]}</div>
                 </div>
                 <div class="col-name" style="padding-left:12px; min-width:0; flex:1;">
                     <div style="font-weight:bold; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
@@ -1934,105 +1934,7 @@ window.handleB2BSearch = function (keyword) {
     mainEl.innerHTML = html;
 }
 
-// ============================================
-// VISUAL AI CUTTING SIMULATION (Step 2)
-// ============================================
-
-window.renderCuttingVisualsPreview = function () {
-    // 1. Check if we have aluminum profiles
-    let alItems = cart.filter(i => i.type === '鋁材' && i.len > 0);
-    if (alItems.length === 0) return '';
-
-    // 2. Solve Cutting
-    // Logic reused/duplicated from simple solver to keep it purely visual here
-    // Or we can assume 'cutter' exists in scope if we call this from renderAnalysis
-    // Let's create a local cutter for safety/independence
-    class VisualCutter {
-        constructor(stockLength = 600, kerf = 0.5) { this.stockLength = stockLength; this.kerf = kerf; }
-        solve(items) {
-            let profiles = [];
-            items.forEach(item => { for (let i = 0; i < item.qty; i++) profiles.push({ len: item.len }); });
-            profiles.sort((a, b) => b.len - a.len);
-            let bins = [];
-            profiles.forEach(p => {
-                let placed = false;
-                for (let bin of bins) {
-                    if (bin.rem >= p.len + this.kerf) { bin.cuts.push(p.len); bin.rem -= (p.len + this.kerf); placed = true; break; }
-                }
-                if (!placed) { bins.push({ rem: this.stockLength - p.len, cuts: [p.len] }); }
-            });
-            return bins;
-        }
-    }
-
-    let cutter = new VisualCutter();
-
-    // Group by Profile Name (e.g. 2020, 3030) as they use different stock
-    let groups = {};
-    alItems.forEach(i => {
-        if (!groups[i.name]) groups[i.name] = [];
-        groups[i.name].push(i);
-    });
-
-    let html = `
-        <div style="margin-bottom:20px; background:white; border-radius:8px; border:1px solid #e1e4e8; overflow:hidden;">
-            <div style="background:#2c3e50; color:white; padding:8px 12px; font-size:0.9rem; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
-                <span><i class="fas fa-microchip"></i> AI 切割排版模擬</span>
-                <span style="font-size:0.75rem; background:#27ae60; padding:2px 8px; border-radius:10px;">Smart Plan</span>
-            </div>
-            <div style="padding:15px; max-height:250px; overflow-y:auto;">
-    `;
-
-    for (let name in groups) {
-        let bins = cutter.solve(groups[name]);
-        let totalLen = bins.length * 600;
-        let usedLen = 0;
-        bins.forEach(b => b.cuts.forEach(c => usedLen += c));
-        let efficiency = Math.round((usedLen / totalLen) * 100);
-
-        let series = groups[name][0].series || '20';
-        let barColor = (series === '30') ? '#e67e22' : (series === '40') ? '#2ecc71' : '#3498db';
-
-        html += `
-            <div style="margin-bottom:12px;">
-                <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#555; margin-bottom:4px;">
-                    <span style="font-weight:bold;">${name}</span>
-                    <span>利用率: <b style="color:${efficiency > 85 ? '#27ae60' : '#e67e22'}">${efficiency}%</b> (${bins.length}支原料)</span>
-                </div>
-        `;
-
-        // Render Bars (Limit to first 5 bars to save space if huge order)
-        let displayBins = bins.slice(0, 5);
-
-        displayBins.forEach((bin, idx) => {
-            html += `<div style="display:flex; height:18px; background:#f0f0f0; border-radius:3px; margin-bottom:4px; overflow:hidden; border:1px solid #ddd;">`;
-
-            bin.cuts.forEach(cut => {
-                let widthPct = (cut / 600) * 100;
-                html += `<div style="width:${widthPct}%; background:${barColor}; border-right:1px solid white; display:flex; align-items:center; justify-content:center; color:white; font-size:0.6rem; opacity:0.9;" title="${cut}cm">${cut}</div>`;
-            });
-
-            // Remainder
-            if (bin.rem > 0) {
-                html += `<div style="flex:1; background:#f0f0f0; color:#aaa; font-size:0.6rem; display:flex; align-items:center; justify-content:center;">餘 ${Math.round(bin.rem * 10) / 10}</div>`;
-            }
-
-            html += `</div>`;
-        });
-
-        if (bins.length > 5) {
-            html += `<div style="text-align:center; font-size:0.8rem; color:#999;">... 還有 ${bins.length - 5} 支原料 ...</div>`;
-        }
-
-        html += `</div>`;
-    }
-
-    html += `</div><div style="background:#f8f9fa; padding:8px; font-size:0.75rem; color:#666; text-align:center; border-top:1px solid #eee;">
-        * 此模擬為「單筆訂單」優先排版，實際生產可能會與其他工單合併裁切以優化利用率。
-    </div></div>`;
-
-    return html;
-}
+// (Old Visual Cutter removed - consolidated into single definition below at line ~3923)
 
 // Old Sidebar functions removed (renderB2BSidebarTree, toggleTree, b2bFilter)
 
@@ -2097,7 +1999,7 @@ function renderSeriesOverview(series) {
 
     // Header (Simplified: Direct Flex Children)
     let html = `
-        <div style="padding: 15px 15px 0 15px; flex-shrink:0;">
+        <div class="b2b-series-index-header" style="padding: 15px 15px 0 15px; flex-shrink:0;">
             <h2 style="margin-bottom:12px; color:#2c3e50; font-size:1.2rem; font-weight:800;"><i class="fas fa-th-list"></i> ${series} 系列</h2>
             <div class="b2b-table-header" style="font-size:0.85rem; padding:8px 0; border-bottom:2px solid #eee; margin-bottom:5px;">
                 <div class="col-img" style="flex:0 0 65px;">圖</div>
@@ -2230,13 +2132,22 @@ function renderSeriesOverview(series) {
         }
 
 
+        // Define Series Color
+        let sColor = '#999';
+        if (p.series && p.series.startsWith('20')) sColor = '#3498db';
+        if (p.series && p.series.startsWith('30')) sColor = '#e67e22';
+        if (p.series && p.series.startsWith('40')) sColor = '#2ecc71';
+
         html += `
-        <div class="b2b-product-row" 
+        <div class="b2b-product-row b2b-series-${series}" 
              data-product-name="${p.name}"
              style="padding:0; border-bottom:1px solid #f1f2f6; transition:all 0.2s;">
             
             <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement, '${p.name}')">
-                <div class="col-img" style="flex:0 0 65px;"><img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:4px; object-fit: cover;"></div>
+                <div class="col-img" style="flex:0 0 65px; position:relative;">
+                    <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:4px; object-fit: cover; cursor:zoom-in;" onclick="event.stopPropagation(); showLightbox(this.src)">
+                    <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:${sColor}; color:white; font-size:0.7rem; font-weight:bold;">${p.series.split('-')[0]}</div>
+                </div>
                 <div class="col-name" style="padding-left:12px; min-width:0; flex:1;">
                     <div style="font-weight:bold; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
                     <div style="font-size:0.8rem; color:#666; font-weight:500;">${mainCodeHtml} ${weightHtml}</div>
@@ -3126,7 +3037,7 @@ function renderAnalysisAndManifest() {
             if (item.type === '鋁材') {
                 let w = weightMap[item.name] || 0;
                 let unitW = (w * (item.len / 100)); // kg per piece
-                if (w > 0) weightInfo = `<span style="color:#7f8c8d; margin-left:5px;">(${unitW.toFixed(2)}kg)</span>`;
+                if (w > 0) weightInfo = `<span style="color:#7f8c8d;">${unitW.toFixed(2)}kg</span>`;
             }
 
             // SKU Logic
@@ -3145,20 +3056,42 @@ function renderAnalysisAndManifest() {
             let itemColor = (item.series === '20') ? '#0369a1' : (item.series === '30' ? '#b45309' : '#15803d');
             if (item.type !== '鋁材') itemColor = '#555';
 
+            let itemImgUrl = item.img ? `assets/${item.img}` : 'https://placehold.co/40';
+
+            // Series Badge Logic
+            let seriesValue = "";
+            let sBadgeColor = '#999';
+            if (item.series) {
+                seriesValue = item.series.split('-')[0];
+                if (seriesValue === '20') sBadgeColor = '#3498db';
+                else if (seriesValue === '30') sBadgeColor = '#e67e22';
+                else if (seriesValue === '40') sBadgeColor = '#2ecc71';
+            }
+
             listHtml += `
-                 <div class="b2b-cart-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f0f0f0;">
-                     <div style="flex:1;">
-                        <div style="font-weight:bold; color:${itemColor}; line-height:1.2;">
-                            ${item.name} 
-                            ${skuHtml}
+                 <div class="b2b-cart-item" style="display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #f0f0f0;">
+                     <div class="cart-item-thumb" style="flex:0 0 45px; position:relative;">
+                         <img src="${itemImgUrl}" style="width:45px; height:45px; border-radius:4px; object-fit: cover; cursor:zoom-in;" onclick="showLightbox(this.src)">
+                         ${seriesValue ? `<div style="position:absolute; bottom:0; left:0; padding:1px 3px; border-radius:0 4px 0 4px; background:${sBadgeColor}; color:white; font-size:0.6rem; font-weight:bold; line-height:1;">${seriesValue}</div>` : ''}
+                     </div>
+                     <div style="flex:1; min-width:0;">
+                        <div style="font-weight:bold; color:${itemColor}; line-height:1.2; display:flex; align-items:baseline; justify-content:space-between; gap:5px;">
+                            <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1;">${item.name}</div>
+                            <div style="flex-shrink:0;">${skuHtml}</div>
                         </div>
-                        <div style="font-size:0.8rem; color:#999; margin-top:2px;">${spec} ${weightInfo}</div>
+                        <div style="font-size:0.8rem; color:#7f8c8d; margin-top:2px; display:flex; align-items:center; gap:6px;">
+                            <span>${spec}</span>
+                            ${weightInfo ? `<span style="opacity:0.4; font-size:0.7rem;">|</span> ${weightInfo}` : ''}
+                        </div>
+                        <div style="font-size:0.7rem; color:#aaa; margin-top:1px; font-family:monospace;">
+                            $${item.price}/${item.unit}${item.len > 0 ? ` × ${item.len}cm` : ''}
+                        </div>
                      </div>
-                     <div style="text-align:right;">
-                        <div style="font-weight:bold;">x${item.qty}</div>
-                        <div style="color:#e74c3c; font-size:0.9rem;">$${Math.round(sub)}</div>
+                     <div style="text-align:right; flex:0 0 80px;">
+                        <div style="font-weight:bold; font-size:1rem; color:#2c3e50;">x${item.qty}</div>
+                        <div style="color:#e74c3c; font-size:0.95rem; font-weight:800;">$${Math.round(sub)}</div>
                      </div>
-                     <button onclick="removeFromCartB2B('${item.id || index}')" style="background:none; border:none; color:#ddd; cursor:pointer; margin-left:10px;">
+                     <button onclick="removeFromCartB2B('${item.id || index}')" style="background:none; border:none; color:#ddd; cursor:pointer; padding:5px;">
                         <i class="fas fa-times"></i>
                      </button>
                  </div>
@@ -3925,15 +3858,15 @@ window.renderCuttingVisualsPreview = function () {
     let alItems = cart.filter(i => i.type === '鋁材' && i.len > 0);
     if (alItems.length === 0) return '';
 
-    // 2. Identify All Series Present
-    let seriesLoad = {};
+    // 2. Group by Profile Name (e.g. 3030輕型, 3060重型) - different profiles must be cut separately
+    let profileGroups = {};
     alItems.forEach(i => {
-        let sc = i.series || '20';
-        if (!seriesLoad[sc]) seriesLoad[sc] = 0;
-        seriesLoad[sc] += (i.len * i.qty);
+        let key = i.name; // e.g. "3030輕型", "3060重型"
+        if (!profileGroups[key]) profileGroups[key] = { series: i.series || '20', items: [] };
+        profileGroups[key].items.push(i);
     });
 
-    let activeSeriesList = Object.keys(seriesLoad).sort(); // ['20', '30', '40']
+    let profileNames = Object.keys(profileGroups).sort();
 
     // Constant
     const BAR_LEN = 600;
@@ -3949,11 +3882,14 @@ window.renderCuttingVisualsPreview = function () {
             <div style="padding:12px; max-height:300px; overflow-y:auto;">
     `;
 
-    // 3. Loop through each series
-    activeSeriesList.forEach((series, sIdx) => {
-        // Prepare Cuts for this series
+    // 3. Loop through each profile type (e.g. 3030輕型, 3030重型, 3060輕型)
+    profileNames.forEach((profileName, sIdx) => {
+        let group = profileGroups[profileName];
+        let series = group.series;
+
+        // Prepare Cuts for this profile
         let cuts = [];
-        alItems.filter(i => (i.series === series)).forEach(i => {
+        group.items.forEach(i => {
             for (let k = 0; k < i.qty; k++) cuts.push(i.len);
         });
 
@@ -4001,13 +3937,13 @@ window.renderCuttingVisualsPreview = function () {
             </div>`;
         });
 
-        // Append Series Block
+        // Append Profile Block
         let topBorder = sIdx > 0 ? 'border-top:1px dashed #eee; margin-top:15px; padding-top:10px;' : '';
 
         finalHtml += `
             <div style="${topBorder}">
                 <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem; color:#555;">
-                    <div style="font-weight:bold; color:${barColor};">${series} 系列</div>
+                    <div style="font-weight:bold; color:${barColor};">${profileName}</div>
                     <div>利用率: <span style="font-weight:bold;">${efficiency}%</span> (${bars.length} 支原料)</div>
                 </div>
                 <div>${barsHtml}</div>
@@ -4024,3 +3960,56 @@ window.renderCuttingVisualsPreview = function () {
 
     return finalHtml;
 }
+
+/* =========================================================================
+   MOBILE SIDEBAR TOGGLE (Hamburger Menu)
+   2026/02/20
+   ========================================================================= */
+window.toggleMobileSidebar = function () {
+    const sidebar = document.getElementById('b2cSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const hamburger = document.getElementById('mobileHamburger');
+    if (!sidebar) return;
+
+    const isOpen = sidebar.classList.contains('mobile-open');
+
+    if (isOpen) {
+        sidebar.classList.remove('mobile-open');
+        if (overlay) overlay.classList.remove('active');
+        if (hamburger) hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+        document.body.style.overflow = '';
+    } else {
+        sidebar.classList.add('mobile-open');
+        if (overlay) overlay.classList.add('active');
+        if (hamburger) hamburger.innerHTML = '<i class="fas fa-times"></i>';
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+// Auto-close sidebar when a nav item is clicked on mobile
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebar = document.getElementById('b2cSidebar');
+    if (!sidebar) return;
+
+    sidebar.addEventListener('click', function (e) {
+        const navItem = e.target.closest('.nav-item');
+        if (navItem && window.innerWidth <= 1024) {
+            // Small delay to let the navigation happen first
+            setTimeout(function () {
+                window.toggleMobileSidebar();
+            }, 150);
+        }
+    });
+
+    // Close sidebar if window resizes above tablet breakpoint
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 1024) {
+            sidebar.classList.remove('mobile-open');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            const hamburger = document.getElementById('mobileHamburger');
+            if (hamburger) hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+        }
+    });
+});
