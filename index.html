@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUTU 鋁圖 - 訂購系統</title>
-    <link rel="stylesheet" href="style.css?v=20260201_V5">
+    <link rel="stylesheet" href="style.css?v=20260224_V36">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- SheetJS for Excel Import (BOM Upload) -->
@@ -34,31 +34,92 @@
 
     <!-- 首頁分流樞紐 (Hub Overlay) -->
     <div id="hub-overlay" class="hub-overlay">
-        <div class="hub-container">
-            <h1 class="hub-title">歡迎來到 LUTU 鋁圖</h1>
-            <p class="hub-subtitle">請選擇您的採購身份以獲得最佳體驗</p>
+        <!-- 柔和背景光暈 (白底版) -->
+        <div class="hub-bg-deco">
+            <div class="hub-bg-circle c1"></div>
+            <div class="hub-bg-circle c2"></div>
+            <div class="hub-bg-circle c3"></div>
+        </div>
 
+        <div class="hub-container">
+
+            <!-- SVG LOGO 區 (重現真實 LOGO) -->
+            <div class="hub-logo-area">
+                <svg class="hub-svg-logo" viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 豎線 -->
+                    <line x1="150" y1="8" x2="150" y2="90" stroke="#1a1a1a" stroke-width="0.8" />
+                    <!-- 橫線 -->
+                    <line x1="60" y1="90" x2="240" y2="90" stroke="#1a1a1a" stroke-width="0.8" />
+                    <!-- LUTU 鋁圖 文字 -->
+                    <text x="150" y="130" font-family="'Noto Sans TC', 'Yu Gothic', 'Hiragino Sans', sans-serif"
+                        font-size="22" font-weight="300" fill="#1a1a1a" text-anchor="middle" letter-spacing="12">L U T U
+                        鋁 圖</text>
+                </svg>
+            </div>
+
+            <!-- 細分隔線 -->
+            <div class="hub-divider-line"></div>
+
+            <!-- Social Links moved here -->
+            <div class="hub-social-links">
+                <a href="https://line.me/ti/p/~herald8283" target="_blank" class="hub-social-icon"
+                    title="Line ID: herald8283"><i class="fab fa-line"></i></a>
+                <a href="https://www.threads.net/@lutu_alumi" target="_blank" class="hub-social-icon" title="Threads"><i
+                        class="fa-brands fa-threads"></i></a>
+                <a href="https://www.instagram.com/lutu_alumi?igsh=MXhoY3lldHhlZHh3dw==" target="_blank"
+                    class="hub-social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="mailto:lutu@herald-alu.com" class="hub-social-icon" title="Email: lutu@herald-alu.com"><i
+                        class="fas fa-envelope"></i></a>
+            </div>
+
+            <!-- 卡片區 -->
             <div class="hub-cards">
                 <!-- 個人 DIY 卡片 -->
                 <div class="hub-card personal" onclick="selectUserMode('B2C')">
-                    <div class="hub-icon"><i class="fas fa-tools"></i></div>
-                    <h3>個人 DIY / 創客</h3>
-                    <p>直覺的圖形化選購介面，適合少量訂製與個人專案。</p>
-                    <div class="hub-btn">進入選購 <i class="fas fa-arrow-right"></i></div>
+                    <div class="hub-card-glow"></div>
+                    <div class="hub-card-inner">
+                        <div class="hub-card-series-tag personal-tag">B2C</div>
+                        <div class="hub-card-icon-line personal-line"></div>
+                        <div class="hub-card-content">
+                            <h3>個人 DIY / 創客</h3>
+                            <p>直覺的圖形化選購介面<br>適合少量訂製與個人專案</p>
+                            <ul class="hub-feature-list">
+                                <li>圖形化商品選購</li>
+                                <li>簡易詢價流程</li>
+                                <li>專案教學範例</li>
+                            </ul>
+                        </div>
+                        <div class="hub-btn personal-btn">
+                            <span>進入選購</span>
+                            <span class="hub-arrow">→</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 企業採購 卡片 -->
                 <div class="hub-card pro" onclick="selectUserMode('B2B')">
-                    <div class="hub-tag">PRO</div>
-                    <div class="hub-icon"><i class="fas fa-building"></i></div>
-                    <h3>企業採購</h3>
-                    <p>支援 EXCEL 快速貼上、物流預判與結構分析，適合批量採購。</p>
-                    <div class="hub-btn">進入採購中心 <i class="fas fa-arrow-right"></i></div>
+                    <div class="hub-card-glow pro-glow"></div>
+                    <div class="hub-card-inner">
+                        <div class="hub-card-series-tag pro-tag">PRO</div>
+                        <div class="hub-card-icon-line pro-line"></div>
+                        <div class="hub-card-content">
+                            <h3>企業採購</h3>
+                            <p>支援 Excel 批量匯入<br>物流預判與結構分析</p>
+                            <ul class="hub-feature-list">
+                                <li>Excel / BOM 批量匯入</li>
+                                <li>全域快速搜尋</li>
+                                <li>物流結構分析</li>
+                            </ul>
+                        </div>
+                        <div class="hub-btn pro-btn">
+                            <span>進入採購中心</span>
+                            <span class="hub-arrow">→</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="hub-footer">
-                <a href="#" onclick="selectUserMode('B2C')">先隨便逛逛 ></a>
             </div>
         </div>
     </div>
@@ -89,16 +150,7 @@
                 <!-- Hot Sales Content will be injected here -->
             </div>
 
-            <div class="social-links">
-                <a href="https://line.me/ti/p/~herald8283" target="_blank" class="social-icon"
-                    title="Line ID: herald8283"><i class="fab fa-line"></i></a>
-                <a href="https://www.threads.net/@lutu_alumi" target="_blank" class="social-icon" title="Threads"><i
-                        class="fa-brands fa-threads"></i></a>
-                <a href="https://www.instagram.com/lutu_alumi?igsh=MXhoY3lldHhlZHh3dw==" target="_blank"
-                    class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="mailto:lutu@herald-alu.com" class="social-icon" title="Email: lutu@herald-alu.com"><i
-                        class="fas fa-envelope"></i></a>
-            </div>
+            <!-- Social links moved to Hub -->
             <!-- Height Visualization Removed -->
         </aside>
         <!-- Mobile Sidebar Overlay Backdrop -->
@@ -107,10 +159,7 @@
             <div id="view-product" class="content-view">
                 <header class="page-header">
                     <h2 id="page-title">20 系列選購</h2>
-                    <button onclick="openOrderQueryModal()"
-                        style="background: #545454; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: all 0.2s;"
-                        onmouseover="this.style.background='#3d3d3d'; this.style.transform='translateY(-2px)';"
-                        onmouseout="this.style.background='#545454'; this.style.transform='translateY(0)';">
+                    <button onclick="openOrderQueryModal()" class="btn-query">
                         <i class="fas fa-search"></i> 查詢訂單
                     </button>
 
@@ -193,10 +242,7 @@
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                 <input type="tel" id="query-phone" placeholder="輸入手機號碼"
                     style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
-                <button onclick="submitOrderQuery()"
-                    style="background: #545454; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: all 0.2s;"
-                    onmouseover="this.style.background='#3d3d3d';"
-                    onmouseout="this.style.background='#545454';">查詢</button>
+                <button onclick="submitOrderQuery()" class="btn-query" style="padding: 10px 20px;">查詢</button>
             </div>
             <div id="query-results" style="max-height: 300px; overflow-y: auto;">
                 <!-- Results injected here -->
@@ -321,12 +367,10 @@
                                 oninput="handleB2BSearch(this.value)">
                         </div>
 
-                        <button class="btn-xs btn-outline" onclick="openBOMUploadModal()"
-                            style="color:#2980b9; border-color:#2980b9; background: white; white-space:nowrap; padding: 8px 12px; font-weight: bold;">
+                        <button class="btn-xs btn-outline" onclick="openBOMUploadModal()">
                             <i class="fas fa-file-upload"></i> 匯入 Excel
                         </button>
-                        <button class="btn-xs btn-outline" onclick="downloadBOMTemplate()"
-                            style="color:#27ae60; border-color:#27ae60; background: white; white-space:nowrap; padding: 8px 12px; font-weight: bold;">
+                        <button class="btn-xs btn-outline" onclick="downloadBOMTemplate()">
                             <i class="fas fa-file-download"></i> 下載範本
                         </button>
 
@@ -507,7 +551,7 @@
                     <textarea name="note" class="detail-input" rows="3" placeholder="例如：急件，需要統編..."></textarea>
                 </div>
 
-                <button type="submit" class="b2b-btn-submit" style="width:100%; margin-top:10px;">
+                <button type="submit" class="b2b-btn-submit">
                     <i class="fas fa-check-circle"></i> 確認送出
                 </button>
             </form>
@@ -520,8 +564,8 @@
         <img id="lightbox-img" src="" onclick="event.stopPropagation()">
     </div>
 
-    <script src="script.js?v=20260201_V2"></script>
-    <script src="admin.js?v=20260201_V2"></script>
+    <script src="script.js?v=20260224_V22"></script>
+    <script src="admin.js?v=20260224_V22"></script>
 </body>
 
 </html>

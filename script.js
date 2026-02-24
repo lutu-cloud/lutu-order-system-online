@@ -519,7 +519,7 @@ function renderHotSales() {
     };
 
     // 1. Profiles
-    html += '<div style="font-size:0.8rem; color:#bbb; margin:8px 0 4px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:2px;">🔥 鋁材規格 (Top 3)</div>';
+    html += '<div style="font-size:0.8rem; color:#7f8c8d; margin:8px 0 4px; border-bottom:1px solid #e2e8f0; padding-bottom:2px;">🔥 鋁材規格 (Top 3)</div>';
     html += '<div class="desktop-hot-list">';
     hotProfiles.forEach(item => {
         html += createSidebarCard(item);
@@ -527,7 +527,7 @@ function renderHotSales() {
     html += '</div>';
 
     // 2. Accessories
-    html += '<div style="font-size:0.8rem; color:#bbb; margin:12px 0 4px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:2px;">🔧 精選配件 (Top 3)</div>';
+    html += '<div style="font-size:0.8rem; color:#7f8c8d; margin:12px 0 4px; border-bottom:1px solid #e2e8f0; padding-bottom:2px;">🔧 精選配件 (Top 3)</div>';
     html += '<div class="desktop-hot-list">';
     hotAccessories.forEach(item => {
         html += createSidebarCard(item);
@@ -708,13 +708,14 @@ function renderSeries(series) {
                 badgeHtml = `<div class="rank-badge-overlay rank-${hotItem.rank}">TOP ${hotItem.rank}</div>`;
             }
 
-            alHtml += '<div class="profile-card" onclick="selectProfile(\'' + p.name + '\')" id="card-' + p.name + '" style="position:relative;">';
+            let delay = (i % 8) * 0.05;
+            alHtml += '<div class="profile-card" onclick="selectProfile(\'' + p.name + '\')" id="card-' + p.name + '" style="position:relative; animation-delay:' + delay + 's;">';
             alHtml += '<div class="profile-img" style="position:relative;">';
             alHtml += weightHtml; // Top-Left Weight
             alHtml += badgeHtml; // Top-Right Rank
             alHtml += '<img src="assets/' + p.img2d + '" style="width:100%;height:100%;object-fit:contain;padding:10px;" onerror="this.src=\'https://placehold.co/100?text=No+Img\'"></div>';
-            alHtml += '<div><b>' + p.name + '</b></div>';
-            alHtml += '<div style="color:#e74c3c; font-weight:bold; font-size:1.1rem;">NT$' + p.price + '/' + p.unit + '</div>';
+            alHtml += '<div>' + p.name + '</div>';
+            alHtml += '<div style="color:#e74c3c; font-weight:300; font-size:1.1rem;">NT$' + p.price + '/' + p.unit + '</div>';
             alHtml += '</div>';
         }
     } else { alHtml = '<p>無資料</p>'; }
@@ -743,7 +744,8 @@ function renderSeries(series) {
             let img3dSrc = (p.img3d && p.img3d !== '') ? 'assets/' + p.img3d : '';
             let img3dError = "this.parentElement.style.background='#eee';this.style.display='none';this.parentElement.innerHTML='<span style=\"color:#999;font-size:12px;\">3D (待補)</span>'";
 
-            accHtml += '<div class="acc-card" id="acc-card-' + p.name + '" style="display:flex; flex-direction:column; justify-content:space-between; position:relative;">';
+            let delay = (i % 8) * 0.05;
+            accHtml += '<div class="acc-card" id="acc-card-' + p.name + '" style="display:flex; flex-direction:column; justify-content:space-between; position:relative; animation-delay:' + delay + 's;">';
             accHtml += '<div class="acc-images" style="margin-bottom:5px;">';
 
             // 2D Image
@@ -779,10 +781,10 @@ function renderSeries(series) {
 
             // Left Column: Name & Controls
             accHtml += '<div style="display:flex; flex-direction:column; justify-content:space-between; flex:1;">';
-            accHtml += '<div style="font-weight:bold; font-size:1rem; color:#333; line-height:1.2;">' + p.name + '</div>';
+            accHtml += '<div style="font-weight:300; font-size:1rem; color:#333; line-height:1.2;">' + p.name + '</div>';
 
             accHtml += '<div style="display:flex; align-items:center; gap:8px; margin-top:5px;">';
-            accHtml += '<div style="color:#e74c3c; font-weight:bold; font-size:1.1rem;">NT$' + p.price + '</div>';
+            accHtml += '<div style="color:#e74c3c; font-weight:300; font-size:1.1rem;">NT$' + p.price + '</div>';
             accHtml += `<input type="number" id="acc-input-${p.name}" class="input-qty-no-arrow" value="${currentQty}" min="0" onchange="updateAccessory('${p.name}',this.value, '${series}')" style="border:1px solid #ddd; border-radius:4px; width:50px; text-align:center; height:32px; font-size:1rem; background:#fff; padding:0;">`;
             accHtml += '</div>';
             accHtml += '</div>'; // End Left Col
@@ -846,7 +848,7 @@ function renderAccessoryList() {
                 <div class="spec-info">
                     <span class="model-badge" style="color:${color};">${item.name}</span>
                     <span style="color:#aaa;"></span>
-                    <span style="color:#e74c3c; font-weight:bold;">NT$${Math.round(item.price * item.qty)}</span>
+                    <span style="color:#e74c3c; font-weight:300;">NT$${Math.round(item.price * item.qty)}</span>
                 </div>
                 <div class="spec-actions">
                     <span style="margin-right:10px;">數量：${item.qty}</span>
@@ -860,7 +862,7 @@ function renderAccessoryList() {
         let subtotal = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
         html += `
         <div class="spec-row" style="border-top:2px dashed #eee; margin-top:10px; padding-top:10px; justify-content:flex-end;">
-            <div style="font-size:1.1rem; font-weight:bold; color:#e74c3c;">
+            <div style="font-size:1.1rem; font-weight:300; color:#e74c3c;">
                 配件小計：NT$${Math.round(subtotal)}
             </div>
         </div>`;
@@ -971,7 +973,7 @@ function renderSpecList() {
                     <span class="model-badge" style="color:${color};">${item.name}</span>
                     <span>長度 ${item.len.toFixed(1)} cm</span>
                     <span style="color:#aaa;"></span>
-                    <span style="color:#e74c3c; font-weight:bold;">NT$${Math.round(item.price * item.len * item.qty)}</span>
+                    <span style="color:#e74c3c; font-weight:300;">NT$${Math.round(item.price * item.len * item.qty)}</span>
                 </div>
                 <div class="spec-actions">
                     <div class="spec-edit">
@@ -987,7 +989,7 @@ function renderSpecList() {
         let subtotal = items.reduce((sum, item) => sum + (item.price * item.len * item.qty), 0);
         html += `
         <div class="spec-row" style="border-top:2px dashed #eee; margin-top:10px; padding-top:10px; justify-content:flex-end;">
-            <div style="font-size:1.1rem; font-weight:bold; color:#e74c3c;">
+            <div style="font-size:1.1rem; font-weight:300; color:#e74c3c;">
                 鋁材小計：NT$${Math.round(subtotal)}
             </div>
         </div>`;
@@ -1778,7 +1780,7 @@ window.handleB2BSearch = function (keyword) {
     // Reuse rendering logic but with explicit series badges
     let html = `
         <div style="padding: 15px 15px 0 15px; flex-shrink:0;">
-            <h2 style="margin-bottom:12px; color:#2c3e50; font-size:1.2rem; font-weight:800;">
+            <h2 style="margin-bottom:12px; color:#2c3e50; font-size:1.2rem; font-weight:300; letter-spacing:1px;">
                 <i class="fas fa-search"></i> 搜尋結果 <span style="font-weight:normal; font-size:0.9rem; color:#666;">(${matches.length} 筆)</span>
             </h2>
              <div class="b2b-table-header" style="font-size:0.85rem; padding:8px 0; border-bottom:2px solid #eee; margin-bottom:5px;">
@@ -1840,7 +1842,7 @@ window.handleB2BSearch = function (keyword) {
                     let partMatch = findB2BItem(key);
                     let subSku = partMatch ? parseSKU(partMatch.name) : '';
                     let cleanPartName = key.replace(/^\d+-/, '');
-                    subItemsHtml += `<div class="b2b-sub-item-row">${cleanPartName} <span style="font-weight:bold; margin-left:5px;">x${qty}</span></div>`;
+                    subItemsHtml += `<div class="b2b-sub-item-row">${cleanPartName} <span style="font-weight:300; margin-left:5px;">x${qty}</span></div>`;
                 });
                 subItemsHtml += `</div>`;
             }
@@ -1911,14 +1913,14 @@ window.handleB2BSearch = function (keyword) {
              <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
                 <div class="col-img" style="flex:0 0 65px; position:relative;">
                     <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:4px; object-fit: cover; cursor:zoom-in;" onclick="event.stopPropagation(); showLightbox(this.src)">
-                    <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:${sColor}; color:white; font-size:0.7rem; font-weight:bold;">${p.series.split('-')[0]}</div>
+                    <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:${sColor}; color:white; font-size:0.7rem; font-weight:400;">${p.series.split('-')[0]}</div>
                 </div>
                 <div class="col-name" style="padding-left:12px; min-width:0; flex:1;">
-                    <div style="font-weight:bold; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
-                    <div style="font-size:0.8rem; color:#666; font-weight:500;">${mainCodeHtml} ${weightHtml}</div>
+                    <div style="font-weight:300; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:0.5px;">${displayName}</div>
+                    <div style="font-size:0.8rem; color:#666; font-weight:300;">${mainCodeHtml} ${weightHtml}</div>
                     ${subItemsHtml}
                 </div>
-                <div class="col-price" style="flex:0 0 90px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:0.9rem; font-weight:600; color:#444;">
+                <div class="col-price" style="flex:0 0 90px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:0.9rem; font-weight:300; color:#444;">
                     <div><span style="color:#e74c3c;">$${priceDisplay}</span> / ${unitDisplay}</div>
                     <i class="fas fa-chevron-down accordion-arrow" style="margin-top:5px; color:#ddd; transition:transform 0.3s;"></i>
                 </div>
@@ -1964,7 +1966,7 @@ window.renderB2BDashboard = function () {
     // 2. Dashboard HTML Structure: Split into Display (Top) and Stats (Bottom)
     let html = `
         <div id="b2b-middle-display" style="padding:10px 10px 0 10px; text-align:center;">
-             <div style="font-size:1.2rem; font-weight:800; margin-bottom:2px; letter-spacing:1px; color:#2c3e50;">
+             <div style="font-size:1.2rem; font-weight:300; margin-bottom:2px; letter-spacing:2px; color:#2c3e50;">
                 LUTU <span class="pro-tag" style="background:#2c3e50; color:white; font-size:0.75rem; padding:1px 5px;">PRO</span> 訂單數據中心
             </div>
             <div style="color:#7f8c8d; margin-bottom:5px; font-size:0.8rem;">請從左側選擇商品，或直接匯入 BOM 表</div>
@@ -3075,7 +3077,7 @@ function renderAnalysisAndManifest() {
                          ${seriesValue ? `<div style="position:absolute; bottom:0; left:0; padding:1px 3px; border-radius:0 4px 0 4px; background:${sBadgeColor}; color:white; font-size:0.6rem; font-weight:bold; line-height:1;">${seriesValue}</div>` : ''}
                      </div>
                      <div style="flex:1; min-width:0;">
-                        <div style="font-weight:bold; color:${itemColor}; line-height:1.2; display:flex; align-items:baseline; justify-content:space-between; gap:5px;">
+                        <div style="font-weight:400; color:${itemColor}; line-height:1.2; display:flex; align-items:baseline; justify-content:space-between; gap:5px;">
                             <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1;">${item.name}</div>
                             <div style="flex-shrink:0;">${skuHtml}</div>
                         </div>
@@ -3088,8 +3090,8 @@ function renderAnalysisAndManifest() {
                         </div>
                      </div>
                      <div style="text-align:right; flex:0 0 80px;">
-                        <div style="font-weight:bold; font-size:1rem; color:#2c3e50;">x${item.qty}</div>
-                        <div style="color:#e74c3c; font-size:0.95rem; font-weight:800;">$${Math.round(sub)}</div>
+                        <div style="font-weight:300; font-size:1rem; color:#2c3e50;">x${item.qty}</div>
+                        <div style="color:#555; font-size:0.95rem; font-weight:300; letter-spacing:0.5px;">$${Math.round(sub)}</div>
                      </div>
                      <button onclick="removeFromCartB2B('${item.id || index}')" style="background:none; border:none; color:#ddd; cursor:pointer; padding:5px;">
                         <i class="fas fa-times"></i>
@@ -3117,11 +3119,11 @@ function renderAnalysisAndManifest() {
             <div style="display:flex; align-items:center; justify-content:space-around; background:#f8f9fa; padding:15px; border-radius:8px; margin-top:20px;">
                 <div style="text-align:center;">
                     <div style="font-size:0.8rem; color:#7f8c8d;">預估總重</div>
-                    <div style="font-size:1.5rem; font-weight:bold; color:#2c3e50;">${totalWeight.toFixed(1)} <span style="font-size:0.9rem;">kg</span></div>
+                    <div style="font-size:1.5rem; font-weight:300; color:#2c3e50; letter-spacing:1px;">${totalWeight.toFixed(1)} <span style="font-size:0.9rem;">kg</span></div>
                 </div>
                  <div style="text-align:center;">
                     <div style="font-size:0.8rem; color:#7f8c8d;">物流建議</div>
-                    <div style="font-size:1.1rem; font-weight:bold; color:#2980b9;">
+                    <div style="font-size:1.1rem; font-weight:300; color:#2980b9; letter-spacing:1px;">
                         ${(maxLen > 250 || totalWeight > 50) ? '<i class="fas fa-truck-moving"></i> 公司配送大貨車' : '<i class="fas fa-truck-pickup"></i> 公司配送小貨車'}
                     </div>
                 </div>
@@ -3871,13 +3873,13 @@ window.renderCuttingVisualsPreview = function () {
     // Constant
     const BAR_LEN = 600;
     const KERF = 0.5;
-    let colorMap = { '20': '#3498db', '30': '#e67e22', '40': '#2ecc71' };
+    let colorMap = { '20': '#6b8db0', '30': '#b08850', '40': '#5e8a5e' };
 
     let finalHtml = `
         <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; overflow:hidden; margin-bottom:15px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
             <div style="background:#2c3e50; color:white; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-weight:bold; font-size:0.9rem;"><i class="fas fa-microchip"></i> AI 切割排版模擬</div>
-                <div style="background:#27ae60; color:white; padding:2px 8px; border-radius:10px; font-size:0.75rem;">Smart Plan</div>
+                <div style="font-weight:300; font-size:0.9rem; letter-spacing:1px;"><i class="fas fa-microchip"></i> AI 切割排版模擬</div>
+                <div style="background:#4a6b5a; color:white; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:300; letter-spacing:0.5px;">Smart Plan</div>
             </div>
             <div style="padding:12px; max-height:300px; overflow-y:auto;">
     `;
@@ -3943,8 +3945,8 @@ window.renderCuttingVisualsPreview = function () {
         finalHtml += `
             <div style="${topBorder}">
                 <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem; color:#555;">
-                    <div style="font-weight:bold; color:${barColor};">${profileName}</div>
-                    <div>利用率: <span style="font-weight:bold;">${efficiency}%</span> (${bars.length} 支原料)</div>
+                    <div style="font-weight:300; color:${barColor}; letter-spacing:0.5px;">${profileName}</div>
+                    <div style="font-weight:300;">利用率: <span style="font-weight:400;">${efficiency}%</span> (${bars.length} 支原料)</div>
                 </div>
                 <div>${barsHtml}</div>
             </div>
