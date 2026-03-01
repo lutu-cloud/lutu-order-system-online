@@ -78,12 +78,12 @@ const rawData = {
 
 // --- BOM & SKU Helpers (Ported from Admin.js for B2B) ---
 window.parseSKU = function (name) {
-    const match = name.match(/\s*\[([\w-]+)\]\s*$/);
+    const match = name.match(/\[([^\]]+)\]/);
     return match ? match[1] : null;
 };
 
 window.removeSKU = function (name) {
-    return name.replace(/\s*\[[\w-]+\]\s*$/g, '').trim();
+    return name.replace(/\s*\[[^\]]+\]/g, '').trim();
 };
 
 window.isScrewOrNut = function (name) {
@@ -1196,9 +1196,6 @@ document.getElementById('order-form').addEventListener('submit', function (e) {
     let deliveryNote = totalEl.getAttribute('data-note') || "";
 
     let customerData = Object.fromEntries(formData.entries());
-    if (deliveryNote) {
-        customerData.note = (customerData.note ? customerData.note + " " : "") + deliveryNote;
-    }
 
     let deliveryMethod = formData.get('delivery');
     let shipFee = 0;
@@ -1206,9 +1203,48 @@ document.getElementById('order-form').addEventListener('submit', function (e) {
         shipFee = 60;
     }
 
+    // Removing redundant prepending. Backend handles label formatting.
+    customerData.address = (customerData.address || "").trim();
+
+    // Inject exact official name (with brackets and SKU) before sending to backend
+    let enrichedCart = cart.map(item => {
+        let exactName = item.name;
+        if (typeof b2bRawData !== 'undefined' && b2bRawData.length > 0) {
+            let match = b2bRawData.find(raw => {
+                let rBase = String(raw.name || "").split('[')[0].split('(')[0].trim();
+                let iBase = String(item.name || "").split('[')[0].split('(')[0].trim();
+                if (!rBase || !iBase) return false;
+
+                let rStripped = rBase.replace(/^(20|30|40)(?![0-9])/, '');
+                let iStripped = iBase.replace(/^(20|30|40)(?![0-9])/, '');
+
+                let isNameMatch = rBase === iBase || rStripped === iStripped || rStripped === iBase || iStripped === rBase;
+                let isSeriesMatch = !item.series || !raw.series || String(raw.series) === String(item.series);
+                return isNameMatch && isSeriesMatch && (!item.type || !raw.type || item.type === raw.type);
+            });
+
+            if (!match) {
+                match = b2bRawData.find(raw => {
+                    let rBase = String(raw.name || "").split('[')[0].split('(')[0].trim();
+                    let iBase = String(item.name || "").split('[')[0].split('(')[0].trim();
+                    if (!rBase || !iBase) return false;
+
+                    if (rBase.length > 2 && iBase.length > 2) {
+                        let isNameMatch = rBase.includes(iBase) || iBase.includes(rBase);
+                        let isSeriesMatch = !item.series || !raw.series || String(raw.series) === String(item.series);
+                        if (isNameMatch && isSeriesMatch && (!item.type || !raw.type || item.type === raw.type)) return true;
+                    }
+                    return false;
+                });
+            }
+            if (match && match.name) exactName = match.name;
+        }
+        return Object.assign({}, item, { name: exactName });
+    });
+
     let payload = {
         customer: customerData,
-        items: cart,
+        items: enrichedCart,
         totalEst: rawTotal,
         shippingFee: shipFee // [Fixed] Calculate directly from form data
     };
@@ -1631,7 +1667,7 @@ function submitOrderQuery() {
                             </div>
                             <div style="display:flex; justify-content:space-between; color:#888; font-size:0.85rem;">
                                 <span>配送：${order.delivery}</span>
-                                <span>總額：$${order.total}</span>
+                                <span>總額：$${Math.round(order.total)}</span>
                             </div>
                         </div>
                         `;
@@ -3345,13 +3381,13 @@ function updatePreview(headerRow) {
 
 // Helper function to parse SKU from a string (e.g., "Product Name [SKU]")
 function parseSKU(str) {
-    const match = str.match(/\[([\w-]+)\]$/);
+    const match = str.match(/\[([^\]]+)\]/);
     return match ? match[1] : null;
 }
 
 // Helper function to remove SKU from a string
 function removeSKU(str) {
-    return str.replace(/\s*\[[\w-]+\]\s*$/, '');
+    return str.replace(/\s*\[[^\]]+\]/g, '');
 }
 
 function findProductMatch(rawName, rawCat = '', rawSeries = '') {
@@ -3565,10 +3601,46 @@ window.submitB2BOrder = function (e) {
     customerData.note = "[企業詢價] " + (customerData.note || "");
     customerData.delivery = "公司配送"; // Set unified Company Delivery for B2B
 
+    // Inject exact official name (with brackets and SKU) before sending B2B order
+    let enrichedCart = cart.map(item => {
+        let exactName = item.name;
+        if (typeof b2bRawData !== 'undefined' && b2bRawData.length > 0) {
+            let match = b2bRawData.find(raw => {
+                let rBase = String(raw.name || "").split('[')[0].split('(')[0].trim();
+                let iBase = String(item.name || "").split('[')[0].split('(')[0].trim();
+                if (!rBase || !iBase) return false;
+
+                let rStripped = rBase.replace(/^(20|30|40)(?![0-9])/, '');
+                let iStripped = iBase.replace(/^(20|30|40)(?![0-9])/, '');
+
+                let isNameMatch = rBase === iBase || rStripped === iStripped || rStripped === iBase || iStripped === rBase;
+                let isSeriesMatch = !item.series || !raw.series || String(raw.series) === String(item.series);
+                return isNameMatch && isSeriesMatch && (!item.type || !raw.type || item.type === raw.type);
+            });
+
+            if (!match) {
+                match = b2bRawData.find(raw => {
+                    let rBase = String(raw.name || "").split('[')[0].split('(')[0].trim();
+                    let iBase = String(item.name || "").split('[')[0].split('(')[0].trim();
+                    if (!rBase || !iBase) return false;
+
+                    if (rBase.length > 2 && iBase.length > 2) {
+                        let isNameMatch = rBase.includes(iBase) || iBase.includes(rBase);
+                        let isSeriesMatch = !item.series || !raw.series || String(raw.series) === String(item.series);
+                        if (isNameMatch && isSeriesMatch && (!item.type || !raw.type || item.type === raw.type)) return true;
+                    }
+                    return false;
+                });
+            }
+            if (match && match.name) exactName = match.name;
+        }
+        return Object.assign({}, item, { name: exactName });
+    });
+
     let payload = {
         customer: customerData,
-        items: cart,
-        totalEst: total,
+        items: enrichedCart,
+        totalEst: Math.round(total),
         shippingFee: 0
     };
 
