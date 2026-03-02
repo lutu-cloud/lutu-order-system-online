@@ -3,18 +3,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxEn0_QHCdDmA24QNrXOfFV
 const rawData = {
     products: [
         ["產品主分類", "產品類型", "產品名稱", "單價", "圖片名稱(鋁材圖配件2D圖)", "圖片名稱(配件3D圖)", "單位", "狀態", "規格描述"],
-        ["鋁材", "20系列", "2020型", 1.6, "2020型.png", "", "cm", "", ""],
-        ["鋁材", "20系列", "2040型", 1.6, "2040型.png", "", "cm", "", ""],
+        ["鋁材", "20系列", "2020型", 1.6, "2020型.jpg", "", "cm", "", ""],
+        ["鋁材", "20系列", "2040型", 1.6, "2040型.jpg", "", "cm", "", ""],
         ["", "", "", "", "", "", "", "", ""],
-        ["鋁材", "30系列", "3030輕型", 1.6, "3030輕型.png", "", "cm", "", ""],
-        ["鋁材", "30系列", "3060輕型", 1.6, "3060輕型.png", "", "cm", "", ""],
-        ["鋁材", "30系列", "3030重型", 1.6, "3030重型.png", "", "cm", "", ""],
-        ["鋁材", "30系列", "3060重型", 1.6, "3060重型.png", "", "cm", "", ""],
+        ["鋁材", "30系列", "3030輕型", 1.6, "3030輕型.jpg", "", "cm", "", ""],
+        ["鋁材", "30系列", "3060輕型", 1.6, "3060輕型.jpg", "", "cm", "", ""],
+        ["鋁材", "30系列", "3030重型", 1.6, "3030重型.jpg", "", "cm", "", ""],
+        ["鋁材", "30系列", "3060重型", 1.6, "3060重型.jpg", "", "cm", "", ""],
         ["", "", "", "", "", "", "", "", ""],
-        ["鋁材", "40系列", "4040輕型", 1.6, "4040輕型.png", "", "cm", "", ""],
-        ["鋁材", "40系列", "4080輕型", 1.6, "4080輕型.png", "", "cm", "", ""],
-        ["鋁材", "40系列", "4040重型", 1.6, "4040重型.png", "", "cm", "", ""],
-        ["鋁材", "40系列", "4080重型", 1.6, "4080重型.png", "", "cm", "", ""],
+        ["鋁材", "40系列", "4040輕型", 1.6, "4040輕型.jpg", "", "cm", "", ""],
+        ["鋁材", "40系列", "4080輕型", 1.6, "4080輕型.jpg", "", "cm", "", ""],
+        ["鋁材", "40系列", "4040重型", 1.6, "4040重型.jpg", "", "cm", "", ""],
+        ["鋁材", "40系列", "4080重型", 1.6, "4080重型.jpg", "", "cm", "", ""],
         ["", "", "", "", "", "", "", "", ""],
         ["配件", "20系列", "M4六角螺絲", 1, "20M4六角螺絲2D.png", "", "個", "", ""],
         ["配件", "20系列", "M4螺母", 1, "20M4螺母2D.png", "", "個", "", ""],
@@ -313,25 +313,49 @@ async function initData() {
 
     // 2. Try Fetching from API (Async Update)
     try {
-        console.log("Fetching data from:", API_URL);
-        const response = await fetch(API_URL);
+        console.log("Fetching up-to-date data from Google Sheet:", API_URL);
+        // Show a discrete loading indicator if desired, or let it load silently
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.id = 'sync-indicator';
+        loadingIndicator.innerHTML = '<i class="fas fa-sync fa-spin"></i> 同步最新型錄中...';
+        loadingIndicator.style.cssText = 'position:fixed; bottom:10px; left:10px; background:rgba(0,0,0,0.7); color:white; padding:5px 10px; border-radius:20px; font-size:12px; z-index:9999;';
+        document.body.appendChild(loadingIndicator);
+
+        // Fetch without caching issue
+        const response = await fetch(API_URL + "?action=getProducts&t=" + new Date().getTime());
         if (response.ok) {
             let remote = await response.json();
-            if (remote.products && remote.products.length > 0) {
-                console.log("Remote data loaded successfully. Updating...");
-                processData(remote); // Update with fresh data
+
+            // Check if returned data has the required structure
+            if (remote && (remote.products || remote.data || Array.isArray(remote))) {
+                console.log("Remote data loaded successfully. Updating UI...");
+
+                // Note: The API might return { products: [], projects: [], customCases: [] } 
+                // or just the raw array if there's only one sheet.
+                // If it's returning the whole workbook object, we pass it to processData
+                processData(remote);
+            } else {
+                console.warn("API Data format not recognized:", remote);
             }
         } else {
             console.warn("API Error, status:", response.status);
         }
     } catch (e) {
-        console.warn("API Fetch failed, checking local data...", e);
+        console.error("API Fetch failed. Using local cache.", e);
+    } finally {
+        const indicator = document.getElementById('sync-indicator');
+        if (indicator) {
+            indicator.innerHTML = '<i class="fas fa-check"></i> 型錄已更新';
+            setTimeout(() => indicator.remove(), 2000);
+        }
     }
 }
 
 // Helper: Process Data Logic (Extracted)
 function processData(data) {
     try {
+        let changed = false;
+
         if (data.products) {
             let lastType = '';
             let lastSeries = '';
@@ -352,28 +376,65 @@ function processData(data) {
                 let id = row[2];
                 if (id) id = String(id).replace(/['"]/g, '');
 
-                return {
+                // Fix: Protect against undefined fields when Google Sheet trims empty cells at the end
+                let img2d = (row.length > 4 && row[4]) ? String(row[4]).trim() : '';
+                let img3d = (row.length > 5 && row[5]) ? String(row[5]).trim() : '';
+                let unit = (row.length > 6 && row[6]) ? String(row[6]).trim() : '';
+                let status = (row.length > 7 && row[7]) ? String(row[7]).trim() : '';
+                let desc = (row.length > 8 && row[8]) ? String(row[8]).trim() : '';
+
+                let finalImg2d = img2d;
+                if (!finalImg2d && row.length > 4) finalImg2d = String(row[4]).trim();
+
+                let finalImg3d = img3d;
+                // Smart fallback for missing 3D images with specific name corrections
+                if (!finalImg3d && finalImg2d && finalImg2d.includes('2D')) {
+                    let name3d = finalImg2d.replace('2D', '3D');
+                    // Handle spelling and naming inconsistencies in local 3D assets
+                    name3d = name3d.replace('M4六角螺絲', '螺絲');
+                    name3d = name3d.replace('M6六角螺絲', '螺絲');
+                    name3d = name3d.replace('M8六角螺絲', '螺絲');
+                    name3d = name3d.replace('M4螺母', '螺母');
+                    name3d = name3d.replace('M6螺母', '螺母');
+                    name3d = name3d.replace('M8螺母', '螺母');
+                    name3d = name3d.replace('平板連結片', '平板連結塊');
+                    name3d = name3d.replace('絞鍊', '絞鏈');
+                    name3d = name3d.replace('合金把手組', '合金把手');
+                    finalImg3d = name3d;
+                }
+
+                let pObj = {
                     id: id,
                     type: type,
                     series: series,
                     name: row[2],
                     price: row[3],
-                    img2d: row[4],
-                    img3d: row[5],
-                    unit: row[6],
-                    status: row[7],
-                    desc: row[8]
+                    img2d: finalImg2d,
+                    img3d: finalImg3d,
+                    unit: unit,
+                    status: status,
+                    desc: desc
                 };
+
+                // Debugging output specifically for 2020/2040 and accessories to see the parsed path
+                if (pObj.name === '2020型' || pObj.name === '2040型') {
+                    console.log("[DEBUG] Parsed Profile:", pObj.name, "img2d:", pObj.img2d, "Row Length:", row.length, "Row data:", row);
+                }
+
+                return pObj;
             }).filter(p => p && p.name && p.status !== '下架');
 
-            products = allItems;
-            inventoryProducts = b2bRawData;
-
-            console.log(`Loaded ${products.length} standard products.`);
+            // Only update and trigger render if data is actually different
+            if (JSON.stringify(products) !== JSON.stringify(allItems)) {
+                products = allItems;
+                inventoryProducts = b2bRawData;
+                changed = true;
+                console.log(`Loaded ${products.length} standard products.`);
+            }
         }
 
         if (data.projects) {
-            projects = data.projects.slice(1).map(row => ({
+            let newProjects = data.projects.slice(1).map(row => ({
                 id: row[0],
                 title: row[1],
                 desc: row[2],
@@ -382,36 +443,49 @@ function processData(data) {
                 sceneImg: row[5],
                 completeImg: row[6],
                 steps: [
-                    row[7] ? { img: row[7], text: '步驟1' } : null,
-                    row[8] ? { img: row[8], text: '步驟2' } : null,
-                    row[9] ? { img: row[9], text: '步驟3' } : null,
-                    row[10] ? { img: row[10], text: '步驟4' } : null
+                    (row.length > 7 && row[7]) ? { img: row[7], text: '步驟1' } : null,
+                    (row.length > 8 && row[8]) ? { img: row[8], text: '步驟2' } : null,
+                    (row.length > 9 && row[9]) ? { img: row[9], text: '步驟3' } : null,
+                    (row.length > 10 && row[10]) ? { img: row[10], text: '步驟4' } : null
                 ].filter(Boolean)
             }));
-            const idx02 = projects.findIndex(p => p.id === 'LUTU-02');
-            const idx03 = projects.findIndex(p => p.id === 'LUTU-03');
+            const idx02 = newProjects.findIndex(p => p.id === 'LUTU-02');
+            const idx03 = newProjects.findIndex(p => p.id === 'LUTU-03');
             if (idx02 !== -1 && idx03 !== -1 && idx02 < idx03) {
-                [projects[idx02], projects[idx03]] = [projects[idx03], projects[idx02]];
+                [newProjects[idx02], newProjects[idx03]] = [newProjects[idx03], newProjects[idx02]];
+            }
+
+            if (JSON.stringify(projects) !== JSON.stringify(newProjects)) {
+                projects = newProjects;
+                changed = true;
             }
         }
 
         if (data.customCases) {
-            customCases = data.customCases.slice(1).map(function (row) {
+            let newCustomCases = data.customCases.slice(1).map(function (row) {
                 return {
                     id: row[0],
                     name: row[1],
                     desc: row[2],
-                    pdf: row[3],
-                    materialText: row[4],
-                    img1: row[5],
-                    img2: row[6],
-                    img3: row[7]
+                    pdf: (row.length > 3 && row[3]) ? row[3] : '',
+                    materialText: (row.length > 4 && row[4]) ? row[4] : '',
+                    img1: (row.length > 5 && row[5]) ? row[5] : '',
+                    img2: (row.length > 6 && row[6]) ? row[6] : '',
+                    img3: (row.length > 7 && row[7]) ? row[7] : ''
                 };
             });
+
+            if (JSON.stringify(customCases) !== JSON.stringify(newCustomCases)) {
+                customCases = newCustomCases;
+                changed = true;
+            }
         }
 
-        // Re-Render UI after data update
-        refreshUI();
+        // Re-Render UI after data update ONLY if something actually changed
+        if (changed || typeof window._firstLoadDone === 'undefined') {
+            window._firstLoadDone = true;
+            refreshUI();
+        }
 
     } catch (e) {
         console.error("Data Processing Error", e);
@@ -423,6 +497,16 @@ function refreshUI() {
     if (userMode === 'B2B') {
         renderB2BDashboard(); // Refresh Dashboard Stats
         renderSeriesOverview(currentB2BSeries); // Refresh List
+    } else {
+        // Essential for B2C mode to not appear blank on initial API response
+        // Only re-render if we are currently looking at the product view
+        if (!document.getElementById('view-product').classList.contains('hidden')) {
+            if (typeof currentSeries !== 'undefined' && currentSeries) {
+                renderSeries(currentSeries);
+            } else {
+                renderSeries('20'); // fallback
+            }
+        }
     }
 
     // Always refresh these
@@ -1137,11 +1221,33 @@ function toggleAddressField() {
 
 function calculateTotalWithDelivery() {
     let baseTotal = 0;
+    let hasAluminum = false;
     cart.forEach(item => {
         baseTotal += (item.type === '鋁材' && item.unit === 'cm') ? item.price * item.len * item.qty : item.price * item.qty;
+        if (item.type === '鋁材') hasAluminum = true;
     });
 
-    let deliveryMethod = document.querySelector('select[name="delivery"]').value;
+    const deliverySelect = document.querySelector('select[name="delivery"]');
+    const storeOption = Array.from(deliverySelect.options).find(opt => opt.value.includes('店到店'));
+
+    if (hasAluminum) {
+        if (storeOption) {
+            storeOption.disabled = true;
+            storeOption.text = '店到店 (含鋁材不可選)';
+            // If currently selected, switch to default or pickup
+            if (deliverySelect.value.includes('店到店')) {
+                deliverySelect.value = '宅配(運費待報價)';
+                toggleAddressField();
+            }
+        }
+    } else {
+        if (storeOption) {
+            storeOption.disabled = false;
+            storeOption.text = '店到店(純配件)';
+        }
+    }
+
+    let deliveryMethod = deliverySelect.value;
     let deliveryFee = 0;
 
     // Check for large items (Standard Profile > 150cm? Or just hardcode logic?)
@@ -1156,9 +1262,9 @@ function calculateTotalWithDelivery() {
     let needsQuoting = deliveryMethod.includes('宅配') || deliveryMethod.includes('公司配送');
 
     if (isStoreToStore) {
-        finalTotal += 60;
-        totalEl.innerHTML = `${finalTotal} <span style="font-size:0.6em; color:rgba(255,255,255,0.8); font-weight:normal;">(含 60 元店到店運費)</span>`;
-        totalEl.setAttribute('data-note', '(含 60 元店到店運費)');
+        // [Fix] Remove frontend addition of 60 to prevent double counting with backend auto-logic
+        totalEl.innerHTML = `${finalTotal} <span style="font-size:0.6em; color:rgba(255,255,255,0.8); font-weight:normal;">(店到店運費由系統自動計算)</span>`;
+        totalEl.setAttribute('data-note', '(含店到店運費)');
     } else if (needsQuoting) {
         // Red color for notice
         totalEl.innerHTML = `${finalTotal} <span style="font-size:0.6em; color:#e74c3c; font-weight:normal;">+ 運費待報價</span>`;
@@ -1199,12 +1305,18 @@ document.getElementById('order-form').addEventListener('submit', function (e) {
 
     let deliveryMethod = formData.get('delivery');
     let shipFee = 0;
+    // [Fix] Removed frontend shipFee = 60 assignment to prevent double counting
     if (deliveryMethod && deliveryMethod.includes('店到店')) {
-        shipFee = 60;
+        // We let the backend or the base price handle it to avoid 60+60
     }
 
-    // Removing redundant prepending. Backend handles label formatting.
-    customerData.address = (customerData.address || "").trim();
+    // [Fix] Re-add delivery method prefix to address for robust detection in admin panel
+    let addrPrefix = "";
+    if (deliveryMethod.includes('店到店')) addrPrefix = "[店到店] ";
+    if (deliveryMethod.includes('自取')) addrPrefix = "[自取] ";
+    if (deliveryMethod.includes('公司配送')) addrPrefix = "[公司配送] ";
+
+    customerData.address = addrPrefix + (customerData.address || "").trim();
 
     // Inject exact official name (with brackets and SKU) before sending to backend
     let enrichedCart = cart.map(item => {
