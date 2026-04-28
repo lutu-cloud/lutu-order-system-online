@@ -1804,7 +1804,6 @@ window.selectUserMode = function (mode) {
     } else {
         document.body.classList.remove('mode-b2b');
         document.getElementById('b2b-dashboard').classList.add('hidden');
-        switchSeries('20');
 
         if (mode === 'CUSTOM') {
             document.getElementById('view-custom-inquiry')?.classList.remove('hidden');
@@ -1815,6 +1814,7 @@ window.selectUserMode = function (mode) {
             b2cShellElements.forEach(el => el?.classList.add('hidden'));
         } else {
             // This is B2C Mode
+            switchSeries('20');
             document.getElementById('view-custom-inquiry')?.classList.add('hidden');
             // Show B2C Shell
             b2cShellElements.forEach(el => el?.classList.remove('hidden'));
