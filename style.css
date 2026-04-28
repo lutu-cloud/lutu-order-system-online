@@ -60,6 +60,9 @@
 /* =========================================
    B2B Global Search (Tech AI Style)
    ========================================= */
+.hidden {
+    display: none !important;
+}
 
 .b2b-search-box {
     position: relative;
@@ -1696,12 +1699,92 @@ button {
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     overflow: hidden;
+    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s ease;
+}
+
+/* Series Background Themes with Variables */
+.b2b-product-panel.theme-20 {
+    --series-color: #3498db;
+    --series-bg: #f1f8ff;
+    --series-hover: #ffffff;
+    --series-active: rgba(52, 152, 219, 0.12);
+    /* Slightly cleaner */
+    background-color: var(--series-bg);
+}
+
+.b2b-product-panel.theme-30 {
+    --series-color: #b08850;
+    --series-bg: #fdf6ed;
+    --series-hover: #ffffff;
+    --series-active: rgba(176, 136, 80, 0.12);
+    /* Refined warm tea, not yellow */
+    background-color: var(--series-bg);
+}
+
+.b2b-product-panel.theme-40 {
+    --series-color: #2ecc71;
+    --series-bg: #f3f8f3;
+    --series-hover: #ffffff;
+    --series-active: rgba(46, 204, 113, 0.12);
+    /* Slightly cleaner */
+    background-color: var(--series-bg);
 }
 
 .b2b-product-list {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
+    background: transparent;
+}
+
+/* Series Item Header (Dark Mode) */
+.b2b-table-header {
+    background: #2c3e50;
+    /* Deep Slate */
+    color: #ecf0f1;
+    padding: 12px 15px;
+    border-radius: 8px 8px 0 0;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2px;
+}
+
+/* Enhanced Product Row */
+.b2b-product-row {
+    display: flex;
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
+    position: relative;
+    border-left: 4px solid transparent;
+    /* Prepare for active border */
+}
+
+/* Priority Fix: Explicitly handle hover for active rows to ensure it turns white */
+.b2b-product-row:hover,
+.b2b-product-row.active-row:hover {
+    background-color: var(--series-hover) !important;
+    /* Solid White */
+    transform: translateX(4px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    z-index: 2;
+    /* Lift above neighbors */
+}
+
+.b2b-product-row.active-row {
+    background-color: var(--series-active);
+    border-left: 4px solid var(--series-color);
+    /* Stronger visual indicator */
+    box-shadow: inset 2px 0 8px rgba(0, 0, 0, 0.02);
 }
 
 /* 2. Middle: Hero Detail & Editor Area */
@@ -6010,6 +6093,84 @@ body.mode-b2b {
     }
 }
 
+/* ---- 動態幾何鋁擠圖騰 (Morandi Geometric Blueprints) ---- */
+.hub-geo {
+    position: absolute;
+    opacity: 0.08;
+    /* Subtle watermark effect */
+    pointer-events: none;
+    z-index: 1;
+    animation: hub-geo-drift 20s ease-in-out infinite;
+}
+
+@keyframes hub-geo-drift {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    33% {
+        transform: translate(40px, -60px) rotate(20deg);
+    }
+
+    66% {
+        transform: translate(-30px, 40px) rotate(-15deg);
+    }
+}
+
+.geo-1 {
+    width: 350px;
+    height: 350px;
+    color: #6b8db0;
+    top: 10%;
+    left: -5%;
+    animation-duration: 35s;
+}
+
+.geo-2 {
+    width: 180px;
+    height: 180px;
+    color: #b08850;
+    bottom: 15%;
+    right: 5%;
+    animation-duration: 25s;
+    animation-delay: -5s;
+}
+
+.geo-3 {
+    width: 450px;
+    height: 450px;
+    color: #5e8a5e;
+    top: -10%;
+    right: -10%;
+    opacity: 0.04;
+    animation-duration: 45s;
+    animation-delay: -15s;
+}
+
+.geo-4 {
+    width: 150px;
+    height: 150px;
+    color: #6b8db0;
+    bottom: 10%;
+    left: 20%;
+    animation-duration: 20s;
+    animation-delay: -8s;
+}
+
+.geo-5 {
+    width: 250px;
+    height: 250px;
+    color: #b08850;
+    top: 40%;
+    left: 35%;
+    opacity: 0.03;
+    animation-duration: 38s;
+    animation-delay: -20s;
+}
+
+
 /* ---- Hub 主容器 ---- */
 .hub-container {
     position: relative;
@@ -6017,13 +6178,12 @@ body.mode-b2b {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 60px 20px;
-    /* 平衡的 Padding */
-    max-width: 880px;
+    padding: 30px 20px;
+    max-width: 1000px;
     width: 100%;
     margin: 0 auto;
-    /* 保險置中 */
     flex-shrink: 0;
+    min-height: 100vh;
 }
 
 /* ---- SVG Logo 區 ---- */
@@ -6038,17 +6198,20 @@ body.mode-b2b {
     display: block;
 }
 
-/* ---- 細分隔線 ---- */
-.hub-divider-line {
-    width: 40px;
-    height: 1px;
-    background: #c8c4bc;
-    margin: 0 auto 12px;
+.hub-subtitle {
+    font-size: 0.75rem;
+    color: #999;
+    letter-spacing: 4px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
 }
 
-/* ---- 副標題 (Deprecated) ---- */
-.hub-subtitle {
-    display: none;
+/* ---- Hub Main Content Wrapper (Aligning Cards & Strip) ---- */
+.hub-main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* ---- 卡片容器 ---- */
@@ -6057,258 +6220,484 @@ body.mode-b2b {
     gap: 20px;
     width: 100%;
     justify-content: center;
-    animation: hub-fadein 0.8s 0.28s ease both;
 }
 
-/* ---- 卡片基礎 ---- */
+/* ---- 通用卡片樣式 ---- */
 .hub-card {
     flex: 1;
-    max-width: 400px;
-    min-width: 260px;
-    border-radius: 4px;
-    cursor: pointer;
     position: relative;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     overflow: hidden;
-    transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1),
-        box-shadow 0.35s ease;
-
-    background: #fdfcfb;
-    border: 1px solid #ece9e4;
-    box-shadow: 0 1px 16px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 .hub-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.95);
 }
 
-.hub-card.personal:hover {
-    box-shadow: 0 12px 40px rgba(132, 150, 176, 0.14), 0 0 0 1px rgba(132, 150, 176, 0.22);
-    border-color: rgba(132, 150, 176, 0.3);
-}
-
-.hub-card.pro:hover {
-    box-shadow: 0 12px 40px rgba(160, 136, 120, 0.12), 0 0 0 1px rgba(160, 136, 120, 0.2);
-    border-color: rgba(160, 136, 120, 0.28);
-}
-
-/* 卡片頂部色條（日式アクセント） */
-.hub-card.personal::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1.5px;
-    background: linear-gradient(90deg, #b8c4d4, #d0d8e4);
-    opacity: 0;
-    transition: opacity 0.4s;
-}
-
-.hub-card.pro::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1.5px;
-    background: linear-gradient(90deg, #c8b8ac, #d8cac0);
-    opacity: 0;
-    transition: opacity 0.4s;
-}
-
-.hub-card:hover::before {
-    opacity: 1;
-}
-
-/* 卡片光暈（白底極輕版） */
-.hub-card-glow {
-    position: absolute;
-    top: -40px;
-    left: -40px;
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(132, 150, 176, 0.07), transparent 70%);
-    pointer-events: none;
-    transition: all 0.5s ease;
-}
-
-.hub-card-glow.pro-glow {
-    background: radial-gradient(circle, rgba(160, 136, 120, 0.06), transparent 70%);
-}
-
-.hub-card:hover .hub-card-glow {
-    transform: scale(1.8);
-    opacity: 0.7;
-}
-
-/* ---- 卡片內容 ---- */
 .hub-card-inner {
-    padding: 32px 28px 24px;
+    padding: 35px 25px;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    height: 100%;
+    z-index: 2;
+    gap: 15px;
+    text-align: center;
 }
 
-/* 系列標籤 */
 .hub-card-series-tag {
-    font-size: 0.55rem;
-    font-weight: 500;
-    letter-spacing: 3.5px;
-    margin-bottom: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding: 2px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    width: fit-content;
+    margin: 0 auto;
 }
 
-.hub-card-series-tag.personal-tag {
+.personal-tag {
+    background: #f0f4f8;
     color: #8496b0;
 }
 
-.hub-card-series-tag.pro-tag {
-    color: #a08878;
+.pro-tag {
+    background: #f5f2f0;
+    color: #a48c7c;
 }
 
-/* 細line裝飾（仿鋁擠型截面輪廓） */
-.hub-card-icon-line {
-    width: 32px;
-    height: 1px;
-    margin-bottom: 20px;
-}
-
-.hub-card-icon-line.personal-line {
-    background: #c8d2de;
-}
-
-.hub-card-icon-line.pro-line {
-    background: #d0c4b8;
-}
-
-/* 卡片文字區 */
-.hub-card-content {
-    flex: 1;
-    margin-bottom: 24px;
+.custom-tag {
+    background: #f2f2f2;
+    color: #888888;
 }
 
 .hub-card-content h3 {
-    font-size: 1.25rem;
-    font-weight: 400;
-    color: #282828;
-    margin: 0 0 10px 0;
-    letter-spacing: 1.5px;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: #2a2a2a;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
 }
 
 .hub-card-content p {
-    font-size: 0.78rem;
-    color: #aaa;
-    margin: 0 0 20px 0;
-    line-height: 1.9;
+    font-size: 0.9rem;
+    color: #888;
+    line-height: 1.6;
     letter-spacing: 1px;
-    font-weight: 300;
 }
 
-/* 功能清單 */
-.hub-feature-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-top: 1px solid #f0ede8;
-    padding-top: 16px;
-}
-
-.hub-feature-list li {
-    font-size: 0.75rem;
-    color: #aaa;
-    letter-spacing: 0.5px;
-    padding-left: 14px;
-    position: relative;
-    line-height: 1.4;
-}
-
-.hub-feature-list li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: #d5d0c8;
-    font-size: 0.7rem;
-}
-
-/* ---- 進入按鈕 ---- */
 .hub-btn {
+    margin-top: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
+    padding: 12px 0;
     border-top: 1px solid #f0ede8;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 400;
     cursor: pointer;
     letter-spacing: 2.5px;
-    transition: background 0.3s ease, color 0.3s ease;
-    border-radius: 2px;
-}
-
-.hub-btn.personal-btn {
-    color: #a0b0c4;
-}
-
-.hub-card.personal:hover .hub-btn.personal-btn {
-    background: rgba(132, 150, 176, 0.1);
-    color: #2a2a2a;
-}
-
-.hub-btn.pro-btn {
-    color: #b4a498;
-}
-
-.hub-card.pro:hover .hub-btn.pro-btn {
-    background: rgba(160, 136, 120, 0.1);
-    color: #2a2a2a;
+    transition: all 0.3s ease;
 }
 
 .hub-arrow {
-    font-size: 1rem;
+    font-size: 1.1rem;
     transition: transform 0.3s ease;
-    display: inline-block;
 }
 
 .hub-card:hover .hub-arrow {
-    transform: translateX(5px);
+    transform: translateX(6px);
+}
+
+.personal-btn {
+    color: #8496b0;
+    border-top: 1px solid rgba(132, 150, 176, 0.2);
+}
+
+.pro-btn {
+    color: #a48c7c;
+    border-top: 1px solid rgba(164, 140, 124, 0.2);
+}
+
+.custom-btn {
+    color: #888888;
+    border-top: 1px solid rgba(136, 136, 136, 0.2);
+}
+
+.hub-card.personal:hover .personal-btn {
+    background: rgba(132, 150, 176, 0.1);
+    font-weight: 500;
+}
+
+.hub-card.pro:hover .pro-btn {
+    background: rgba(164, 140, 124, 0.1);
+    font-weight: 500;
+}
+
+.hub-card.custom:hover .custom-btn {
+    background: rgba(136, 136, 136, 0.1);
+    font-weight: 500;
 }
 
 /* ---- Footer ---- */
 .hub-footer {
-    margin-top: 50px;
+    margin-top: 40px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    animation: hub-fadein 0.8s 0.35s ease both;
 }
 
-/* ---- Hub Social Links ---- */
 .hub-social-links {
-    margin: 0 auto 12px;
-    /* Reduced from 20px */
     display: flex;
-    justify-content: center;
-    gap: 16px;
-    /* Tighten icons space */
-    width: 100%;
+    gap: 20px;
+    margin-bottom: 10px;
 }
 
 .hub-social-icon {
-    color: #999;
-    font-size: 1.3rem;
+    color: #bbb;
+    font-size: 1.4rem;
     transition: all 0.3s ease;
     text-decoration: none;
-    opacity: 0.8;
 }
 
 .hub-social-icon:hover {
     color: #3a3a3a;
-    transform: scale(1.1);
-    opacity: 1;
+    transform: translateY(-3px);
+}
+
+/* ---- Mobile Styles ---- */
+@media (max-width: 768px) {
+    .hub-container {
+        padding: 10px 15px;
+        height: 100vh;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .hub-logo-area {
+        margin-bottom: 5px;
+    }
+
+    .hub-svg-logo {
+        width: 110px;
+    }
+
+    .hub-subtitle {
+        font-size: 0.58rem;
+        margin-bottom: 15px;
+        letter-spacing: 2px;
+    }
+
+    .hub-main {
+        flex: 1;
+        min-height: 0;
+    }
+
+    .hub-cards {
+        flex-direction: column;
+        flex: 1;
+        gap: 10px;
+        min-height: 0;
+    }
+
+    .hub-card {
+        flex: 1;
+        min-width: 0;
+        max-width: 320px;
+    }
+
+    .hub-card-inner {
+        padding: 10px 20px;
+        gap: 2px;
+        justify-content: center;
+    }
+
+    .hub-card-content p {
+        display: none;
+    }
+
+    .hub-card-content h3 {
+        font-size: 1.15rem;
+        margin-bottom: 2px;
+    }
+
+    .hub-card-series-tag {
+        font-size: 0.6rem;
+        padding: 1px 6px;
+    }
+
+    .hub-btn {
+        padding: 6px 0;
+        font-size: 0.7rem;
+        border: none;
+    }
+
+    .hub-footer {
+        margin-top: 10px;
+    }
+}
+
+
+/* ---- 客製設計詢問導引 (Inquiry Guide) ---- */
+.inquiry-guide-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    background: #ffffff;
+    min-height: auto;
+}
+
+.inquiry-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.inquiry-return {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #999;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: color 0.3s;
+}
+
+.inquiry-return:hover {
+    color: var(--accent);
+}
+
+.inquiry-header h2 {
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: #282828;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+}
+
+.inquiry-header p {
+    color: #999;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.inquiry-steps {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    margin-bottom: 30px;
+    align-items: stretch;
+}
+
+.inquiry-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    background: #fcfcfc;
+    border-radius: 8px;
+    border: 1px solid #f5f5f5;
+}
+
+.step-num {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #d1c9bf;
+    letter-spacing: 2px;
+}
+
+.step-content h3 {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.step-content p {
+    color: #777;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.step-icons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.step-icons span {
+    font-size: 0.8rem;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.inquiry-cta-area {
+    text-align: center;
+    padding: 20px;
+    background: #fdfaf7;
+    border-radius: 12px;
+    border: 1px solid #f0e6d8;
+    margin-bottom: 15px;
+}
+
+.inquiry-main-btn {
+    background: #3a3a3a;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.05rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 10;
+    display: inline-block;
+    text-decoration: none;
+    line-height: normal;
+}
+
+.inquiry-main-btn:hover {
+    background: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.inquiry-hint {
+    color: #b4a498;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.inquiry-contact-alt {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #999;
+}
+
+.inquiry-contact-alt a {
+    color: #06c755;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .inquiry-guide-container {
+        padding: 15px 12px;
+    }
+
+    .inquiry-header {
+        margin-bottom: 12px;
+    }
+
+    .inquiry-return {
+        margin-bottom: 8px;
+        font-size: 0.8rem;
+    }
+
+    .inquiry-header h2 {
+        font-size: 1.25rem;
+        margin-bottom: 2px;
+    }
+
+    .inquiry-header p {
+        font-size: 0.75rem;
+    }
+
+    .inquiry-steps {
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .inquiry-step {
+        flex-direction: row;
+        text-align: left;
+        align-items: center;
+        padding: 8px 12px;
+        gap: 12px;
+    }
+
+    .step-num {
+        font-size: 0.7rem;
+    }
+
+    .step-content h3 {
+        font-size: 0.95rem;
+        margin-bottom: 2px;
+    }
+
+    .step-content p {
+        font-size: 0.75rem;
+        line-height: 1.3;
+        margin-bottom: 0;
+    }
+
+    .step-icons {
+        display: none;
+    }
+
+    .inquiry-cta-area {
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+
+    .inquiry-main-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        width: 100%;
+    }
+
+    .inquiry-hint {
+        font-size: 0.7rem;
+    }
+
+    .inquiry-copy-btn {
+        background: #f7f7f7;
+        color: #888;
+        border: 1px solid #ddd;
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        margin-top: 5px;
+        letter-spacing: 1px;
+    }
+
+    .inquiry-copy-btn:hover {
+        background: #efefef;
+        border-color: #ccc;
+    }
+
+    .copy-success {
+        background: #e6ffef !important;
+        color: #22c55e !important;
+        border-color: #22c55e !important;
+    }
+
+    .inquiry-contact-alt {
+        font-size: 0.8rem;
+    }
 }
 
 /* ---- 進場動畫 ---- */
@@ -6327,122 +6716,93 @@ body.mode-b2b {
 /* ---- Mobile：一屏完成，不捲動 ---- */
 @media (max-width: 768px) {
 
-    /* hub-overlay 已是 position:fixed overflow:hidden，手機不需額外覆寫 */
-
-    /* hub-container 尺寸和 padding */
     .hub-container {
         width: 100%;
-        padding: 10px 15px 30px;
-        /* Further reduced */
+        padding: 5px 15px 5px;
         margin: 0 auto;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.6);
+        /* Slightly lighter for clarity */
     }
 
-    /* Logo 縮小 & 間距緊湊 */
     .hub-logo-area {
         margin-bottom: 2px;
+        flex-shrink: 0;
     }
 
     .hub-svg-logo {
-        width: 150px;
-    }
-
-    /* 分線 & 副標題緊湊 */
-    .hub-divider-line {
-        margin: 0 auto 8px;
+        width: 100px;
     }
 
     .hub-subtitle {
-        font-size: 0.62rem;
-        letter-spacing: 2px;
-        margin-bottom: 16px;
+        font-size: 0.55rem;
+        margin-bottom: 5px;
+        flex-shrink: 0;
     }
 
-    /* 卡片區：直向排列，緊湊間距 */
-    .hub-cards {
+    .hub-main {
+        flex: 1;
+        display: flex;
         flex-direction: column;
-        align-items: center;
         width: 100%;
+        overflow: hidden;
+        min-height: 0;
+        /* Important for flex children to shrink */
+    }
+
+    .hub-cards {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
         gap: 8px;
-        /* Further reduced gap between cards */
+        width: 100%;
+        align-items: center;
+        min-height: 0;
     }
 
     .hub-card {
-        flex: none;
+        flex: 1;
         width: 100%;
-        max-width: 320px;
-        /* Constrain width for better mobile appearance */
-        min-width: 0;
+        max-width: 310px;
+        display: flex;
+        min-height: 0;
     }
 
     .hub-card-inner {
-        padding: 6px 16px 4px;
-        /* Extreme minimum padding */
+        padding: 6px 20px;
         gap: 0;
-    }
-
-    /* 手機版還原詳細資訊 (Restore details) */
-    .hub-card-icon-line {
-        display: block;
-        margin-bottom: 2px;
-        /* Extreme minimum */
+        justify-content: center;
+        width: 100%;
+        overflow: hidden;
     }
 
     .hub-card-series-tag {
-        font-size: 0.48rem;
+        font-size: 0.55rem;
+        padding: 1px 6px;
         margin-bottom: 2px;
-        /* Extreme minimum */
-        letter-spacing: 2px;
-    }
-
-    .hub-card-content {
-        margin-bottom: 4px;
-        /* Extreme minimum */
     }
 
     .hub-card-content h3 {
-        font-size: 1rem;
-        margin-bottom: 2px;
-        letter-spacing: 1px;
+        font-size: 1.05rem;
+        margin-bottom: 0px;
     }
 
     .hub-card-content p {
-        font-size: 0.72rem;
-        margin-bottom: 4px;
-        /* Reduced from 8px */
-        line-height: 1.5;
-        display: block !important;
-    }
-
-    /* 手機版還原功能清單 */
-    .hub-feature-list {
-        display: flex;
-        padding-top: 4px;
-        /* Reduced from 8px */
-        margin-bottom: 4px;
-        /* Reduced from 8px */
-        gap: 4px;
-    }
-
-    .hub-feature-list li {
-        font-size: 0.65rem;
-        margin-bottom: 0;
-        line-height: 1.2;
+        display: none;
+        /* Hide descriptions to force 3 equal flat cards on mobile */
     }
 
     .hub-btn {
         padding: 4px 0;
-        /* Minimal button padding */
-        font-size: 0.68rem;
-        letter-spacing: 2px;
+        font-size: 0.65rem;
+        border: none;
+        margin-top: 2px;
     }
 
-    /* Footer 極小化 */
     .hub-footer {
-        margin-top: 14px;
-    }
-
-    .hub-skip-link {
-        font-size: 0.6rem;
-        letter-spacing: 1.5px;
+        margin-top: 2px;
     }
 }

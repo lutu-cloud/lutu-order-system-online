@@ -3,63 +3,41 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxEn0_QHCdDmA24QNrXOfFV
 const rawData = {
     products: [
         ["產品主分類", "產品類型", "產品名稱", "單價", "圖片名稱(鋁材圖配件2D圖)", "圖片名稱(配件3D圖)", "單位", "狀態", "規格描述"],
-        ["鋁材", "20系列", "2020型", 1.6, "2020型.jpg", "", "cm", "", ""],
-        ["鋁材", "20系列", "2040型", 1.6, "2040型.jpg", "", "cm", "", ""],
+        // --- 鋁材 20系列 ---
+        ["鋁材", "20系列", "2020型", 1.3, "2020型.jpg", "", "cm", "", ""],
+        ["鋁材", "20系列", "2040型", 2.4, "2040型.jpg", "", "cm", "", ""],
         ["", "", "", "", "", "", "", "", ""],
-        ["鋁材", "30系列", "3030輕型", 1.6, "3030輕型.jpg", "", "cm", "", ""],
-        ["鋁材", "30系列", "3060輕型", 1.6, "3060輕型.jpg", "", "cm", "", ""],
-        ["鋁材", "30系列", "3030重型", 1.6, "3030重型.jpg", "", "cm", "", ""],
-        ["鋁材", "30系列", "3060重型", 1.6, "3060重型.jpg", "", "cm", "", ""],
+        // --- 鋁材 30系列 ---
+        ["鋁材", "30系列", "3030輕型", 1.9, "3030輕型.jpg", "", "cm", "", ""],
+        ["鋁材", "30系列", "3060輕型", 3.3, "3060輕型.jpg", "", "cm", "", ""],
+        ["鋁材", "30系列", "3030重型", 2.9, "3030重型.jpg", "", "cm", "", ""],
+        ["鋁材", "30系列", "3060重型", 5, "3060重型.jpg", "", "cm", "", ""],
+        ["鋁材", "30系列", "6060輕型", 5.1, "6060輕型.jpg", "", "cm", "", ""],
+        ["鋁材", "30系列", "6060重型", 7.5, "6060重型.jpg", "", "cm", "", ""],
         ["", "", "", "", "", "", "", "", ""],
-        ["鋁材", "40系列", "4040輕型", 1.6, "4040輕型.jpg", "", "cm", "", ""],
-        ["鋁材", "40系列", "4080輕型", 1.6, "4080輕型.jpg", "", "cm", "", ""],
-        ["鋁材", "40系列", "4040重型", 1.6, "4040重型.jpg", "", "cm", "", ""],
-        ["鋁材", "40系列", "4080重型", 1.6, "4080重型.jpg", "", "cm", "", ""],
+        // --- 鋁材 40系列 ---
+        ["鋁材", "40系列", "4040輕型", 3.6, "4040輕型.jpg", "", "cm", "", ""],
+        ["鋁材", "40系列", "4080輕型", 6.2, "4080輕型.jpg", "", "cm", "", ""],
+        ["鋁材", "40系列", "4040重型", 5.2, "4040重型.jpg", "", "cm", "", ""],
+        ["鋁材", "40系列", "4080重型", 9.5, "4080重型.jpg", "", "cm", "", ""],
         ["", "", "", "", "", "", "", "", ""],
-        ["配件", "20系列", "M4六角螺絲", 1, "20M4六角螺絲2D.png", "", "個", "", ""],
-        ["配件", "20系列", "M4螺母", 1, "20M4螺母2D.png", "", "個", "", ""],
-        ["配件", "20系列", "三角連結塊(含M4螺絲x2,M4螺母x2)", 20, "20三角連結塊2D.png", "", "組", "", ""],
-        ["配件", "20系列", "平板連結片(含M4螺絲x2,M4螺母x2)", 20, "20平板連結片2D.png", "", "組", "", ""],
-        ["配件", "20系列", "L層板架(含M4螺絲x2,M4螺母x2)", 20, "20L層板架2D.png", "", "組", "", ""],
-        ["配件", "20系列", "轉向連結塊(含M4螺絲x2,M4螺母x2)", 15, "20轉向連結塊2D.png", "", "組", "", ""],
-        ["配件", "20系列", "絞鍊(含M4螺絲x4,M4螺母x4)", 20, "20絞鍊2D.png", "", "組", "", ""],
-        ["配件", "20系列", "隱式層板架", 10, "20隱式層板架2D.png", "", "個", "", ""],
-        ["配件", "20系列", "合金把手(含M4螺絲x2,M4螺母x2)", 30, "20合金把手2D.png", "", "組", "", ""],
-        ["配件", "20系列", "3mm六角板手", 2, "203mm六角板手2D.png", "", "支", "", ""],
+        // --- 配件 20系列 ---
+        ["配件", "20系列", "M4內六角螺絲/螺母/墊片/墊司 (10枚/包)", 40, "20M4六角螺絲2D.png", "20螺絲3D.png", "包", "", ""],
+        ["配件", "20系列", "三角連結塊", 10, "20三角連結塊2D.png", "20三角連結塊3D.png", "個", "", ""],
+        ["配件", "20系列", "M4六角板手", 10, "203mm六角板手2D.png", "203mm六角板手3D.png", "支", "", ""], // ⚠️ 請確認單價
         ["", "", "", "", "", "", "", "", ""],
-        ["配件", "30系列", "M6六角螺絲", 1, "30M6六角螺絲2D.png", "", "個", "", ""],
-        ["配件", "30系列", "M6螺母", 1, "30M6螺母2D.png", "", "個", "", ""],
-        ["配件", "30系列", "三角連結塊(含M6螺絲x2,M6螺母x2)", 20, "30三角連結塊2D.png", "", "組", "", ""],
-        ["配件", "30系列", "平板連結片(含M6螺絲x2,M6螺母x2)", 20, "30平板連結片2D.png", "", "組", "", ""],
-        ["配件", "30系列", "L層板架(含M6螺絲x2,M6螺母x2)", 25, "30L層板架2D.png", "", "組", "", ""],
-        ["配件", "30系列", "轉向連結塊(含M6螺絲x2,M6螺母x2)", 15, "30轉向連結塊2D.png", "", "組", "", ""],
-        ["配件", "30系列", "180度連接板(含M6螺絲x4,M6螺母x4)", 40, "30180度連接板2D.png", "", "組", "", ""],
-        ["配件", "30系列", "靜音輪腳架固定器(含M6螺絲x2,M6螺母x2)", 20, "30靜音輪腳架固定器2D.png", "", "組", "", ""],
-        ["配件", "30系列", "絞鍊(含M6螺絲x4,M6螺母x4)", 30, "30絞鍊2D.png", "", "組", "", ""],
-        ["配件", "30系列", "隱式層板架", 15, "30隱式層板架2D.png", "", "個", "", ""],
-        ["配件", "30系列", "180度連結器(含M6螺絲x2,M6螺母x2)", 50, "30180度連結器2D.png", "", "組", "", ""],
-        ["配件", "30系列", "金屬端蓋(含M6平頭螺絲x1)", 10, "30金屬端蓋2D.png", "", "組", "", ""],
-        ["配件", "30系列", "靜音輪", 50, "30靜音輪2D.png", "", "個", "", ""],
-        ["配件", "30系列", "腳架", 30, "30腳架2D.png", "", "個", "", ""],
-        ["配件", "30系列", "合金把手(含M6螺絲x2,M6螺母x2)", 40, "30合金把手2D.png", "", "組", "", ""],
-        ["配件", "30系列", "5mm六角板手", 2, "305mm六角板手2D.png", "", "個", "", ""],
+        // --- 配件 30系列 ---
+        ["配件", "30系列", "M6內六角螺絲/螺母/墊片/墊司 (10枚/包)", 60, "30M6六角螺絲2D.png", "30螺絲3D.png", "包", "", ""],
+        ["配件", "30系列", "三角連結塊", 15, "30三角連結塊2D.png", "30三角連結塊3D.png", "個", "", ""],
+        ["配件", "30系列", "平板連結片", 15, "30平板連結片2D.png", "30平板連結片3D.png", "個", "", ""], // ⚠️ 請確認單價
+        ["配件", "30系列", "靜音輪/腳杯固定器", 30, "30靜音輪腳架固定器2D.png", "30靜音輪腳架固定器3D.png", "個", "", ""],
+        ["配件", "30系列", "M6六角板手", 12, "305mm六角板手2D.png", "305mm六角板手3D.png", "支", "", ""],
         ["", "", "", "", "", "", "", "", ""],
-        ["配件", "40系列", "M8六角螺絲", 1, "40M8六角螺絲2D.png", "", "個", "", ""],
-        ["配件", "40系列", "M8螺母", 1, "40M8螺母2D.png", "", "個", "", ""],
-        ["配件", "40系列", "三角連結塊(含M8螺絲x2,M8螺母x2)", 20, "40三角連結塊2D.png", "", "組", "", ""],
-        ["配件", "40系列", "平板連結片(含M8螺絲x2,M8螺母x2)", 30, "40平板連結片2D.png", "", "組", "", ""],
-        ["配件", "40系列", "L層板架(含M8螺絲x2,M8螺母x2)", 35, "40L層板架2D.png", "", "組", "", ""],
-        ["配件", "40系列", "轉向連結塊(含M8螺絲x2,M8螺母x2)", 15, "40轉向連結塊2D.png", "", "組", "", ""],
-        ["配件", "40系列", "180度連接板(含M8螺絲x4,M8螺母x4)", 50, "40180度連接板2D.png", "", "組", "", ""],
-        ["配件", "40系列", "靜音輪腳架固定器(含M8螺絲x2,M8螺母x2)", 20, "40靜音輪腳架固定器2D.png", "", "組", "", ""],
-        ["配件", "40系列", "絞鍊(含M8螺絲x4,M8螺母x4)", 35, "40絞鍊2D.png", "", "組", "", ""],
-        ["配件", "40系列", "隱式層板架", 20, "40隱式層板架2D.png", "", "個", "", ""],
-        ["配件", "40系列", "180度連結器(含M8螺絲x2,M8螺母x2)", 50, "40180度連結器2D.png", "", "組", "", ""],
-        ["配件", "40系列", "金屬端蓋(含M8平頭螺絲x1)", 10, "40金屬端蓋2D.png", "", "組", "", ""],
-        ["配件", "40系列", "靜音輪", 50, "40靜音輪2D.png", "", "個", "", ""],
-        ["配件", "40系列", "腳架", 30, "40腳架2D.png", "", "個", "", ""],
-        ["配件", "40系列", "合金把手組(含M8螺絲x2,M8螺母x2)", 50, "40合金把手組2D.png", "", "組", "", ""],
-        ["配件", "40系列", "6mm六角板手", 2, "406mm六角板手2D.png", "", "個", "", ""]
+        // --- 配件 40系列 ---
+        ["配件", "40系列", "M8內六角螺絲/螺母/墊片/墊司 (10枚/包)", 80, "40M8六角螺絲2D.png", "40螺絲3D.png", "包", "", ""], // ⚠️ 請確認單價
+        ["配件", "40系列", "三角連結塊", 20, "40三角連結塊2D.png", "40三角連結塊3D.png", "個", "", ""],
+        ["配件", "40系列", "40靜音輪/腳杯固定器", 40, "40靜音輪腳架固定器2D.png", "40靜音輪腳架固定器3D.png", "個", "", ""],
+        ["配件", "40系列", "M8六角板手", 15, "406mm六角板手2D.png", "406mm六角板手3D.png", "支", "", ""]
     ],
     projects: [
         ["ID", "專案名稱", "描述", "Youtube", "PDF", "情境圖", "完成圖", "step1", "step2", "step3", "step4"],
@@ -88,6 +66,9 @@ window.removeSKU = function (name) {
 
 window.isScrewOrNut = function (name) {
     const n = name.toLowerCase();
+    // 排除組合配件包（舊格式：含螺絲，新格式：xx枚/包）
+    if (n.includes('(含') || n.includes('（含') || n.includes('(組') || n.includes('（組')) return false;
+    if (n.includes('/包') || n.includes('枚/') || n.includes('包裝')) return false; // 新格式：螺絲組合包
     return n.includes('螺絲') || n.includes('螺母') || n.includes('螺帽') || n.includes('滑塊') || n.includes('彈片');
 };
 
@@ -190,67 +171,39 @@ const hotAccessoriesData = [
 
 // Hardcoded B2B Inventory Data
 const b2bRawData = [
-    // Aluminum 20
-    { name: "2020型 [HR-0001]", type: "鋁材", series: "20", stock: 100 },
-    { name: "2040型 [HR-0002]", type: "鋁材", series: "20", stock: 100 },
-    // Aluminum 30
-    { name: "3030輕型 [HR-0004]", type: "鋁材", series: "30", stock: 100 },
-    { name: "3060輕型 [HR-0006]", type: "鋁材", series: "30", stock: 100 },
-    { name: "3030重型 [HR-0003]", type: "鋁材", series: "30", stock: 100 },
-    { name: "3060重型 [HR-0005]", type: "鋁材", series: "30", stock: 100 },
-    // Aluminum 40
-    { name: "4040輕型 [HR-0010]", type: "鋁材", series: "40", stock: 100 },
-    { name: "4080輕型 [HR-0012]", type: "鋁材", series: "40", stock: 100 },
-    { name: "4040重型 [HR-0009]", type: "鋁材", series: "40", stock: 100 },
-    { name: "4080重型 [HR-0011]", type: "鋁材", series: "40", stock: 100 },
+    // === 鋁材 20系列 ===
+    { name: "2020型", type: "鋁材", series: "20", stock: 100 },
+    { name: "2040型", type: "鋁材", series: "20", stock: 100 },
+    // === 鋁材 30系列 ===
+    { name: "3030輕型", type: "鋁材", series: "30", stock: 100 },
+    { name: "3060輕型", type: "鋁材", series: "30", stock: 100 },
+    { name: "3030重型", type: "鋁材", series: "30", stock: 100 },
+    { name: "3060重型", type: "鋁材", series: "30", stock: 100 },
+    { name: "6060輕型", type: "鋁材", series: "30", stock: 100 },
+    { name: "6060重型", type: "鋁材", series: "30", stock: 100 },
+    // === 鋁材 40系列 ===
+    { name: "4040輕型", type: "鋁材", series: "40", stock: 100 },
+    { name: "4080輕型", type: "鋁材", series: "40", stock: 100 },
+    { name: "4040重型", type: "鋁材", series: "40", stock: 100 },
+    { name: "4080重型", type: "鋁材", series: "40", stock: 100 },
 
-    // Accessories 20
-    { name: "M4六角螺絲 [A20-1M4]", type: "配件", series: "20", stock: 1000 },
-    { name: "M4螺母 [A20-0M4]", type: "配件", series: "20", stock: 1000 },
-    { name: "三角連結塊(含M4螺絲x2,M4螺母x2) [A20-333]", type: "配件", series: "20", stock: 500 },
-    { name: "平板連結片(含M4螺絲x2,M4螺母x2) [A20-LLL]", type: "配件", series: "20", stock: 500 },
-    { name: "L層板架(含M4螺絲x2,M4螺母x2) [A20-L]", type: "配件", series: "20", stock: 200 },
-    { name: "轉向連結塊(含M4螺絲x2,M4螺母x2) [A20-180CUBE]", type: "配件", series: "20", stock: 200 },
-    { name: "絞鍊(含M4螺絲x4,M4螺母x4) [A20-HINGE]", type: "配件", series: "20", stock: 200 },
-    { name: "20隱式層板架 [A20-HIDE]", type: "配件", series: "20", stock: 200 },
-    { name: "20合金把手(含M4螺絲x2,M4螺母x2) [A20-HAND]", type: "配件", series: "20", stock: 200 },
-    { name: "3mm六角板手 [A20-3MM]", type: "配件", series: "20", stock: 50 },
+    // === 配件 20系列 ===
+    { name: "M4內六角螺絲/螺母/墊片/墊司 (10枚/包)", type: "配件", series: "20", stock: 500 },
+    { name: "三角連結塊", type: "配件", series: "20", stock: 500 },
+    { name: "M4六角板手", type: "配件", series: "20", stock: 50 },
 
-    // Accessories 30
-    { name: "M6六角螺絲 [A30-1M6]", type: "配件", series: "30", stock: 1000 },
-    { name: "M6螺母 [A30-0M6]", type: "配件", series: "30", stock: 1000 },
-    { name: "三角連結塊(含M6螺絲x2,M6螺母x2) [A30-333]", type: "配件", series: "30", stock: 500 },
-    { name: "平板連結片(含M6螺絲x2,M6螺母x2) [A30-LLL]", type: "配件", series: "30", stock: 500 },
-    { name: "L層板架(含M6螺絲x2,M6螺母x2) [A30-L]", type: "配件", series: "30", stock: 200 },
-    { name: "轉向連結塊(含M6螺絲x2,M6螺母x2) [A30-180CUBE]", type: "配件", series: "30", stock: 200 },
-    { name: "180度連接板(含M6螺絲x4,M6螺母x4) [A30-180PAD]", type: "配件", series: "30", stock: 200 },
-    { name: "30靜音輪/腳架固定器(含M6螺絲x2,M6螺母x2) [A30-FG]", type: "配件", series: "30", stock: 200 },
-    { name: "絞鍊(含M6螺絲x4,M6螺母x4) [A30-HINGE]", type: "配件", series: "30", stock: 200 },
-    { name: "30隱式層板架 [A30-HIDE]", type: "配件", series: "30", stock: 200 },
-    { name: "180度連結器(含M6螺絲x2,M6螺母x2) [A30-180LID2]", type: "配件", series: "30", stock: 200 },
-    { name: "30金屬端蓋(含M6平頭螺絲x1) [A30-LID]", type: "配件", series: "30", stock: 100 },
-    { name: "30靜音輪 [A30-GEAR]", type: "配件", series: "30", stock: 100 },
-    { name: "30腳架 [A30-FEET]", type: "配件", series: "30", stock: 100 },
-    { name: "30合金把手(含M6螺絲x2,M6螺母x2) [A30-HAND]", type: "配件", series: "30", stock: 100 },
-    { name: "5mm六角板手 [A30-5MM]", type: "配件", series: "30", stock: 50 },
+    // === 配件 30系列 ===
+    { name: "M6內六角螺絲/螺母/墊片/墊司 (10枚/包)", type: "配件", series: "30", stock: 500 },
+    { name: "三角連結塊", type: "配件", series: "30", stock: 500 },
+    { name: "平板連結片", type: "配件", series: "30", stock: 500 },
+    { name: "靜音輪/腳杯固定器", type: "配件", series: "30", stock: 200 },
+    { name: "M6六角板手", type: "配件", series: "30", stock: 50 },
 
-    // Accessories 40
-    { name: "M8六角螺絲 [A40-1M8]", type: "配件", series: "40", stock: 1000 },
-    { name: "M8螺母 [A40-0M8]", type: "配件", series: "40", stock: 1000 },
-    { name: "三角連結塊(含M8螺絲x2,M8螺母x2) [A40-333]", type: "配件", series: "40", stock: 500 },
-    { name: "平板連結片(含M8螺絲x2,M8螺母x2) [A40-LLL]", type: "配件", series: "40", stock: 500 },
-    { name: "L層板架(含M8螺絲x2,M8螺母x2) [A40-L]", type: "配件", series: "40", stock: 200 },
-    { name: "轉向連結塊(含M8螺絲x2,M8螺母x2) [A40-180CUBE]", type: "配件", series: "40", stock: 200 },
-    { name: "180度連接板(含M8螺絲x4,M8螺母x4) [A40-180PAD]", type: "配件", series: "40", stock: 200 },
-    { name: "40靜音輪/腳架固定器(含M8螺絲x2,M8螺母x2) [A40-FG]", type: "配件", series: "40", stock: 200 },
-    { name: "絞鍊(含M8螺絲x4,M8螺母x4) [A40-HINGE]", type: "配件", series: "40", stock: 200 },
-    { name: "40隱式層板架 [A40-HIDE]", type: "配件", series: "40", stock: 200 },
-    { name: "180度連結器(含M8螺絲x2,M8螺母x2) [A40-180LID2]", type: "配件", series: "40", stock: 200 },
-    { name: "40金屬端蓋(含M8平頭螺絲x1) [A40-LID]", type: "配件", series: "40", stock: 100 },
-    { name: "40靜音輪 [A40-GEAR]", type: "配件", series: "40", stock: 100 },
-    { name: "40腳架 [A40-FEET]", type: "配件", series: "40", stock: 100 },
-    { name: "40合金把手(含M8螺絲x2,M8螺母x2) [A40-HAND]", type: "配件", series: "40", stock: 100 },
-    { name: "6mm六角板手 [A40-6MM]", type: "配件", series: "40", stock: 50 }
+    // === 配件 40系列 ===
+    { name: "M8內六角螺絲/螺母/墊片/墊司 (10枚/包)", type: "配件", series: "40", stock: 500 },
+    { name: "三角連結塊", type: "配件", series: "40", stock: 500 },
+    { name: "40靜音輪/腳杯固定器", type: "配件", series: "40", stock: 200 },
+    { name: "M8六角板手", type: "配件", series: "40", stock: 50 }
 ];
 
 // Global Inventory Fetcher
@@ -283,13 +236,28 @@ function processInventoryData(data) {
         let name = getVal(item, ['name', '品項名稱', '品項']) || "";
         let qty = getVal(item, ['qty', 'stock', '庫存數量', '數量']) || 0;
         if (!name) return null;
+
+        // [Fix] 優先讀「產品類型」欄（如 "20系列"），再 fallback 到名稱判斷
         let series = "Others";
-        if (name.includes('20') || name.startsWith('20-')) series = "20";
-        if (name.includes('30') || name.startsWith('30-')) series = "30";
-        if (name.includes('40') || name.startsWith('40-')) series = "40";
+        let seriesRaw = String(getVal(item, ['series', '產品類型']) || '').replace('系列', '').trim();
+        if (['20', '30', '40'].includes(seriesRaw)) {
+            series = seriesRaw;
+        } else {
+            // Fallback: detect series from name (for old-format items with prefix)
+            if (name.includes('20') || name.startsWith('20-')) series = "20";
+            if (name.includes('30') || name.startsWith('30-')) series = "30";
+            if (name.includes('40') || name.startsWith('40-')) series = "40";
+        }
+
+        // [Fix] 優先讀「產品主分類」欄判斷類型
         let type = "配件";
-        if (item.type === '鋁材') type = "鋁材";
-        else if (name.includes('鋁擠型') || name.includes('鋁材') || name.match(/^(20|30|40)\d{2}型/) || name.includes('輕型') || name.includes('重型')) type = "鋁材";
+        let typeRaw = String(getVal(item, ['type', '產品主分類']) || '');
+        if (typeRaw === '鋁材') {
+            type = "鋁材";
+        } else if (name.includes('輕型') || name.includes('重型') || name.match(/^\d{4}型/)) {
+            type = "鋁材";
+        }
+
         return { id: name, name: name, type: type, series: series, price: 0, stock: qty, img2d: '', unit: '個' };
     }).filter(p => p);
 
@@ -774,6 +742,7 @@ function renderSeries(series) {
     const weightMap = {
         '2020型': '0.458', '2040型': '0.862',
         '3030輕型': '0.693', '3030重型': '1.07', '3060輕型': '1.218', '3060重型': '1.844',
+        '6060輕型': '1.908', '6060重型': '2.763',
         '4040輕型': '1.298', '4040重型': '1.923', '4080輕型': '2.265', '4080重型': '3.505'
     };
 
@@ -1813,23 +1782,43 @@ window.selectUserMode = function (mode) {
     const hub = document.getElementById('hub-overlay');
     if (hub) hub.classList.add('hidden');
 
+    // UI Shell Toggling (Sidebar and Floating Buttons)
+    const b2cShellElements = [
+        document.getElementById('b2cSidebar'),
+        document.querySelector('.floating-cart-btn'),
+        document.querySelector('.floating-hot-btn'),
+        document.querySelector('.mobile-hamburger')
+    ];
+
     if (mode === 'B2B') {
         document.body.classList.add('mode-b2b');
         document.getElementById('b2b-dashboard').classList.remove('hidden');
+        document.getElementById('view-custom-inquiry')?.classList.add('hidden');
 
-        // No more sidebar tree init
+        // Hide B2C Shell
+        b2cShellElements.forEach(el => el?.classList.add('hidden'));
 
-        // Default to loading '20' Series
         switchB2BSeries('20');
-
-        // Show Dashboard Cockpit initially
         setTimeout(renderB2BDashboard, 100);
-
         renderAnalysisAndManifest();
     } else {
         document.body.classList.remove('mode-b2b');
         document.getElementById('b2b-dashboard').classList.add('hidden');
         switchSeries('20');
+
+        if (mode === 'CUSTOM') {
+            document.getElementById('view-custom-inquiry')?.classList.remove('hidden');
+            document.querySelectorAll('.content-view').forEach(v => {
+                if (v.id !== 'view-custom-inquiry') v.classList.add('hidden');
+            });
+            // Hide B2C Shell
+            b2cShellElements.forEach(el => el?.classList.add('hidden'));
+        } else {
+            // This is B2C Mode
+            document.getElementById('view-custom-inquiry')?.classList.add('hidden');
+            // Show B2C Shell
+            b2cShellElements.forEach(el => el?.classList.remove('hidden'));
+        }
     }
 };
 
@@ -1837,12 +1826,19 @@ window.returnToHub = function () {
     const hub = document.getElementById('hub-overlay');
     if (hub) hub.classList.remove('hidden');
 
-    // Hide B2B Dashboard regardless
-    document.getElementById('b2b-dashboard').classList.add('hidden');
+    // Hide everything else
     document.body.classList.remove('mode-b2b');
+    document.getElementById('b2b-dashboard')?.classList.add('hidden');
+    document.getElementById('view-custom-inquiry')?.classList.add('hidden');
 
-    // Reset Title or View if needed (Optional)
-    // switchView('product'); 
+    // Hide B2C Shell
+    const b2cShellElements = [
+        document.getElementById('b2cSidebar'),
+        document.querySelector('.floating-cart-btn'),
+        document.querySelector('.floating-hot-btn'),
+        document.querySelector('.mobile-hamburger')
+    ];
+    b2cShellElements.forEach(el => el?.classList.add('hidden'));
 };
 
 // Track current B2B series for navigation
@@ -1860,7 +1856,16 @@ window.switchB2BSeries = function (series) {
         }
     });
 
-    // 2. Render Content
+    // 2. Update Panel Theme Class (New)
+    const panel = document.querySelector('.b2b-product-panel');
+    if (panel) {
+        // Remove all possible theme classes
+        panel.classList.remove('theme-20', 'theme-30', 'theme-40');
+        // Add current theme class
+        panel.classList.add(`theme-${series.split('-')[0]}`);
+    }
+
+    // 3. Render Content
     renderSeriesOverview(series);
 };
 
@@ -1877,6 +1882,34 @@ window.returnToSeriesOverview = function () {
     }
 };
 
+// --- B2B Utilities ---
+window.findB2BItem = function (name) {
+    if (typeof b2bRawData === 'undefined') return null;
+    let n = String(name || "").toLowerCase().trim();
+    return b2bRawData.find(item => {
+        let rName = String(item.name || "").toLowerCase();
+        return rName === n || rName.startsWith(n + " [") || rName.startsWith(n + "(");
+    });
+};
+
+window.toggleProductAccordion = function (el) {
+    const parent = el.closest('.b2b-product-row');
+    if (!parent) return;
+    const content = parent.querySelector('.product-accordion-content');
+    const arrow = parent.querySelector('.accordion-arrow');
+    if (!content) return;
+
+    const isHidden = (content.style.display === 'none' || content.style.display === '');
+
+    if (isHidden) {
+        content.style.display = 'block';
+        if (arrow) arrow.style.transform = 'rotate(180deg)';
+    } else {
+        content.style.display = 'none';
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+    }
+};
+
 // ============================================
 // GLOBAL SEARCH LOGIC (New)
 // ============================================
@@ -1890,7 +1923,6 @@ window.handleB2BSearch = function (keyword) {
 
     // 1. If empty, revert to current series tab logic
     if (keyword === "") {
-        // Restore active tab state visually
         tabs.forEach(btn => {
             if (btn.getAttribute('data-series') === currentB2BSeries) btn.classList.add('active');
             else btn.classList.remove('active');
@@ -1899,16 +1931,14 @@ window.handleB2BSearch = function (keyword) {
         return;
     }
 
-    // 2. Clear Tab Active States (Visual cue that we are in Global Search mode)
+    // 2. Clear Tab Active States
     tabs.forEach(btn => btn.classList.remove('active'));
 
-    // 3. Filter ALL products (ignoring series)
-    // We enhance search to include "Hidden" B2B SKUs
+    // 3. Filter ALL products
     let matches = products.filter(p => {
         let cleanName = p.name.replace(/\(含.*?\)/, '').replace(/組$/, '').trim();
         let b2bMatch = findB2BItem(p.name) || findB2BItem(`${p.series}-${cleanName}`);
         let hiddenSKU = b2bMatch ? parseSKU(b2bMatch.name) : "";
-
         let text = (p.name + " " + (p.id || "") + " " + (hiddenSKU || "")).toLowerCase();
         return text.includes(keyword);
     });
@@ -1925,169 +1955,199 @@ window.handleB2BSearch = function (keyword) {
         return;
     }
 
-    // Reuse rendering logic but with explicit series badges
     let html = `
         <div style="padding: 15px 15px 0 15px; flex-shrink:0;">
             <h2 style="margin-bottom:12px; color:#2c3e50; font-size:1.2rem; font-weight:300; letter-spacing:1px;">
                 <i class="fas fa-search"></i> 搜尋結果 <span style="font-weight:normal; font-size:0.9rem; color:#666;">(${matches.length} 筆)</span>
             </h2>
-             <div class="b2b-table-header" style="font-size:0.85rem; padding:8px 0; border-bottom:2px solid #eee; margin-bottom:5px;">
+             <div class="b2b-table-header">
                 <div class="col-img" style="flex:0 0 65px;">圖</div>
                 <div class="col-name" style="padding-left:8px;">品名 / 規格</div>
                 <div class="col-price" style="text-align:right; padding-right:8px;">單價</div>
-                <div class="col-action" style="flex:0 0 20px;"></div>
             </div>
         </div>
         <div id="b2b-search-list" class="b2b-product-list" style="flex:1; overflow-y:auto; padding:0 15px 15px 15px; min-height:0;">
     `;
 
     matches.forEach(p => {
-        let imgUrl = (p.img2d) ? `assets/${p.img2d}` : 'https://placehold.co/50';
+        // Universal property check (img2d or image2D)
+        const rawImg = p.img2d || p.image2D || "";
+        const imgUrl = (rawImg && rawImg !== '-') ? `assets/${rawImg}` : `https://placehold.co/100x100?text=${encodeURIComponent(p.name)}`;
+        const displayName = p.name;
 
-        // Define Series Color
-        let sColor = '#999';
-        if (p.series === '20') sColor = '#3498db';
-        if (p.series === '30') sColor = '#e67e22';
-        if (p.series === '40') sColor = '#2ecc71';
+        // Data Extraction
+        let b2bMatch = findB2BItem(p.name);
+        let skuCode = b2bMatch ? parseSKU(b2bMatch.name) : null;
+        const mainCodeHtml = skuCode ? `<span class="sku-main-code" style="background:var(--series-bg, #eee); color:var(--series-color, #666); padding:1px 4px; border-radius:3px; font-weight:bold;">${skuCode}</span>` : '';
 
-        // --- SMART CODE INJECTION & HYBRID NAMING (Unified) ---
-        let displayName = p.name;
-        let mainCodeHtml = "";
-        let skuCode = "";
+        let w = weightMap[p.name] || 0;
+        const weightHtml = w ? `<span style="opacity:0.6; font-size:0.75rem;"><i class="fas fa-weight-hanging"></i> ${w} kg/m</span>` : '';
+
+        const priceDisplay = p.price;
+        const unitDisplay = (p.type === '鋁材') ? 'cm' : (p.unit || '個');
+
+        let accordionHtml = renderProductAccordion(p);
+        const seriesPrefix = p.series ? p.series.split('-')[0] : '20';
+
+        // Accessory Sub-items logic
         let subItemsHtml = "";
-
-        let cleanNameForMatch = p.name.replace(/\(含.*?\)/, '').replace(/組$/, '').trim();
-        let match = findB2BItem(p.name);
-        if (!match) match = findB2BItem(`${p.series}-${cleanNameForMatch}`);
-
-        if (match) {
-            skuCode = parseSKU(match.name);
-            let b2bBaseName = removeSKU(match.name).trim();
-            // Extract Set Info
-            let flowInfo = "";
-            let setMatch = p.name.match(/(\(含.*?\))/);
-            if (setMatch) flowInfo = " " + setMatch[1];
-
-            displayName = b2bBaseName;
-            const fullB2BName = match.name;
-            if (flowInfo && !fullB2BName.includes('(含')) {
-                displayName += flowInfo;
-            }
-
-            if (skuCode) {
-                // Colored badge for search results
-                mainCodeHtml = `<span class="sku-badge" style="background:${sColor}15; color:${sColor}; border:1px solid ${sColor}40;">[${skuCode}]</span>`;
-            }
-        }
-
-        // Sub-items
         if (p.name.includes('(') && p.name.includes(')')) {
             let subMap = new Map();
-            extractAndAddScrewNutsToMap(p.name, 1, parseInt(p.series), subMap);
+            extractAndAddScrewNutsToMap(p.name, 1, parseInt(seriesPrefix), subMap);
             if (subMap.size > 0) {
-                subItemsHtml = `<div style="margin-top:4px; padding-left:10px; border-left:2px solid #ddd;">`;
+                subItemsHtml = `<div style="margin-top:4px; padding-left:10px; border-left:2px solid var(--series-color, #ddd);">`;
                 subMap.forEach((qty, key) => {
-                    let partMatch = findB2BItem(key);
-                    let subSku = partMatch ? parseSKU(partMatch.name) : '';
                     let cleanPartName = key.replace(/^\d+-/, '');
-                    subItemsHtml += `<div class="b2b-sub-item-row">${cleanPartName} <span style="font-weight:300; margin-left:5px;">x${qty}</span></div>`;
+                    subItemsHtml += `<div class="b2b-sub-item-row" style="font-size:0.75rem; color:#666;">${cleanPartName} <span style="font-weight:600; margin-left:5px; color:var(--series-color, #555);">x${qty}</span></div>`;
                 });
                 subItemsHtml += `</div>`;
             }
         }
 
-        let priceDisplay = p.price;
-        let unitDisplay = p.unit || '個';
-        if (p.type === '鋁材') unitDisplay = 'cm';
-
-        // Weight Display for Left Panel
-        let weightHtml = '';
-        if (p.type === '鋁材') {
-            let wm = weightMap[p.name];
-            if (wm) {
-                weightHtml = `<span style="font-size:0.75rem; color:#888; margin-left:5px; background:#f0f0f0; padding:1px 4px; border-radius:3px;">${wm} kg/m</span>`;
-            }
-        }
-
-        // Accordion Content HTML (Hidden by default)
-        let rowId = 'search-batch-' + Math.random().toString(36).substr(2, 5);
-        let accordionHtml = '';
-
-        if (p.type === '鋁材') {
-            accordionHtml = `
-                <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:#f8f9fa; border-radius:8px; border:1px dashed #ddd;">
-                     <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
-                         <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                              <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;" onclick="event.stopPropagation()">
-                              <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;" onclick="event.stopPropagation()">
-                         </div>
-                     </div>
-                     
-                     <div style="display:flex; gap:10px; padding-top:10px; border-top:1px solid #eee;">
-                         <button onclick="event.stopPropagation(); addBatchRow('${rowId}')" class="btn-secondary" style="flex:1; padding:8px; border:1px solid #ccc; background:white; color:#555; border-radius:4px; cursor:pointer;">
-                             <i class="fas fa-plus"></i> 新增規格
-                         </button>
-                         <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="flex:2; padding:8px; background:#2c3e50; color:white; border:none; border-radius:4px; cursor:pointer;">
-                             加入清單 <i class="fas fa-arrow-right"></i>
-                         </button>
-                     </div>
-                     <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:5px; font-weight:bold;">
-                        <i class="fas fa-check"></i> 已加入
-                    </div>
-                </div>`;
-        } else {
-            accordionHtml = `
-                <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:#f8f9fa; border-radius:8px; border:1px dashed #ddd;">
-                     <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
-                         <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                              <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:100%;" onclick="event.stopPropagation()">
-                         </div>
-                     </div>
-                     <div style="padding-top:10px; border-top:1px solid #eee;">
-                         <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="width:100%; padding:8px; background:#2c3e50; color:white; border:none; border-radius:4px; cursor:pointer;">
-                             加入清單
-                         </button>
-                     </div>
-                      <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:5px; font-weight:bold;">
-                        <i class="fas fa-check"></i> 已加入
-                    </div>
-                </div>`;
-        }
-
         html += `
-        <div class="b2b-product-row b2b-series-${p.series.split('-')[0]}" 
-             style="padding:0; border-bottom:1px solid #f1f2f6;">
-             
+        <div class="b2b-product-row b2b-series-${seriesPrefix}" data-product-name="${p.name}">
              <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
                 <div class="col-img" style="flex:0 0 65px; position:relative;">
-                    <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:4px; object-fit: cover; cursor:zoom-in;" onclick="event.stopPropagation(); showLightbox(this.src)">
-                    <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:${sColor}; color:white; font-size:0.7rem; font-weight:400;">${p.series.split('-')[0]}</div>
+                    <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:6px; object-fit: cover; cursor:zoom-in; border:1px solid #eee;" onclick="event.stopPropagation(); showLightbox(this.src)">
+                    <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:var(--series-color, #999); color:white; font-size:0.7rem; font-weight:600; line-height:1;">${seriesPrefix}</div>
                 </div>
-                <div class="col-name" style="padding-left:12px; min-width:0; flex:1;">
-                    <div style="font-weight:300; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:0.5px;">${displayName}</div>
-                    <div style="font-size:0.8rem; color:#666; font-weight:300;">${mainCodeHtml} ${weightHtml}</div>
+                <div class="col-name" style="padding-left:15px; min-width:0; flex:1;">
+                    <div style="font-weight:700; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
+                    <div style="font-size:0.8rem; color:#666; display:flex; align-items:center; gap:8px;">${mainCodeHtml} ${weightHtml}</div>
                     ${subItemsHtml}
                 </div>
-                <div class="col-price" style="flex:0 0 90px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:0.9rem; font-weight:300; color:#444;">
-                    <div><span style="color:#e74c3c;">$${priceDisplay}</span> / ${unitDisplay}</div>
-                    <i class="fas fa-chevron-down accordion-arrow" style="margin-top:5px; color:#ddd; transition:transform 0.3s;"></i>
+                <div class="col-price" style="flex:0 0 95px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:0.9rem; color:#444;">
+                    <div style="font-weight:700;"><span style="color:#e74c3c; font-size:1rem;">$${priceDisplay}</span><span style="font-size:0.75rem; color:#999; font-weight:normal;"> / ${unitDisplay}</span></div>
+                    <i class="fas fa-chevron-down accordion-arrow" style="margin-top:8px; color:var(--series-color, #ddd); transition:transform 0.3s;"></i>
                 </div>
             </div>
-
-            <!-- Accordion Content -->
             ${accordionHtml}
-            
         </div>`;
     });
 
     html += `</div>`;
     mainEl.innerHTML = html;
-}
+};
 
 // (Old Visual Cutter removed - consolidated into single definition below at line ~3923)
 
 // Old Sidebar functions removed (renderB2BSidebarTree, toggleTree, b2bFilter)
 
+
+// --- B2B Helper Functions (Restored) ---
+
+function renderProductAccordion(p) {
+    let rowId = 'search-batch-' + Math.random().toString(36).substr(2, 5);
+    let html = '';
+
+    // Robust type check
+    const isProfile = (p.type === '鋁材' || p.unit === 'cm' || p.name.match(/^\d{4}型/));
+
+    if (isProfile) {
+        html = `
+            <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:rgba(255,255,255,0.4); border-radius:12px; border:1px dashed var(--series-color, #ddd);">
+                 <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
+                     <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                          <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1; height:36px;">
+                          <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:75px; height:36px;">
+                     </div>
+                 </div>
+                 
+                 <div style="display:flex; gap:10px; padding-top:12px; border-top:1px solid rgba(0,0,0,0.05); margin-top:5px;">
+                     <button onclick="event.stopPropagation(); addBatchRow('${rowId}')" class="btn-secondary" style="flex:1; padding:8px; border:1px solid #ccc; background:white; color:#555; border-radius:6px; cursor:pointer; font-size:0.85rem;">
+                         <i class="fas fa-plus"></i> 新增規格
+                     </button>
+                     <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="flex:1.5; padding:8px; background:#2c3e50; color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:bold;">
+                         加入清單 <i class="fas fa-arrow-right"></i>
+                     </button>
+                 </div>
+                 <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:8px; font-weight:bold;">
+                    <i class="fas fa-check"></i> 已加入清單
+                </div>
+            </div>`;
+    } else {
+        html = `
+            <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:rgba(255,255,255,0.4); border-radius:12px; border:1px dashed var(--series-color, #ddd);">
+                 <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
+                     <div class="batch-row" style="display:flex; gap:10px; align-items:center;">
+                          <div style="font-size:0.9rem; color:#666;">數量：</div>
+                          <input type="number" class="detail-input input-qty" value="1" min="1" style="flex:1; height:36px;">
+                     </div>
+                 </div>
+                 <div style="padding-top:12px; border-top:1px solid rgba(0,0,0,0.05); margin-top:10px;">
+                     <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="width:100%; padding:10px; background:#2c3e50; color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:bold;">
+                         加入清單 <i class="fas fa-plus"></i>
+                     </button>
+                 </div>
+                  <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:8px; font-weight:bold;">
+                    <i class="fas fa-check"></i> 已加入清單
+                </div>
+            </div>`;
+    }
+    return html;
+}
+
+window.addBatchRow = function (containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const newRow = document.createElement('div');
+    newRow.className = 'batch-row';
+    newRow.style.cssText = 'display:flex; gap:10px; align-items:center; margin-bottom:10px; animation: slideInDown 0.2s ease;';
+    newRow.innerHTML = `
+        <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1; height:36px;" onclick="event.stopPropagation()">
+        <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:75px; height:36px;" onclick="event.stopPropagation()">
+        <button onclick="this.parentElement.remove()" style="background:none; border:none; color:#e74c3c; cursor:pointer; padding:5px;"><i class="fas fa-times"></i></button>
+    `;
+    container.appendChild(newRow);
+};
+
+window.addToCartBatch = function (productName, containerId, btnEl) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const product = products.find(p => p.name === productName);
+    if (!product) return;
+
+    const rows = container.querySelectorAll('.batch-row');
+    let addedAny = false;
+
+    rows.forEach(row => {
+        const lenInput = row.querySelector('.input-len');
+        const qtyInput = row.querySelector('.input-qty');
+
+        let len = lenInput ? parseFloat(lenInput.value) : 0;
+        let qty = parseInt(qtyInput ? qtyInput.value : 1) || 0;
+
+        if (qty > 0) {
+            if (product.type === '鋁材' && (isNaN(len) || len < 10)) return; // Skip invalid rows
+
+            const newItem = {
+                id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                productId: product.id,
+                name: product.name,
+                price: product.price,
+                type: product.type,
+                series: product.series,
+                len: len,
+                qty: qty,
+                unit: product.unit || '個',
+                img: product.img2d
+            };
+            cart.push(newItem);
+            addedAny = true;
+        }
+    });
+
+    if (addedAny) {
+        const feedback = btnEl.closest('.product-accordion-content').querySelector('.add-feedback');
+        if (feedback) {
+            feedback.style.display = 'block';
+            setTimeout(() => feedback.style.display = 'none', 2000);
+        }
+        renderAnalysisAndManifest();
+    } else {
+        alert("請輸入有效的數量或規格！");
+    }
+};
 
 // ============================================
 // DASHBOARD (Middle Panel - "Cockpit")
@@ -2121,7 +2181,7 @@ window.renderB2BDashboard = function () {
 
         </div>
         
-        <div id="b2b-middle-stats" style="margin-top:5px; border-top:1px solid #eee; padding-top:10px; transition:all 0.3s;">
+        <div id="b2b-middle-stats" style="margin-top:5px; border-top:1px solid #eee; padding-top:10px; transition:all 0.3s; display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;">
              <!-- Stats will be injected here by renderAnalysisAndManifest -->
              <div style="text-align:center; color:#999; font-size:0.9rem;">
                 <i class="fas fa-chart-pie"></i> 購物車為空，尚無分析數據
@@ -2151,162 +2211,69 @@ function renderSeriesOverview(series) {
     let html = `
         <div class="b2b-series-index-header" style="padding: 15px 15px 0 15px; flex-shrink:0;">
             <h2 style="margin-bottom:12px; color:#2c3e50; font-size:1.2rem; font-weight:800;"><i class="fas fa-th-list"></i> ${series} 系列</h2>
-            <div class="b2b-table-header" style="font-size:0.85rem; padding:8px 0; border-bottom:2px solid #eee; margin-bottom:5px;">
+            <div class="b2b-table-header">
                 <div class="col-img" style="flex:0 0 65px;">圖</div>
                 <div class="col-name" style="padding-left:8px;">品名 / 規格</div>
                 <div class="col-price" style="text-align:right; padding-right:8px;">單價</div>
-                <div class="col-action" style="flex:0 0 20px;"></div>
             </div>
         </div>
         <div id="b2b-series-list" class="b2b-product-list" style="flex:1; overflow-y:auto; padding:0 15px 15px 15px; min-height:0;">
     `;
 
     items.forEach(p => {
-        let imgUrl = (p.img2d) ? `assets/${p.img2d}` : 'https://placehold.co/50';
+        // Universal property check (img2d or image2D)
+        const rawImg = p.img2d || p.image2D || "";
+        const imgUrl = (rawImg && rawImg !== '-') ? `assets/${rawImg}` : `https://placehold.co/100x100?text=${encodeURIComponent(p.name)}`;
+        const displayName = p.name;
 
-        // --- SMART CODE INJECTION & HYBRID NAMING ---
-        let displayName = p.name;
-        let mainCodeHtml = "";
-        let skuCode = "";
-        let subItemsHtml = ""; // Declare once
+        // Data Extraction
+        let b2bMatch = findB2BItem(p.name);
+        let skuCode = b2bMatch ? parseSKU(b2bMatch.name) : null;
+        const mainCodeHtml = skuCode ? `<span class="sku-main-code" style="background:var(--series-bg, #eee); color:var(--series-color, #666); padding:1px 4px; border-radius:3px; font-weight:bold;">${skuCode}</span>` : '';
 
-        // Prepare "Clean Name" for Matching
-        let cleanNameForMatch = p.name.replace(/\(含.*?\)/, '').replace(/組$/, '').trim();
+        let w = weightMap[p.name] || 0;
+        const weightHtml = w ? `<span style="opacity:0.6; font-size:0.75rem;"><i class="fas fa-weight-hanging"></i> ${w} kg/m</span>` : '';
 
-        // 1. MATCHING LOGIC (Run for ALL items)
-        let match = findB2BItem(p.name);
-        if (!match) {
-            match = findB2BItem(`${series}-${cleanNameForMatch}`);
-        }
+        const priceDisplay = p.price;
+        const unitDisplay = p.unit || '個';
 
-        if (match) {
-            skuCode = parseSKU(match.name);
-            let b2bBaseName = removeSKU(match.name).trim(); // e.g. "40-合金把手"
+        // Accordion content
+        let accordionHtml = renderProductAccordion(p);
+        const seriesPrefix = p.series ? p.series.split('-')[0] : '20';
 
-            // Extract Set Info from B2C Name (e.g. "(含M8螺絲x2...)")
-            let flowInfo = "";
-            let setMatch = p.name.match(/(\(含.*?\))/);
-            if (setMatch) flowInfo = " " + setMatch[1];
-
-            // Construct Hybrid Name (Avoid redundancy if B2B name already contains set info)
-            displayName = b2bBaseName;
-            const fullB2BName = match.name; // Includes SKU if present
-            if (flowInfo && !fullB2BName.includes('(含')) {
-                displayName += flowInfo;
-            }
-
-            if (skuCode) {
-                mainCodeHtml = `<span class="sku-badge sku-badge-${series}">[${skuCode}]</span>`;
-            }
-        }
-
-        // 2. DECOMPOSITION LOGIC (Only if contains brackets)
+        // Accessory Sub-items logic
+        let subItemsHtml = "";
         if (p.name.includes('(') && p.name.includes(')')) {
             let subMap = new Map();
-            extractAndAddScrewNutsToMap(p.name, 1, parseInt(series), subMap);
-
+            extractAndAddScrewNutsToMap(p.name, 1, parseInt(seriesPrefix), subMap);
             if (subMap.size > 0) {
-                subItemsHtml = `<div style="margin-top:4px; padding-left:10px; border-left:2px solid #ddd;">`;
+                subItemsHtml = `<div style="margin-top:4px; padding-left:10px; border-left:2px solid var(--series-color, #ddd);">`;
                 subMap.forEach((qty, key) => {
-                    let partMatch = findB2BItem(key);
-                    let subSku = partMatch ? parseSKU(partMatch.name) : '';
-                    let codeHtml = subSku ? `<span class="sku-badge sku-badge-${series}">[${subSku}]</span>` : '';
                     let cleanPartName = key.replace(/^\d+-/, '');
-                    subItemsHtml += `<div class="b2b-sub-item-row">${codeHtml} ${cleanPartName} <span style="font-weight:bold; margin-left:5px;">x${qty}</span></div>`;
+                    subItemsHtml += `<div class="b2b-sub-item-row" style="font-size:0.75rem; color:#666;">${cleanPartName} <span style="font-weight:600; margin-left:5px; color:var(--series-color, #555);">x${qty}</span></div>`;
                 });
                 subItemsHtml += `</div>`;
             }
         }
 
-        // Display price with proper unit
-        let priceDisplay = p.price;
-        let unitDisplay = p.unit || '個';
-        if (p.type === '鋁材') {
-            unitDisplay = 'cm';
-        }
-
-        // Weight Display for Left Panel
-        let weightHtml = '';
-        if (p.type === '鋁材') {
-            let wm = weightMap[p.name]; // weightMap is global
-            if (wm) {
-                weightHtml = `<span style="font-size:0.75rem; color:#888; margin-left:5px; background:#f0f0f0; padding:1px 4px; border-radius:3px;">${wm} kg/m</span>`;
-            }
-        }
-
-        // Accordion Content HTML (Hidden by default)
-        let rowId = 'batch-' + Math.random().toString(36).substr(2, 5);
-        let accordionHtml = '';
-
-        if (p.type === '鋁材') {
-            accordionHtml = `
-                <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:#f8f9fa; border-radius:8px; border:1px dashed #ddd;">
-                     <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
-                         <!-- Default Row 1 -->
-                         <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                              <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
-                              <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
-                         </div>
-                     </div>
-                     
-                     <div style="display:flex; gap:10px; padding-top:10px; border-top:1px solid #eee;">
-                         <button onclick="event.stopPropagation(); addBatchRow('${rowId}')" class="btn-secondary" style="flex:1; padding:8px; border:1px solid #ccc; background:white; color:#555; border-radius:4px; cursor:pointer;">
-                             <i class="fas fa-plus"></i> 新增規格
-                         </button>
-                         <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="flex:2; padding:8px; background:#2c3e50; color:white; border:none; border-radius:4px; cursor:pointer;">
-                             加入清單 <i class="fas fa-arrow-right"></i>
-                         </button>
-                     </div>
-                     <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:5px; font-weight:bold;">
-                        <i class="fas fa-check"></i> 已加入
-                    </div>
-                </div>`;
-        } else {
-            // Accessories: Just Qty
-            accordionHtml = `
-                <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:#f8f9fa; border-radius:8px; border:1px dashed #ddd;">
-                     <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
-                         <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                              <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:100%;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
-                         </div>
-                     </div>
-                     <div style="padding-top:10px; border-top:1px solid #eee;">
-                         <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="width:100%; padding:8px; background:#2c3e50; color:white; border:none; border-radius:4px; cursor:pointer;">
-                             加入清單
-                         </button>
-                     </div>
-                      <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:5px; font-weight:bold;">
-                        <i class="fas fa-check"></i> 已加入
-                    </div>
-                </div>`;
-        }
-
-
-        // Define Series Color
-        let sColor = '#999';
-        if (p.series && p.series.startsWith('20')) sColor = '#3498db';
-        if (p.series && p.series.startsWith('30')) sColor = '#e67e22';
-        if (p.series && p.series.startsWith('40')) sColor = '#2ecc71';
-
         html += `
-        <div class="b2b-product-row b2b-series-${series}" 
-             data-product-name="${p.name}"
-             style="padding:0; border-bottom:1px solid #f1f2f6; transition:all 0.2s;">
-            
-            <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement, '${p.name}')">
+        <div class="b2b-product-row b2b-series-${seriesPrefix}" 
+             data-product-name="${p.name}">
+             
+             <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
                 <div class="col-img" style="flex:0 0 65px; position:relative;">
-                    <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:4px; object-fit: cover; cursor:zoom-in;" onclick="event.stopPropagation(); showLightbox(this.src)">
-                    <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:${sColor}; color:white; font-size:0.7rem; font-weight:bold;">${p.series.split('-')[0]}</div>
+                    <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:6px; object-fit: cover; cursor:zoom-in; border:1px solid #eee;" onclick="event.stopPropagation(); showLightbox(this.src)">
+                    <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:var(--series-color, #999); color:white; font-size:0.75rem; font-weight:600; line-height:1;">${seriesPrefix}</div>
                 </div>
-                <div class="col-name" style="padding-left:12px; min-width:0; flex:1;">
-                    <div style="font-weight:bold; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
-                    <div style="font-size:0.8rem; color:#666; font-weight:500;">${mainCodeHtml} ${weightHtml}</div>
+                <div class="col-name" style="padding-left:15px; min-width:0; flex:1;">
+                    <div style="font-weight:700; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
+                    <div style="font-size:0.8rem; color:#666; display:flex; align-items:center; gap:8px;">${mainCodeHtml} ${weightHtml}</div>
                     ${subItemsHtml}
                 </div>
-                <div class="col-price" style="flex:0 0 90px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:0.9rem; font-weight:600; color:#444;">
-                    <div><span style="color:#e74c3c;">$${priceDisplay}</span></div>
+                <div class="col-price" style="flex:0 0 95px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:0.9rem; color:#444;">
+                    <div style="font-weight:700;"><span style="color:#e74c3c; font-size:1rem;">$${priceDisplay}</span></div>
                     <div style="font-size:0.75rem; color:#999; font-weight:normal;">/${unitDisplay}</div>
-                    <i class="fas fa-chevron-down accordion-arrow" style="margin-top:5px; color:#ddd; transition:transform 0.3s;"></i>
+                    <i class="fas fa-chevron-down accordion-arrow" style="margin-top:8px; color:var(--series-color, #ddd); transition:transform 0.3s;"></i>
                 </div>
             </div>
             
@@ -3104,20 +3071,11 @@ window.addToCartFocus = function (nameOrId) {
 const weightMap = {
     '2020型': 0.458, '2040型': 0.862,
     '3030輕型': 0.693, '3030重型': 1.07, '3060輕型': 1.218, '3060重型': 1.844,
+    '6060輕型': 1.908, '6060重型': 2.763,
     '4040輕型': 1.298, '4040重型': 1.923, '4080輕型': 2.265, '4080重型': 3.505
 };
 
-// --- B2B Dashboard Logic ---
-
-function renderB2BDashboard() {
-    renderB2BProductTable();
-    renderAnalysisAndManifest();
-}
-
-function b2bFilter(s) { }
-function b2bSearch() { }
-function renderB2BProductTable() { }
-function addToCartB2B(id) { } // Replaced by addToCartFocus
+// (Duplicate B2B Dashboard logic removed - using unified versions above)
 
 
 // Consolidated Analysis & Manifest Render
@@ -3133,11 +3091,22 @@ function renderAnalysisAndManifest() {
 
     if (!listEl) return;
 
+    // Hide the top header to save space for the actual content
+    const displayEl = document.getElementById('b2b-middle-display');
+    if (displayEl) {
+        if (cart.length > 0) {
+            displayEl.style.display = 'none';
+        } else {
+            displayEl.style.display = 'block';
+        }
+    }
+
     // --- Generate Manifest (Cart List) ---
     // Group by Projects (if supported) or just flat
     let groupedCart = { '未分類工單': [] };
     let total = 0;
     let totalWeight = 0;
+    let materialSummary = {};
 
     // Cutting Logic Prep
     let cuts = [];
@@ -3158,16 +3127,46 @@ function renderAnalysisAndManifest() {
         total += sub;
 
         if (item.type === '鋁材') {
-            let w = weightMap[item.name] || 1;
-            totalWeight += (w * (item.len / 100) * item.qty); // len in cm, w in kg/m
+            let w = weightMap[item.name] || 0;
+            let itemWeight = (w * (item.len / 100) * item.qty);
+            totalWeight += itemWeight; // len in cm, w in kg/m
             if (item.len > maxLen) maxLen = item.len;
+
+            if (!materialSummary[item.name]) {
+                materialSummary[item.name] = { totalLen: 0, totalWeight: 0 };
+            }
+            materialSummary[item.name].totalLen += (item.len * item.qty);
+            materialSummary[item.name].totalWeight += itemWeight;
 
             // Add to cuts for simulation
             for (let i = 0; i < item.qty; i++) {
                 cuts.push({ length: item.len, name: item.name });
             }
         } else {
-            totalWeight += (0.05 * item.qty); // Est. accessory weight
+            // 預設每個配件 50g (0.05kg)
+            let unitWeight = 0.05;
+
+            // 判斷是否為螺絲包或套件組
+            let isPack = item.name.includes('包') || item.name.includes('組') || item.name.includes('套裝') || item.name.includes('含');
+
+            if (isPack) {
+                let s = item.series || '';
+                if (s.startsWith('40') || item.name.includes('40-')) {
+                    unitWeight = 0.2;  // 40系 200g
+                } else if (s.startsWith('30') || item.name.includes('30-')) {
+                    unitWeight = 0.1;  // 30系 100g
+                } else {
+                    unitWeight = 0.05; // 20系或其他 50g
+                }
+            }
+
+            let accWeight = (unitWeight * item.qty);
+            totalWeight += accWeight; // Est. accessory weight
+
+            if (!materialSummary['各式配件總計']) {
+                materialSummary['各式配件總計'] = { totalLen: 0, totalWeight: 0 };
+            }
+            materialSummary['各式配件總計'].totalWeight += accWeight;
         }
     });
 
@@ -3263,23 +3262,51 @@ function renderAnalysisAndManifest() {
         }
 
         // 2. Generate Weight Stats
+        let summaryHtml = '';
+        if (Object.keys(materialSummary).length > 0) {
+            summaryHtml = `<div style="font-size: 0.85rem; color: #555;">
+                <div style="font-weight: bold; margin-bottom: 5px; position: sticky; top: 0; background: #fff; padding: 10px 0 8px 0; border-bottom: 2px solid #f0f0f0; z-index: 10; margin-top: -10px;">📊 鋁材與配件物料明細</div>`;
+            for (const [mName, mData] of Object.entries(materialSummary)) {
+                if (mName === '各式配件總計' && mData.totalWeight === 0) continue;
+                summaryHtml += `<div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #f5f5f5;">
+                    <span style="color: #34495e;">${mName}</span>
+                    <span style="color: #7f8c8d;">${mData.totalLen > 0 ? `長 ${(mData.totalLen / 100).toFixed(2)}m | ` : ''}重 ${mData.totalWeight.toFixed(2)}kg</span>
+                </div>`;
+            }
+            summaryHtml += `</div>`;
+        }
+
         let statsHtml = `
-            <div style="display:flex; align-items:center; justify-content:space-around; background:#f8f9fa; padding:15px; border-radius:8px; margin-top:20px;">
-                <div style="text-align:center;">
-                    <div style="font-size:0.8rem; color:#7f8c8d;">預估總重</div>
-                    <div style="font-size:1.5rem; font-weight:300; color:#2c3e50; letter-spacing:1px;">${totalWeight.toFixed(1)} <span style="font-size:0.9rem;">kg</span></div>
-                </div>
-                 <div style="text-align:center;">
-                    <div style="font-size:0.8rem; color:#7f8c8d;">物流建議</div>
-                    <div style="font-size:1.1rem; font-weight:300; color:#2980b9; letter-spacing:1px;">
-                        ${(maxLen > 250 || totalWeight > 50) ? '<i class="fas fa-truck-moving"></i> 公司配送大貨車' : '<i class="fas fa-truck-pickup"></i> 公司配送小貨車'}
+            <div style="display: flex; flex-direction: column; gap: 8px; height: 100%;">
+                ${visualsHtml ? visualsHtml : ''}
+
+                <!-- 預估總重 Card (Flatter) -->
+                <div style="background:#f8f9fa; padding:8px 15px; border-radius:6px; box-shadow: inset 0 0 0 1px #ececec; flex: 0 0 auto;">
+                    <div style="display:flex; align-items:center; justify-content:space-around;">
+                        <div style="text-align:center;">
+                            <div style="font-size:0.75rem; color:#888;">預估總重</div>
+                            <div style="font-size:1.2rem; font-weight:300; color:#2c3e50; letter-spacing:1px; line-height: 1.1;">${totalWeight.toFixed(1)} <span style="font-size:0.8rem;">kg</span></div>
+                        </div>
+                         <div style="text-align:center;">
+                            <div style="font-size:0.75rem; color:#888;">物流建議</div>
+                            <div style="font-size:1rem; font-weight:400; color:#2980b9; letter-spacing:1px; line-height: 1.1;">
+                                ${(maxLen > 250 || totalWeight > 50) ? '<i class="fas fa-truck-moving"></i> 公司配送大貨車' : '<i class="fas fa-truck-pickup"></i> 公司配送小貨車'}
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- 鋁材與配件物料明細 Card -->
+                ${summaryHtml ? `
+                <div style="background:#fff; padding: 0 12px 10px 12px; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; overflow-y: auto; flex: 1; min-height: 0;">
+                    ${summaryHtml}
+                </div>` : ''}
             </div>
         `;
 
         // Combine (Visuals + Stats)
-        statsTarget.innerHTML = visualsHtml + statsHtml;
+        // visualsHtml is already injected inside statsHtml conditionally above, so we just set statsHtml
+        statsTarget.innerHTML = statsHtml;
     }
 }
 
@@ -3839,127 +3866,12 @@ window.downloadBOMTemplate = function () {
     document.body.removeChild(link);
 };
 
-// ===========================================
-// BATCH INPUT LOGIC (Step 34)
-// ===========================================
-
-window.addBatchRow = function (containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    // Create new row
-    let div = document.createElement('div');
-    div.className = 'batch-row';
-    div.style.display = 'flex';
-    div.style.gap = '10px';
-    div.style.alignItems = 'center';
-    div.style.marginBottom = '10px';
-    div.innerHTML = `
-        <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;">
-        <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;">
-        <button onclick="this.parentElement.remove(); event.stopPropagation();" style="border:none; background:none; color:#e74c3c; cursor:pointer;" title="移除此行">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    // Append
-    container.appendChild(div);
-}
-
-window.addToCartBatch = function (productName, containerId, btnEl) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    let product = products.find(p => p.name === productName);
-    if (!product) return;
-
-    let rows = container.querySelectorAll('.batch-row');
-    let addedCount = 0;
-
-    rows.forEach(row => {
-        let lenInput = row.querySelector('.input-len');
-        let qtyInput = row.querySelector('.input-qty');
-
-        let qty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
-        let len = lenInput ? parseFloat(lenInput.value) : 0;
-
-        // Validate
-        if (product.type === '鋁材' && (isNaN(len) || len < 10)) {
-            return; // Skip invalid
-        }
-
-        // MERGE LOGIC: Check if exact item exists
-        let existingItem = null;
-
-        if (product.type === '鋁材') {
-            // For Aluminum: Match Name + Length
-            existingItem = cart.find(i => i.name === product.name && Math.abs(i.len - len) < 0.01);
-        } else {
-            // For Accessories: Match Name
-            existingItem = cart.find(i => i.name === product.name);
-        }
-
-        if (existingItem) {
-            existingItem.qty += qty;
-        } else {
-            // Create New
-            let newItem = {
-                id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
-                productId: product.id,
-                name: product.name,
-                price: product.price,
-                type: product.type,
-                series: product.series,
-                len: len,
-                qty: qty,
-                unit: product.unit || '個',
-                img: product.img2d
-            };
-            cart.push(newItem);
-        }
-        addedCount++;
-    });
-
-    if (addedCount > 0) {
-        // Show Feedback
-        let parent = container.parentElement;
-        let feedback = parent.querySelector('.add-feedback');
-        if (feedback) {
-            feedback.innerHTML = `<i class="fas fa-check"></i> 已加入 ${addedCount} 筆資料`;
-            feedback.style.display = 'block';
-            setTimeout(() => feedback.style.display = 'none', 2000);
-        }
-
-        // Refresh Cart logic
-        renderAnalysisAndManifest();
-
-        // Reset: keep one empty row
-        container.innerHTML = `
-            <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;">
-                <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;">
-            </div>
-         `;
-        if (product.type !== '鋁材') {
-            container.innerHTML = `
-                <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                    <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:100%;">
-                </div>
-             `;
-        }
-    } else {
-        alert("請輸入有效的數量或長度");
-    }
-}
-
-// ===============================================
-// BATCH INPUT HELPERS (Restored)
-// ===============================================
+// --- BATCH INPUT HELPERS (Restored & Unified) ---
 
 window.addBatchRow = function (containerId) {
     let container = document.getElementById(containerId);
     if (!container) return;
 
-    // Create new row
     let div = document.createElement('div');
     div.className = 'batch-row';
     div.style.cssText = 'display:flex; gap:10px; align-items:center; margin-bottom:10px;';
@@ -3970,17 +3882,16 @@ window.addBatchRow = function (containerId) {
 
     if (isAl) {
         div.innerHTML = `
-            <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
-            <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
+            <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;">
+            <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;">
             <button onclick="event.stopPropagation(); this.parentElement.remove()" style="border:none; background:none; color:#e74c3c; cursor:pointer;" title="移除"><i class="fas fa-minus-circle"></i></button>
         `;
     } else {
         div.innerHTML = `
-            <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:100%;" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" ondblclick="event.stopPropagation()">
+            <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:100%;">
             <button onclick="event.stopPropagation(); this.parentElement.remove()" style="border:none; background:none; color:#e74c3c; cursor:pointer;" title="移除"><i class="fas fa-minus-circle"></i></button>
         `;
     }
-
     container.appendChild(div);
 };
 
@@ -3995,7 +3906,6 @@ window.addToCartBatch = function (productName, containerId, btnEl) {
     if (!product) return;
 
     let addedCount = 0;
-
     rows.forEach(row => {
         let qtyInput = row.querySelector('.input-qty');
         let lenInput = row.querySelector('.input-len');
@@ -4004,17 +3914,16 @@ window.addToCartBatch = function (productName, containerId, btnEl) {
         let len = lenInput ? parseFloat(lenInput.value) : 0;
 
         if (qty > 0) {
-            if (product.type === '鋁材') {
-                if (len > 0 && len <= 600) {
+            // Robust check for Aluminum type
+            const isProfile = (product.type === '鋁材' || product.unit === 'cm' || product.name.match(/^\d{4}型/));
+            if (isProfile) {
+                if (len >= 10 && len <= 600) {
                     addToCart(product, qty, len, false);
                     addedCount++;
-                    if (lenInput) lenInput.value = '';
-                    qtyInput.value = 1;
                 }
             } else {
                 addToCart(product, qty, 0, false);
                 addedCount++;
-                if (qtyInput) qtyInput.value = 1;
             }
         }
     });
@@ -4022,16 +3931,30 @@ window.addToCartBatch = function (productName, containerId, btnEl) {
     if (addedCount > 0) {
         let parent = btnEl.closest('.product-accordion-content');
         let feedback = parent ? parent.querySelector('.add-feedback') : null;
-
         if (feedback) {
             feedback.innerHTML = `<i class="fas fa-check"></i> 已加入 ${addedCount} 筆`;
             feedback.style.display = 'block';
             setTimeout(() => feedback.style.display = 'none', 2000);
         }
-
         renderAnalysisAndManifest();
+
+        // Reset container to initial state (one row)
+        // If aluminum: 1 row with len/qty. If accessory: 1 row with qty.
+        const isProfile = (product.type === '鋁材' || product.unit === 'cm' || product.name.match(/^\d{4}型/));
+        if (isProfile) {
+            container.innerHTML = `
+                <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                    <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;">
+                    <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:75px;">
+                </div>`;
+        } else {
+            container.innerHTML = `
+                <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                    <input type="number" class="detail-input input-qty" value="1" min="1" style="flex:1; height:36px;">
+                </div>`;
+        }
     } else {
-        alert("請輸入有效的數量或長度");
+        alert("請輸入有效的數量或長度 (長度需介於 10-600 cm)");
     }
 };
 
@@ -4060,12 +3983,12 @@ window.renderCuttingVisualsPreview = function () {
     let colorMap = { '20': '#6b8db0', '30': '#b08850', '40': '#5e8a5e' };
 
     let finalHtml = `
-        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; overflow:hidden; margin-bottom:15px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-            <div style="background:#2c3e50; color:white; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; margin-bottom:0; box-shadow:0 2px 8px rgba(0,0,0,0.05); display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden;">
+            <div style="background:#2c3e50; color:white; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
                 <div style="font-weight:300; font-size:0.9rem; letter-spacing:1px;"><i class="fas fa-microchip"></i> AI 切割排版模擬</div>
                 <div style="background:#4a6b5a; color:white; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:300; letter-spacing:0.5px;">Smart Plan</div>
             </div>
-            <div style="padding:12px; max-height:300px; overflow-y:auto;">
+            <div style="padding:12px; overflow-y:auto; flex:1; min-height:0;">
     `;
 
     // 3. Loop through each profile type (e.g. 3030輕型, 3030重型, 3060輕型)
@@ -4199,3 +4122,60 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+// ---- 客製設計詢詢：一鍵複製信箱 (備案) ----
+window.copyToClipboard = function (text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+        const originalContent = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> 已複製信箱 (lutu@herald-alu.com)';
+        btn.classList.add('copy-success');
+
+        setTimeout(() => {
+            btn.innerHTML = originalContent;
+            btn.classList.remove('copy-success');
+        }, 2000);
+    }).catch(err => {
+        console.error('Copy failed:', err);
+        alert('複製失敗，請手動複製信箱：' + text);
+    });
+};
+
+// ---- 客製設計詢詢：開啟預填 Email ----
+window.openCustomInquiry = function () {
+    console.log("Triggering Custom Inquiry Email...");
+    const to = 'lutu@herald-alu.com';
+    const emailSubject = '[客製設計詢問] 公司名稱 / 專案名稱';
+    const emailBody = `您好，LUTU 鋁圖：
+
+我有客製化需求，詳情如下：
+
+【公司 / 單位名稱】
+
+
+【專案描述】
+
+
+【可提供的參考資料】
+[ ] 尺寸圖 / 草圖
+[ ] CAD 檔 (請附件)
+[ ] 參考照片 (請附件)
+
+【預計數量】
+
+
+【期望交期 / 聯絡時間】
+
+
+【聯絡人 & 電話】
+
+
+---
+感謝您，LUTU 鋁圖將於 1-2 個工作日內與您聯繫。`;
+
+    const mailtoUrl = `mailto:${to}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+    // Use a hidden anchor trick for better mobile compatibility
+    const link = document.createElement('a');
+    link.href = mailtoUrl;
+    link.click();
+};
