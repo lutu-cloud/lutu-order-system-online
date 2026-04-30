@@ -1,43 +1,52 @@
 // Hardcoded Data (Restored)
 const API_URL = "https://script.google.com/macros/s/AKfycbxEn0_QHCdDmA24QNrXOfFVg2lSlvdt9R7opPpLmOrxEZGxm0L7t73CWneKlaHHo8ZV/exec";
+
+// --- [全域重量資料庫] ---
+const weightMap = {
+    '2020型': 0.458, '2040型': 0.862,
+    '3030輕型': 0.693, '3030重型': 1.07, '3060輕型': 1.218, '3060重型': 1.844,
+    '6060輕型': 1.908, '6060重型': 2.763,
+    '4040輕型': 1.298, '4040重型': 1.923, '4080輕型': 2.265, '4080重型': 3.505
+};
+
 const rawData = {
     products: [
-        ["產品主分類", "產品類型", "產品名稱", "單價", "圖片名稱(鋁材圖配件2D圖)", "圖片名稱(配件3D圖)", "單位", "狀態", "規格描述"],
+        ["產品主分類", "產品類型", "產品名稱", "單價", "圖片名稱(鋁材圖配件2D圖)", "圖片名稱(配件3D圖)", "單位", "狀態", "規格描述", "內部編號(SKU)"],
         // --- 鋁材 20系列 ---
-        ["鋁材", "20系列", "2020型", 1.3, "2020型.jpg", "", "cm", "", ""],
-        ["鋁材", "20系列", "2040型", 2.4, "2040型.jpg", "", "cm", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
+        ["鋁材", "20系列", "2020型", 1.3, "2020型.jpg", "", "cm", "", "", ""],
+        ["鋁材", "20系列", "2040型", 2.4, "2040型.jpg", "", "cm", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", ""],
         // --- 鋁材 30系列 ---
-        ["鋁材", "30系列", "3030輕型", 1.9, "3030輕型.jpg", "", "cm", "", ""],
-        ["鋁材", "30系列", "3060輕型", 3.3, "3060輕型.jpg", "", "cm", "", ""],
-        ["鋁材", "30系列", "3030重型", 2.9, "3030重型.jpg", "", "cm", "", ""],
-        ["鋁材", "30系列", "3060重型", 5, "3060重型.jpg", "", "cm", "", ""],
-        ["鋁材", "30系列", "6060輕型", 5.1, "6060輕型.jpg", "", "cm", "", ""],
-        ["鋁材", "30系列", "6060重型", 7.5, "6060重型.jpg", "", "cm", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
+        ["鋁材", "30系列", "3030輕型", 1.9, "3030輕型.jpg", "", "cm", "", "", ""],
+        ["鋁材", "30系列", "3060輕型", 3.3, "3060輕型.jpg", "", "cm", "", "", ""],
+        ["鋁材", "30系列", "3030重型", 2.9, "3030重型.jpg", "", "cm", "", "", ""],
+        ["鋁材", "30系列", "3060重型", 5, "3060重型.jpg", "", "cm", "", "", ""],
+        ["鋁材", "30系列", "6060輕型", 5.1, "6060輕型.jpg", "", "cm", "", "", ""],
+        ["鋁材", "30系列", "6060重型", 7.5, "6060重型.jpg", "", "cm", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", ""],
         // --- 鋁材 40系列 ---
-        ["鋁材", "40系列", "4040輕型", 3.6, "4040輕型.jpg", "", "cm", "", ""],
-        ["鋁材", "40系列", "4080輕型", 6.2, "4080輕型.jpg", "", "cm", "", ""],
-        ["鋁材", "40系列", "4040重型", 5.2, "4040重型.jpg", "", "cm", "", ""],
-        ["鋁材", "40系列", "4080重型", 9.5, "4080重型.jpg", "", "cm", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
+        ["鋁材", "40系列", "4040輕型", 3.6, "4040輕型.jpg", "", "cm", "", "", ""],
+        ["鋁材", "40系列", "4080輕型", 6.2, "4080輕型.jpg", "", "cm", "", "", ""],
+        ["鋁材", "40系列", "4040重型", 5.2, "4040重型.jpg", "", "cm", "", "", ""],
+        ["鋁材", "40系列", "4080重型", 9.5, "4080重型.jpg", "", "cm", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", ""],
         // --- 配件 20系列 ---
-        ["配件", "20系列", "M4內六角螺絲/螺母/墊片/墊司 (10枚/包)", 40, "20M4六角螺絲2D.png", "20螺絲3D.png", "包", "", ""],
-        ["配件", "20系列", "三角連結塊", 10, "20三角連結塊2D.png", "20三角連結塊3D.png", "個", "", ""],
-        ["配件", "20系列", "M4六角板手", 10, "203mm六角板手2D.png", "203mm六角板手3D.png", "支", "", ""], // ⚠️ 請確認單價
-        ["", "", "", "", "", "", "", "", ""],
+        ["配件", "20系列", "M4內六角螺絲/螺母/墊片/墊司 (10枚/包)", 40, "20M4六角螺絲2D.png", "20螺絲3D.png", "包", "", "", ""],
+        ["配件", "20系列", "三角連結塊", 10, "20三角連結塊2D.png", "20三角連結塊3D.png", "個", "", "", ""],
+        ["配件", "20系列", "M4六角板手", 10, "203mm六角板手2D.png", "203mm六角板手3D.png", "支", "", "", ""], // ⚠️ 請確認單價
+        ["", "", "", "", "", "", "", "", "", ""],
         // --- 配件 30系列 ---
-        ["配件", "30系列", "M6內六角螺絲/螺母/墊片/墊司 (10枚/包)", 60, "30M6六角螺絲2D.png", "30螺絲3D.png", "包", "", ""],
-        ["配件", "30系列", "三角連結塊", 15, "30三角連結塊2D.png", "30三角連結塊3D.png", "個", "", ""],
-        ["配件", "30系列", "平板連結片", 15, "30平板連結片2D.png", "30平板連結片3D.png", "個", "", ""], // ⚠️ 請確認單價
-        ["配件", "30系列", "靜音輪/腳杯固定器", 30, "30靜音輪腳架固定器2D.png", "30靜音輪腳架固定器3D.png", "個", "", ""],
-        ["配件", "30系列", "M6六角板手", 12, "305mm六角板手2D.png", "305mm六角板手3D.png", "支", "", ""],
-        ["", "", "", "", "", "", "", "", ""],
+        ["配件", "30系列", "M6內六角螺絲/螺母/墊片/墊司 (10枚/包)", 60, "30M6六角螺絲2D.png", "30螺絲3D.png", "包", "", "", ""],
+        ["配件", "30系列", "三角連結塊", 15, "30三角連結塊2D.png", "30三角連結塊3D.png", "個", "", "", ""],
+        ["配件", "30系列", "平板連結片", 15, "30平板連結片2D.png", "30平板連結片3D.png", "個", "", "", ""], // ⚠️ 請確認單價
+        ["配件", "30系列", "靜音輪/腳杯固定器", 30, "30靜音輪腳架固定器2D.png", "30靜音輪腳架固定器3D.png", "個", "", "", ""],
+        ["配件", "30系列", "M6六角板手", 12, "305mm六角板手2D.png", "305mm六角板手3D.png", "支", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", ""],
         // --- 配件 40系列 ---
-        ["配件", "40系列", "M8內六角螺絲/螺母/墊片/墊司 (10枚/包)", 80, "40M8六角螺絲2D.png", "40螺絲3D.png", "包", "", ""], // ⚠️ 請確認單價
-        ["配件", "40系列", "三角連結塊", 20, "40三角連結塊2D.png", "40三角連結塊3D.png", "個", "", ""],
-        ["配件", "40系列", "40靜音輪/腳杯固定器", 40, "40靜音輪腳架固定器2D.png", "40靜音輪腳架固定器3D.png", "個", "", ""],
-        ["配件", "40系列", "M8六角板手", 15, "406mm六角板手2D.png", "406mm六角板手3D.png", "支", "", ""]
+        ["配件", "40系列", "M8內六角螺絲/螺母/墊片/墊司 (10枚/包)", 80, "40M8六角螺絲2D.png", "40螺絲3D.png", "包", "", "", ""], // ⚠️ 請確認單價
+        ["配件", "40系列", "三角連結塊", 20, "40三角連結塊2D.png", "40三角連結塊3D.png", "個", "", "", ""],
+        ["配件", "40系列", "40靜音輪/腳杯固定器", 40, "40靜音輪腳架固定器2D.png", "40靜音輪腳架固定器3D.png", "個", "", "", ""],
+        ["配件", "40系列", "M8六角板手", 15, "406mm六角板手2D.png", "406mm六角板手3D.png", "支", "", "", ""]
     ],
     projects: [
         ["ID", "專案名稱", "描述", "Youtube", "PDF", "情境圖", "完成圖", "step1", "step2", "step3", "step4"],
@@ -154,6 +163,35 @@ let customCases = [];
 let cart = [];
 let currentSeries = '20';
 let selectedProfile = null;
+// --- [新增] 首頁背景輪播邏輯 ---
+let hubBackgrounds = [
+    'assets/staff_working_01.jpg', 'assets/staff_working_02.jpg', 'assets/staff_working_03.jpg',
+    'assets/staff_working_04.jpg', 'assets/staff_working_05.jpg', 'assets/staff_working_06.jpg',
+    'assets/staff_working_07.jpg', 'assets/staff_working_08.jpg', 'assets/staff_working_09.jpg'
+]; 
+let currentSlideIndex = 0;
+let slideshowInterval = null;
+
+// [新增] 輔助工具：處理 Google Drive 圖片連結轉換
+function formatImageUrl(url) {
+    if (!url) return "";
+    let str = String(url).trim();
+    // 如果是 Google Drive 分享連結，轉換為直接圖片連結
+    if (str.includes("drive.google.com")) {
+        let id = "";
+        let match = str.match(/\/file\/d\/(.+?)\//) || str.match(/id=(.+?)(&|$)/);
+        if (match) id = match[1];
+        if (id) return `https://lh3.googleusercontent.com/d/${id}`;
+    }
+    return str;
+}
+
+// 全域錯誤監控 (方便遠端除錯)
+window.onerror = function(msg, url, lineNo, columnNo, error) {
+    console.error('Global Error: ' + msg + ' at ' + url + ':' + lineNo);
+    return false;
+};
+
 
 
 // Global Hot Sales Data
@@ -258,7 +296,22 @@ function processInventoryData(data) {
             type = "鋁材";
         }
 
-        return { id: name, name: name, type: type, series: series, price: 0, stock: qty, img2d: '', unit: '個' };
+        let offcuts = getVal(item, ['offcuts', '餘料']) || "";
+        let waste = getVal(item, ['waste', '廢料']) || 0;
+
+        return { 
+            id: name, 
+            name: name, 
+            type: type, 
+            series: series, 
+            price: 0, 
+            stock: qty, 
+            offcuts: offcuts, 
+            waste: waste,
+            img2d: '', 
+            unit: '個' 
+        };
+
     }).filter(p => p);
 
     if (userMode === 'B2B') {
@@ -276,8 +329,11 @@ async function initData() {
     console.log("Initializing Data...");
 
     // 1. Load Local Data IMMEDIATELY (Synchronous)
-    // This ensures UI has data even while waiting for API
+    // This ensures UI has data even while waiting
     processData(rawData);
+    
+    // 立即啟動輪播（使用預設或剛抓到的圖）
+    initHubSlideshow();
 
     // 2. Try Fetching from API (Async Update)
     try {
@@ -350,6 +406,7 @@ function processData(data) {
                 let unit = (row.length > 6 && row[6]) ? String(row[6]).trim() : '';
                 let status = (row.length > 7 && row[7]) ? String(row[7]).trim() : '';
                 let desc = (row.length > 8 && row[8]) ? String(row[8]).trim() : '';
+                let sku = (row.length > 9 && row[9]) ? String(row[9]).trim() : '';
 
                 let finalImg2d = img2d;
                 if (!finalImg2d && row.length > 4) finalImg2d = String(row[4]).trim();
@@ -381,7 +438,8 @@ function processData(data) {
                     img3d: finalImg3d,
                     unit: unit,
                     status: status,
-                    desc: desc
+                    desc: desc,
+                    sku: sku
                 };
 
                 // Debugging output specifically for 2020/2040 and accessories to see the parsed path
@@ -408,7 +466,28 @@ function processData(data) {
                 desc: row[2],
                 yt: row[3],
                 pdf: row[4],
-                sceneImg: row[5],
+                // 首頁背景圖解析
+                sceneImg: (function() {
+                    if (data.hubBackground && data.hubBackground.length > 0) {
+                        // 如果雲端有資料，則替換掉預設的本地圖片
+                        let cloudImages = data.hubBackground
+                            .map(row => row.find(cell => String(cell).match(/\.(jpg|jpeg|png|webp|gif)/i) || String(cell).startsWith('http')))
+                            .filter(url => url)
+                            .map(url => {
+                                url = url.trim();
+                                if (url.startsWith('assets/')) return url;
+                                if (url.startsWith('http')) return url;
+                                return 'assets/' + url;
+                            });
+                            
+                        if (cloudImages.length > 0) {
+                            hubBackgrounds = cloudImages;
+                            // 重新啟動輪播以載入新圖
+                            initHubSlideshow();
+                        }
+                    }
+                    return row[5];
+                })(),
                 completeImg: row[6],
                 steps: [
                     (row.length > 7 && row[7]) ? { img: row[7], text: '步驟1' } : null,
@@ -448,6 +527,52 @@ function processData(data) {
                 changed = true;
             }
         }
+
+        // [對接強化] 處理首頁背景資料
+        if (data.hubBackground && Array.isArray(data.hubBackground)) {
+            console.log("--- HUB BACKGROUND SYNC START ---");
+            
+            let newHubBackgrounds = data.hubBackground.map((row, idx) => {
+                // 跳過標題列並尋找包含 .jpg/.png 等字串的儲存格
+                if (idx === 0) return null; 
+                
+                let cell = row.find(c => {
+                    let s = String(c || "").trim();
+                    return s.includes('http') || s.match(/\.(jpg|jpeg|png|webp|gif)$/i);
+                });
+
+                if (!cell) return null;
+                let str = String(cell).trim();
+
+                if (str.includes('http')) {
+                    return formatImageUrl(str);
+                } else {
+                    return 'assets/' + str;
+                }
+            }).filter(Boolean);
+
+            console.log("Found Valid Images:", newHubBackgrounds.length);
+
+            if (newHubBackgrounds.length > 0) {
+                hubBackgrounds = newHubBackgrounds;
+                setTimeout(initHubSlideshow, 500); 
+            }
+            console.log("--- HUB BACKGROUND SYNC END ---");
+        }
+
+
+        // --- 備用方案：如果最終還是沒抓到任何照片，才使用提示圖 ---
+        if (typeof window._firstLoadDone !== 'undefined' && hubBackgrounds.length === 0) {
+            console.log("No hub backgrounds detected. Using fallback placeholders.");
+            hubBackgrounds = [
+                "https://placehold.co/1920x1080/f0f2f5/333333?text=LUTU+HUB+Slideshow+Loading...",
+                "https://placehold.co/1920x1080/e2e8f0/666666?text=Check+Assets+Folder+and+Sheet"
+            ];
+            setTimeout(initHubSlideshow, 1000);
+        }
+
+
+
 
         // Re-Render UI after data update ONLY if something actually changed
         if (changed || typeof window._firstLoadDone === 'undefined') {
@@ -504,11 +629,12 @@ function renderHotSalesMobile() {
     const createGridCard = (item) => {
         let rankClass = `rank-${item.rank}`;
 
-        // Find product image
+        // Find product image (Prioritize 3D for accessories)
         let product = products.find(p => p.name === item.name);
         let imgSrc = 'https://placehold.co/100x100?text=No+Img';
-        if (product && product.img2d) {
-            imgSrc = 'assets/' + product.img2d;
+        if (product) {
+            let file = (product.type === '配件' && product.img3d) ? product.img3d : (product.img2d || "");
+            if (file) imgSrc = 'assets/' + file;
         }
 
         return `
@@ -553,11 +679,12 @@ function renderHotSales() {
     // Helper to create Sidebar Card
     const createSidebarCard = (item) => {
         let rankClass = `rank-${item.rank}`;
-        // Find product image
+        // Find product image (Prioritize 3D for accessories)
         let product = products.find(p => p.name === item.name);
         let imgSrc = 'https://placehold.co/100x100?text=No+Img';
-        if (product && product.img2d) {
-            imgSrc = 'assets/' + product.img2d;
+        if (product) {
+            let file = (product.type === '配件' && product.img3d) ? product.img3d : (product.img2d || "");
+            if (file) imgSrc = 'assets/' + file;
         }
 
         return `
@@ -739,20 +866,17 @@ function renderSeries(series) {
     let acc = list.filter(function (p) { return p.type === '配件'; });
 
     let alHtml = '';
-    const weightMap = {
-        '2020型': '0.458', '2040型': '0.862',
-        '3030輕型': '0.693', '3030重型': '1.07', '3060輕型': '1.218', '3060重型': '1.844',
-        '6060輕型': '1.908', '6060重型': '2.763',
-        '4040輕型': '1.298', '4040重型': '1.923', '4080輕型': '2.265', '4080重型': '3.505'
-    };
-
+    
     if (al.length > 0) {
         for (let i = 0; i < al.length; i++) {
             let p = al[i];
 
-            // Weight Label
-            let weight = weightMap[p.name] || '';
-            let weightHtml = weight ? `<span class="img-label" style="background:#555; color:white;">${weight} kg/m</span>` : '';
+            // Weight Label (模糊比對修正：支援 [HR-0001] 格式)
+            let weight = 0;
+            for (let key in weightMap) {
+                if (p.name.includes(key)) { weight = weightMap[key]; break; }
+            }
+            let weightHtml = weight ? `<span class="img-label" style="background:rgba(0,0,0,0.7); color:#fff; padding:4px 8px; border-radius:4px; font-size:11px; backdrop-filter:blur(2px); border:1px solid rgba(255,255,255,0.1);">${weight} kg/m</span>` : '';
 
             // Check Rank
             let hotItem = hotProfilesData.find(h => h.name === p.name);
@@ -892,9 +1016,9 @@ function renderAccessoryList() {
 
             // Series Colors for Text and Background
             let rowBg = '#f8f9fa';
-            if (s === '20') { color = '#2980b9'; rowBg = '#eaf6fd'; }
-            else if (s === '30') { color = '#d35400'; rowBg = '#fdebd0'; }
-            else if (s === '40') { color = '#27ae60'; rowBg = '#eafaf1'; }
+            if (s === '20') { color = '#8ba2b8'; rowBg = '#f0f4f8'; }
+            else if (s === '30') { color = '#c4b097'; rowBg = '#f8f4f0'; }
+            else if (s === '40') { color = '#9cb39c'; rowBg = '#f0f8f0'; }
 
             html += `
             <div class="spec-row" style="background:${rowBg}; border-color:${color}40;">
@@ -938,24 +1062,25 @@ window.selectProfile = function (name) {
     document.getElementById('selected-profile-name').innerText = name;
     document.getElementById('aluminum-input-area').classList.remove('hidden');
 
-    // Apply series-specific color to the add button
+    // Apply series-specific color to the add button (對齊頂部選單的極淡莫蘭迪色)
     const addBtn = document.querySelector('.btn-add');
     if (addBtn && selectedProfile) {
         const series = selectedProfile.series || currentSeries;
-        let btnColor = '#2980b9'; // Default 20 series blue
-        let btnHoverColor = '#1f6391'; // Darker blue for hover
+        let btnColor = '#b3c7d9'; // 20 系列：極淡藍灰
+        let btnHoverColor = '#8ba2b8'; // 20 系列 hover
 
         if (series === '30') {
-            btnColor = '#e67e22'; // 30 series orange
-            btnHoverColor = '#c55a11'; // Darker orange for hover
+            btnColor = '#e6d9c6'; // 30 系列：極淡暖茶
+            btnHoverColor = '#c4b097';
         } else if (series === '40') {
-            btnColor = '#27ae60'; // 40 series green
-            btnHoverColor = '#1e8449'; // Darker green for hover
+            btnColor = '#b8ccb8'; // 40 系列：極淡鼠尾草綠
+            btnHoverColor = '#9cb39c';
         }
 
         // Use setProperty with important flag to override CSS
         addBtn.style.setProperty('background', btnColor, 'important');
         addBtn.style.setProperty('background-color', btnColor, 'important');
+        addBtn.style.setProperty('color', '#444', 'important');
         addBtn.style.setProperty('border-color', btnColor, 'important');
 
         // Store colors for hover effect
@@ -1016,9 +1141,9 @@ function renderSpecList() {
             }
 
             let rowBg = '#f8f9fa';
-            if (s === '20') { color = '#2980b9'; rowBg = '#eaf6fd'; }
-            if (s === '30') { color = '#d35400'; rowBg = '#fdebd0'; }
-            if (s === '40') { color = '#27ae60'; rowBg = '#eafaf1'; }
+            if (s === '20') { color = '#8ba2b8'; rowBg = '#f0f4f8'; }
+            if (s === '30') { color = '#c4b097'; rowBg = '#f8f4f0'; }
+            if (s === '40') { color = '#9cb39c'; rowBg = '#f0f8f0'; }
 
             html += `
             <div class="spec-row" style="background:${rowBg}; border-color:${color}40;">
@@ -1119,7 +1244,8 @@ function addToCart(p, qty, len, isUpdate) {
                 price: p.price,
                 unit: p.unit,
                 type: p.type,
-                img: p.img2d
+                img: p.img2d,
+                sku: p.sku || ''
             });
         }
     }
@@ -1287,38 +1413,10 @@ document.getElementById('order-form').addEventListener('submit', function (e) {
 
     customerData.address = addrPrefix + (customerData.address || "").trim();
 
-    // Inject exact official name (with brackets and SKU) before sending to backend
     let enrichedCart = cart.map(item => {
         let exactName = item.name;
-        if (typeof b2bRawData !== 'undefined' && b2bRawData.length > 0) {
-            let match = b2bRawData.find(raw => {
-                let rBase = String(raw.name || "").split('[')[0].split('(')[0].trim();
-                let iBase = String(item.name || "").split('[')[0].split('(')[0].trim();
-                if (!rBase || !iBase) return false;
-
-                let rStripped = rBase.replace(/^(20|30|40)(?![0-9])/, '');
-                let iStripped = iBase.replace(/^(20|30|40)(?![0-9])/, '');
-
-                let isNameMatch = rBase === iBase || rStripped === iStripped || rStripped === iBase || iStripped === rBase;
-                let isSeriesMatch = !item.series || !raw.series || String(raw.series) === String(item.series);
-                return isNameMatch && isSeriesMatch && (!item.type || !raw.type || item.type === raw.type);
-            });
-
-            if (!match) {
-                match = b2bRawData.find(raw => {
-                    let rBase = String(raw.name || "").split('[')[0].split('(')[0].trim();
-                    let iBase = String(item.name || "").split('[')[0].split('(')[0].trim();
-                    if (!rBase || !iBase) return false;
-
-                    if (rBase.length > 2 && iBase.length > 2) {
-                        let isNameMatch = rBase.includes(iBase) || iBase.includes(rBase);
-                        let isSeriesMatch = !item.series || !raw.series || String(raw.series) === String(item.series);
-                        if (isNameMatch && isSeriesMatch && (!item.type || !raw.type || item.type === raw.type)) return true;
-                    }
-                    return false;
-                });
-            }
-            if (match && match.name) exactName = match.name;
+        if (item.sku) {
+            exactName = `${item.name} [${item.sku}]`;
         }
         return Object.assign({}, item, { name: exactName });
     });
@@ -1780,7 +1878,18 @@ window.selectUserMode = function (mode) {
     console.log("User Mode selected:", userMode);
 
     const hub = document.getElementById('hub-overlay');
-    if (hub) hub.classList.add('hidden');
+    if (hub) {
+        hub.classList.add('hidden');
+        document.body.style.overflow = ''; 
+        // 恢復所有隱藏區塊
+        document.querySelectorAll('header, main, footer, .floating-btn, .bottom-banner').forEach(el => {
+            if (el.id !== 'hub-overlay' && !el.classList.contains('hub-social-links')) {
+                el.style.display = '';
+            }
+        });
+    }
+
+    const b2cTopbar = document.getElementById('mobileB2CTopbar');
 
     // UI Shell Toggling (Sidebar and Floating Buttons)
     const b2cShellElements = [
@@ -1795,8 +1904,9 @@ window.selectUserMode = function (mode) {
         document.getElementById('b2b-dashboard').classList.remove('hidden');
         document.getElementById('view-custom-inquiry')?.classList.add('hidden');
 
-        // Hide B2C Shell
+        // Hide B2C Shell + topbar
         b2cShellElements.forEach(el => el?.classList.add('hidden'));
+        if (b2cTopbar) b2cTopbar.style.display = 'none';
 
         switchB2BSeries('20');
         setTimeout(renderB2BDashboard, 100);
@@ -1806,28 +1916,118 @@ window.selectUserMode = function (mode) {
         document.getElementById('b2b-dashboard').classList.add('hidden');
 
         if (mode === 'CUSTOM') {
+            document.body.classList.add('mode-custom');
             document.getElementById('view-custom-inquiry')?.classList.remove('hidden');
             document.querySelectorAll('.content-view').forEach(v => {
                 if (v.id !== 'view-custom-inquiry') v.classList.add('hidden');
             });
-            // Hide B2C Shell
+            // Hide B2C Shell + topbar（OEM 頁面不顯示 B2C 導覽）
             b2cShellElements.forEach(el => el?.classList.add('hidden'));
+            if (b2cTopbar) b2cTopbar.style.display = 'none';
         } else {
+            document.body.classList.remove('mode-custom');
             // This is B2C Mode
             switchSeries('20');
             document.getElementById('view-custom-inquiry')?.classList.add('hidden');
-            // Show B2C Shell
+            // Show B2C Shell + topbar
             b2cShellElements.forEach(el => el?.classList.remove('hidden'));
+            if (b2cTopbar) b2cTopbar.style.display = '';
         }
     }
 };
 
+// 頁面載入時預設鎖定 Hub 捲動
+document.addEventListener('DOMContentLoaded', () => {
+    const hub = document.getElementById('hub-overlay');
+    if (hub && !hub.classList.contains('hidden')) {
+        document.body.style.overflow = 'hidden';
+    }
+});
+
+// --- [新增] 首頁背景輪播邏輯 ---
+function initHubSlideshow() {
+    const container = document.getElementById('hub-slideshow');
+    const hubOverlay = document.getElementById('hub-overlay');
+    
+    if (!container || hubBackgrounds.length === 0) {
+        console.warn("Slideshow init failed: Container not found or no images.");
+        return;
+    }
+
+    // 預設保持實色背景
+    if (hubOverlay) {
+        hubOverlay.classList.remove('slideshow-ready');
+    }
+
+    // 清除舊的
+    container.innerHTML = '';
+    if (slideshowInterval) clearInterval(slideshowInterval);
+
+    // 建立幻燈片
+    hubBackgrounds.forEach((url, idx) => {
+        const slide = document.createElement('div');
+        slide.className = 'hub-slide' + (idx === 0 ? ' active' : '');
+        slide.style.backgroundImage = `url('${url}')`;
+        // 加入載入監聽，幫助除錯
+        let img = new Image();
+        img.onload = () => {
+            console.log("Slide Image Loaded:", url);
+            // 只有當第一張照片載入成功，才讓背景變透明，防止看到後台雜訊
+            if (idx === 0 && hubOverlay) {
+                hubOverlay.classList.add('slideshow-ready');
+            }
+        };
+        img.onerror = () => console.error("Slide Image Load Failed:", url);
+        img.src = url;
+        
+        container.appendChild(slide);
+    });
+
+    // 開始輪播
+    if (hubBackgrounds.length > 1) {
+        currentSlideIndex = 0;
+        slideshowInterval = setInterval(nextHubSlide, 6000);
+    }
+}
+
+
+function nextHubSlide() {
+    const slides = document.querySelectorAll('.hub-slide');
+    if (slides.length <= 1) return;
+
+    slides[currentSlideIndex].classList.remove('active');
+    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+    slides[currentSlideIndex].classList.add('active');
+}
+
+
+// 手機版 B2C topbar 標籤切換
+window.setMobileB2CTab = function (btn) {
+    document.querySelectorAll('.mobile-b2c-topbar .mobile-b2c-tab').forEach(t => t.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+};
+
+window.setMobileB2BTab = function (btn) {
+    document.querySelectorAll('.mobile-b2b-topbar .mobile-b2c-tab').forEach(t => t.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+};
+
 window.returnToHub = function () {
     const hub = document.getElementById('hub-overlay');
-    if (hub) hub.classList.remove('hidden');
+    if (hub) {
+        hub.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; 
+        // 暴力隱藏所有非 Hub 的大區塊，但保留 Hub 內部的社群圖示
+        document.querySelectorAll('header, main, footer, .floating-btn, .bottom-banner').forEach(el => {
+            if (el.id !== 'hub-overlay' && !el.classList.contains('hub-social-links')) {
+                el.style.display = 'none';
+            }
+        });
+    }
 
     // Hide everything else
     document.body.classList.remove('mode-b2b');
+    document.body.classList.remove('mode-custom');
     document.getElementById('b2b-dashboard')?.classList.add('hidden');
     document.getElementById('view-custom-inquiry')?.classList.add('hidden');
 
@@ -1847,6 +2047,10 @@ let currentB2BSeries = '20';
 // New Tab Switcher Function
 window.switchB2BSeries = function (series) {
     currentB2BSeries = series; // Track current series
+
+    // 0. 同步 body.series-XX（讓 --accent 隨系列變色，與 B2C 一致）
+    document.body.classList.remove('series-20', 'series-30', 'series-40');
+    document.body.classList.add('series-' + series);
 
     // 1. Update Tabs Visual
     document.querySelectorAll('.b2b-tab-btn').forEach(btn => {
@@ -1980,8 +2184,11 @@ window.handleB2BSearch = function (keyword) {
         let skuCode = b2bMatch ? parseSKU(b2bMatch.name) : null;
         const mainCodeHtml = skuCode ? `<span class="sku-main-code" style="background:var(--series-bg, #eee); color:var(--series-color, #666); padding:1px 4px; border-radius:3px; font-weight:bold;">${skuCode}</span>` : '';
 
-        let w = weightMap[p.name] || 0;
-        const weightHtml = w ? `<span style="opacity:0.6; font-size:0.75rem;"><i class="fas fa-weight-hanging"></i> ${w} kg/m</span>` : '';
+        let weight = 0;
+        for (let key in weightMap) {
+            if (p.name.includes(key)) { weight = weightMap[key]; break; }
+        }
+        const weightHtml = weight ? `<span style="opacity:0.6; font-size:0.75rem;"><i class="fas fa-weight-hanging"></i> ${weight} kg/m</span>` : '';
 
         const priceDisplay = p.price;
         const unitDisplay = (p.type === '鋁材') ? 'cm' : (p.unit || '個');
@@ -2045,11 +2252,11 @@ function renderProductAccordion(p) {
 
     if (isProfile) {
         html = `
-            <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:rgba(255,255,255,0.4); border-radius:12px; border:1px dashed var(--series-color, #ddd);">
+            <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:14px; margin-top:10px; background:#fff; border-radius:12px; border:1px solid #e8e8e8; box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow:hidden;">
                  <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
-                     <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                          <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1; height:36px;">
-                          <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:75px; height:36px;">
+                     <div class="batch-row" style="display:flex; gap:8px; align-items:stretch; margin-bottom:10px; box-sizing:border-box; width:100%;">
+                          <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1; min-width:0; height:38px; box-sizing:border-box;">
+                          <input type="number" class="detail-input input-qty" value="1" min="1" style="width:56px; flex-shrink:0; height:38px; font-size:1.05rem; font-weight:700; text-align:center; border:1px solid #d1d5db; border-radius:8px; background:#f8f9fa; color:#2c3e50; box-sizing:border-box;">
                      </div>
                  </div>
                  
@@ -2067,11 +2274,11 @@ function renderProductAccordion(p) {
             </div>`;
     } else {
         html = `
-            <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:15px; margin-top:10px; background:rgba(255,255,255,0.4); border-radius:12px; border:1px dashed var(--series-color, #ddd);">
+            <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:14px; margin-top:10px; background:#fff; border-radius:12px; border:1px solid #e8e8e8; box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow:hidden;">
                  <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
-                     <div class="batch-row" style="display:flex; gap:10px; align-items:center;">
-                          <div style="font-size:0.9rem; color:#666;">數量：</div>
-                          <input type="number" class="detail-input input-qty" value="1" min="1" style="flex:1; height:36px;">
+                     <div class="batch-row" style="display:flex; gap:8px; align-items:stretch; margin-bottom:10px; box-sizing:border-box; width:100%;">
+                          <div style="font-size:0.9rem; color:#666; white-space:nowrap; flex-shrink:0; display:flex; align-items:center;">數量：</div>
+                          <input type="number" class="detail-input input-qty" value="1" min="1" style="flex:1; min-width:0; height:38px; box-sizing:border-box;">
                      </div>
                  </div>
                  <div style="padding-top:12px; border-top:1px solid rgba(0,0,0,0.05); margin-top:10px;">
@@ -2221,8 +2428,8 @@ function renderSeriesOverview(series) {
     `;
 
     items.forEach(p => {
-        // Universal property check (img2d or image2D)
-        const rawImg = p.img2d || p.image2D || "";
+        // 根據類型決定顯示哪張圖：配件優先顯示 3D 圖，鋁材顯示 2D 剖面圖
+        let rawImg = (p.type === '配件' && p.img3d) ? p.img3d : (p.img2d || p.image2D || "");
         const imgUrl = (rawImg && rawImg !== '-') ? `assets/${rawImg}` : `https://placehold.co/100x100?text=${encodeURIComponent(p.name)}`;
         const displayName = p.name;
 
@@ -2231,8 +2438,11 @@ function renderSeriesOverview(series) {
         let skuCode = b2bMatch ? parseSKU(b2bMatch.name) : null;
         const mainCodeHtml = skuCode ? `<span class="sku-main-code" style="background:var(--series-bg, #eee); color:var(--series-color, #666); padding:1px 4px; border-radius:3px; font-weight:bold;">${skuCode}</span>` : '';
 
-        let w = weightMap[p.name] || 0;
-        const weightHtml = w ? `<span style="opacity:0.6; font-size:0.75rem;"><i class="fas fa-weight-hanging"></i> ${w} kg/m</span>` : '';
+        let weight = 0;
+        for (let key in weightMap) {
+            if (p.name.includes(key)) { weight = weightMap[key]; break; }
+        }
+        const weightHtml = weight ? `<span style="opacity:0.6; font-size:0.75rem;"><i class="fas fa-weight-hanging"></i> ${weight} kg/m</span>` : '';
 
         const priceDisplay = p.price;
         const unitDisplay = p.unit || '個';
@@ -3067,13 +3277,7 @@ window.addToCartFocus = function (nameOrId) {
     }, 1000);
 }
 
-// Global Weight Map
-const weightMap = {
-    '2020型': 0.458, '2040型': 0.862,
-    '3030輕型': 0.693, '3030重型': 1.07, '3060輕型': 1.218, '3060重型': 1.844,
-    '6060輕型': 1.908, '6060重型': 2.763,
-    '4040輕型': 1.298, '4040重型': 1.923, '4080輕型': 2.265, '4080重型': 3.505
-};
+// Global Weight Map has been moved to top
 
 // (Duplicate B2B Dashboard logic removed - using unified versions above)
 
@@ -3127,7 +3331,10 @@ function renderAnalysisAndManifest() {
         total += sub;
 
         if (item.type === '鋁材') {
-            let w = weightMap[item.name] || 0;
+            let w = 0;
+            for (let key in weightMap) {
+                if (item.name.includes(key)) { w = weightMap[key]; break; }
+            }
             let itemWeight = (w * (item.len / 100) * item.qty);
             totalWeight += itemWeight; // len in cm, w in kg/m
             if (item.len > maxLen) maxLen = item.len;
@@ -3184,7 +3391,10 @@ function renderAnalysisAndManifest() {
             // Weight Calc for Right Panel
             let weightInfo = '';
             if (item.type === '鋁材') {
-                let w = weightMap[item.name] || 0;
+                let w = 0;
+                for (let key in weightMap) {
+                    if (item.name.includes(key)) { w = weightMap[key]; break; }
+                }
                 let unitW = (w * (item.len / 100)); // kg per piece
                 if (w > 0) weightInfo = `<span style="color:#7f8c8d;">${unitW.toFixed(2)}kg</span>`;
             }
@@ -4140,42 +4350,31 @@ window.copyToClipboard = function (text, btn) {
     });
 };
 
-// ---- 客製設計詢詢：開啟預填 Email ----
+// ---- 客製設計詢問：開啟 Gmail 撰寫視窗 ----
 window.openCustomInquiry = function () {
-    console.log("Triggering Custom Inquiry Email...");
     const to = 'lutu@herald-alu.com';
-    const emailSubject = '[客製設計詢問] 公司名稱 / 專案名稱';
-    const emailBody = `您好，LUTU 鋁圖：
+    const emailSubject = '【客製洽詢】公司名稱 / 專案名稱';
+    const emailBody =
+`您好，LUTU 鋁圖團隊：
 
-我有客製化需求，詳情如下：
+希望洽詢客製化鋁擠型合作，需求概述如下：
 
 【公司 / 單位名稱】
 
+【聯絡人 & 電話】
 
-【專案描述】
-
-
-【可提供的參考資料】
-[ ] 尺寸圖 / 草圖
-[ ] CAD 檔 (請附件)
-[ ] 參考照片 (請附件)
+【需求描述 / 用途】
+（如有圖面、CAD 或參考照片，請一併附件）
 
 【預計數量】
 
+【期望交期】
 
-【期望交期 / 聯絡時間】
-
-
-【聯絡人 & 電話】
-
+【備註】（預算、特殊規格等，選填）
 
 ---
-感謝您，LUTU 鋁圖將於 1-2 個工作日內與您聯繫。`;
+感謝，期待 LUTU 鋁圖的專業回覆。`;
 
-    const mailtoUrl = `mailto:${to}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-
-    // Use a hidden anchor trick for better mobile compatibility
-    const link = document.createElement('a');
-    link.href = mailtoUrl;
-    link.click();
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    window.open(gmailUrl, '_blank');
 };

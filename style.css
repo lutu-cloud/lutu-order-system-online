@@ -1781,10 +1781,9 @@ button {
 }
 
 .b2b-product-row.active-row {
-    background-color: var(--series-active);
-    border-left: 4px solid var(--series-color);
-    /* Stronger visual indicator */
-    box-shadow: inset 2px 0 8px rgba(0, 0, 0, 0.02);
+    background-color: #fff;
+    border-left: 4px solid #aaa;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
 /* 2. Middle: Hero Detail & Editor Area */
@@ -3893,25 +3892,62 @@ body.banner-hidden {
 
 /* 1. Hub Overlay (Full Screen) */
 .hub-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: #f0f2f5;
-    z-index: 9999;
-    padding: 20px;
-    box-sizing: border-box;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: #1a1a1a !important;
+    z-index: 2147483647 !important; /* 瀏覽器層級極限值 */
+    padding: 0 !important;
+    margin: 0 !important;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.5s ease;
+    overflow: hidden !important;
+}
+
+/* 確保只有照片載入後，背景才變透明 */
+.hub-overlay.slideshow-ready {
+    background-color: transparent !important;
 }
 
 .hub-overlay.hidden {
     opacity: 0;
     pointer-events: none;
 }
+
+/* 2. Hub Slideshow Background */
+.hub-slideshow-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+    background-color: #1a1a1a; /* 核心修正：加入黑底，防止透出後台 B2C 文字 */
+}
+
+.hub-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.hub-slide.active {
+    opacity: 0.7; /* Opacity set to 70% as requested */
+}
+
 
 .hub-container {
     text-align: center;
@@ -3940,22 +3976,31 @@ body.banner-hidden {
 }
 
 .hub-card {
-    background: white;
-    width: 300px;
+    background: rgba(255, 255, 255, 0.05) !important; /* 維持 5% */
+    backdrop-filter: blur(10px) !important; /* 降低模糊，讓背景更透亮 */
+    -webkit-backdrop-filter: blur(10px) !important;
+    width: 380px; 
+    height: 400px !important; /* 扁平化比例 */
     padding: 40px 30px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border-radius: 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
     cursor: pointer;
-    transition: all 0.3s ease;
-    border: 3px solid transparent;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
     position: relative;
     overflow: hidden;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .hub-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    transform: translateY(-12px);
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
 /* Personal Card */
@@ -3980,31 +4025,32 @@ body.banner-hidden {
 .hub-icon {
     font-size: 3.5rem;
     margin-bottom: 25px;
-    color: #4b5563;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .hub-card.personal .hub-icon {
-    color: #3b82f6;
+    color: #fff;
 }
 
 .hub-card.pro .hub-icon {
-    color: #2c3e50;
+    color: #fff;
 }
 
 .hub-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: #1f2937;
-    font-weight: 300;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #ffffff !important; /* 強制純白 */
+    font-weight: 500;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* 增加陰影提升可讀性 */
 }
 
 .hub-card p {
-    color: #6b7280;
+    color: rgba(255, 255, 255, 0.9) !important; /* 高亮白 */
     line-height: 1.6;
-    margin-bottom: 30px;
-    font-size: 0.95rem;
-    min-height: 48px;
-    /* Alignment */
+    margin-bottom: 20px;
+    font-size: 1.05rem;
+    min-height: 40px;
+    font-weight: 300;
 }
 
 .hub-btn {
@@ -4058,6 +4104,26 @@ body.banner-hidden {
 .hub-footer a:hover {
     color: #4b5563;
     border-color: #4b5563;
+}
+
+/* 4. Social Links (Hub Only) */
+.hub-social-links {
+    margin-top: 30px !important;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.hub-social-icon {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 1.6rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hub-social-icon:hover {
+    color: #ffffff !important;
+    transform: scale(1.25);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
 }
 
 
@@ -4693,21 +4759,21 @@ body.mode-b2b .profile-card {
 
 /* Series-Specific Selection Highlights (Blue/Orange/Green) */
 .b2b-product-row.b2b-series-20.active-row {
-    background: linear-gradient(90deg, #e3f2fd 0%, #fff 100%) !important;
-    border-left: 4px solid #3498db !important;
-    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+    background: #fff !important;
+    border-left: 4px solid #6b8db0 !important;
+    box-shadow: 0 2px 8px rgba(107,141,176,0.12);
 }
 
 .b2b-product-row.b2b-series-30.active-row {
-    background: linear-gradient(90deg, #fff3e0 0%, #fff 100%) !important;
-    border-left: 4px solid #e67e22 !important;
-    box-shadow: 0 2px 8px rgba(230, 126, 34, 0.2);
+    background: #fff !important;
+    border-left: 4px solid #b08850 !important;
+    box-shadow: 0 2px 8px rgba(176,136,80,0.12);
 }
 
 .b2b-product-row.b2b-series-40.active-row {
-    background: linear-gradient(90deg, #e8f5e9 0%, #fff 100%) !important;
-    border-left: 4px solid #2ecc71 !important;
-    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.2);
+    background: #fff !important;
+    border-left: 4px solid #5e8a5e !important;
+    box-shadow: 0 2px 8px rgba(94,138,94,0.12);
 }
 
 /* Base transform for any active row */
@@ -5258,6 +5324,21 @@ body.mode-b2b {
     justify-content: center;
 }
 
+/* 手機版才顯示，桌機預設隱藏 */
+.mobile-back-hub {
+    display: none;
+}
+
+/* B2C 手機頂部導覽列 — 桌機隱藏 */
+.mobile-b2c-topbar {
+    display: none;
+}
+
+/* B2B 手機頂部導覽列 — 桌機隱藏 */
+.mobile-b2b-topbar {
+    display: none;
+}
+
 .mobile-hamburger:active {
     transform: scale(0.92);
 }
@@ -5495,27 +5576,190 @@ body.mode-b2b {
    ========================================================== */
 @media (max-width: 768px) {
 
-    /* ---- Hamburger adjustments ---- */
+    /* ---- Hamburger — 手機版改由 B2C topbar 取代，隱藏 ---- */
     .mobile-hamburger {
-        top: 8px;
-        left: 8px;
-        width: 40px;
-        height: 40px;
-        font-size: 1.1rem;
+        display: none !important;
+    }
+
+    /* ---- B2C 手機頂部卡片（仿 B2B header 浮動卡片）---- */
+    .mobile-b2c-topbar {
+        display: flex;
+        align-items: center;
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        z-index: 1050;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 14px;
+        border: 1px solid rgba(0,0,0,0.06);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+        padding: 0 10px;
+        gap: 8px;
+    }
+
+    .mobile-b2c-back {
+        flex-shrink: 0;
+        width: 38px;
+        height: 38px;
+        border: none;
+        background: #f3f3f3;
+        border-radius: 10px;
+        font-size: 1rem;
+        color: #555;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-b2c-brand {
+        flex-shrink: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #2a2a2a;
+        letter-spacing: 2px;
+        white-space: nowrap;
+    }
+
+    .b2c-tag {
+        font-size: 0.6rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        background: #f0f4f8;
+        color: #8496b0;
+        padding: 1px 5px;
+        border-radius: 4px;
+        vertical-align: middle;
+        margin-left: 4px;
+    }
+
+    .mobile-b2c-tabs {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex: 1;
+    }
+
+    .mobile-b2c-tabs::-webkit-scrollbar { display: none; }
+
+    .mobile-b2c-tab {
+        flex-shrink: 0;
+        padding: 5px 12px;
+        border: 1px solid #e8e8e8;
+        background: transparent;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        color: #888;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s;
+    }
+
+    .mobile-b2c-tab.active {
+        background: var(--accent, #8496b0);
+        color: #fff;
+        border-color: var(--accent, #8496b0);
+    }
+
+    /* 20系列：藍灰 */
+    body.series-20 .mobile-b2c-tab.active {
+        background: var(--accent);
+        border-color: var(--accent);
+    }
+    /* 30系列：暖橙 */
+    body.series-30 .mobile-b2c-tab.active {
+        background: var(--accent);
+        border-color: var(--accent);
+    }
+    /* 40系列：深綠 */
+    body.series-40 .mobile-b2c-tab.active {
+        background: var(--accent);
+        border-color: var(--accent);
+    }
+
+    .mobile-b2c-sep {
+        width: 1px;
+        height: 20px;
+        background: #e0e0e0;
+        flex-shrink: 0;
+        margin: 0 2px;
+    }
+
+    /* ---- OEM 手機返回：正方形卡片，只顯示箭頭（仿 B2B 風格）---- */
+    body.mode-custom .inquiry-return {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1050;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 14px;
+        border: 1px solid rgba(0,0,0,0.06);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+        font-size: 1rem;
+        color: #555;
+        cursor: pointer;
+        gap: 0;
+        margin-bottom: 0;
+    }
+    /* 隱藏「返回首頁」文字，只留圖示 */
+    body.mode-custom .inquiry-return .fa-arrow-left {
+        margin-right: 0;
+    }
+    body.mode-custom .inquiry-return {
+        /* 用 text-indent 或 font-size 0 隱藏文字節點 */
+        color: transparent;
+        font-size: 0;
+    }
+    body.mode-custom .inquiry-return i {
+        font-size: 1rem;
+        color: #555;
     }
 
     /* ---- Main content full-screen ---- */
     .main-content {
         padding: 12px !important;
-        padding-top: 56px !important;
+        padding-top: 76px !important; /* 配合 48px 卡片 + top:12px + 間距 */
     }
 
-    /* ---- Single Column Grid ---- */
+    /* ---- Two-Column Grid on Mobile ---- */
     .aluminum-grid-container,
-    .accessories-container,
     .projects-grid {
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    /* 配件保持兩欄 */
+    .accessories-container {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    /* 雙欄卡片縮小 padding 和字體 */
+    .profile-card,
+    .acc-card {
+        padding: 10px !important;
+    }
+
+    .profile-card > div:not(.profile-img) {
+        font-size: 0.8rem !important;
+    }
+
+    .profile-card > div[style*="color:#e74c3c"] {
+        font-size: 0.85rem !important;
     }
 
     /* Page title compact */
@@ -5569,19 +5813,34 @@ body.mode-b2b {
         right: 0 !important;
     }
 
-    /* Floating buttons: centered bottom bar feel */
+    /* 手機 cart-sidebar 頂部讓開固定 topbar，避免 × 被蓋住 */
+    .cart-sidebar .cart-header {
+        padding-top: 72px !important;
+    }
+
+    /* 手機較大點擊範圍 */
+    .cart-sidebar .close-cart {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.6rem !important;
+        background: #f3f4f6;
+        border-radius: 10px !important;
+    }
+
+    /* Floating buttons: 詢價單移到左下，熱銷排行移到右下 */
     .floating-cart-btn {
         bottom: 16px !important;
-        right: 16px !important;
-        left: auto !important;
+        left: 16px !important;
+        right: auto !important;
         padding: 12px 20px !important;
         font-size: 1rem !important;
         border-radius: 50px !important;
     }
 
     .floating-hot-btn {
-        bottom: 72px !important;
+        bottom: 16px !important;
         right: 16px !important;
+        left: auto !important;
         padding: 10px 16px !important;
         font-size: 0.9rem !important;
     }
@@ -5926,87 +6185,61 @@ body.mode-b2b {
         flex-direction: column !important;
         align-items: flex-start !important;
     }
-
-    .b2b-detail-img-container {
-        flex: none !important;
-        width: 100% !important;
-        max-width: 200px !important;
-    }
-
-    .detail-row-flex {
-        flex-direction: column !important;
-        gap: 8px !important;
-    }
-
-    .detail-row-flex input {
-        width: 100% !important;
-    }
-
-    /* Hub cards stack on phone */
-    .hub-cards {
-        flex-direction: column !important;
-        align-items: center !important;
-    }
-
-    .hub-card {
-        width: 100% !important;
-        max-width: 340px !important;
-    }
-
-    .hub-title {
-        font-size: 1.8rem !important;
-    }
-
-    .hub-subtitle {
-        font-size: 1rem !important;
-    }
-
-    /* Top banner: adjust spacing for hamburger */
-    .top-banner {
-        padding-left: 60px !important;
-    }
-
-    /* Order query modal */
-    .modal-content {
-        width: 95% !important;
-    }
-
-    /* Selection wrapper for height vis */
-    .selection-wrapper {
-        flex-direction: column !important;
-    }
-
-    .vis-container {
-        width: 100% !important;
-        height: 200px !important;
-    }
-
-    /* Loading animation responsive */
-    .process-step {
-        width: 80px !important;
-        height: 80px !important;
-    }
-
-    .process-step .icon {
-        font-size: 2rem !important;
-    }
-
-    .process-step .label {
-        font-size: 0.75rem !important;
-    }
-
-    /* Page header stack */
-    .page-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 10px !important;
-    }
-
-    /* B2B Actions wrap better */
-    .desktop-only {
+    /* ---- B2B 手機：隱藏原 header，改用獨立 topbar ---- */
+    body.mode-b2b .b2b-header {
         display: none !important;
     }
-}
+
+    .mobile-b2b-topbar {
+        display: flex;
+        align-items: center;
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        z-index: 1050;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 14px;
+        border: 1px solid rgba(0,0,0,0.06);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+        padding: 0 10px;
+        gap: 8px;
+    }
+
+    /* B2B 查詢按鈕深色 */
+    .mobile-b2b-query {
+        background: #3a3a3a !important;
+        color: #fff !important;
+        border-color: #3a3a3a !important;
+    }
+
+    /* B2B main 讓開固定 topbar */
+    body.mode-b2b .b2b-main {
+        padding-top: 76px !important;
+    }
+
+    /* ---- B2B 手機 topbar 系列標籤顏色（直接用 ID，不依賴 CSS variable 鏈）---- */
+    #mb-b2b-20.active {
+        background: #6b8db0 !important;
+        border-color: #6b8db0 !important;
+        color: #fff !important;
+    }
+    #mb-b2b-30.active {
+        background: #b08850 !important;
+        border-color: #b08850 !important;
+        color: #fff !important;
+    }
+    #mb-b2b-40.active {
+        background: #5e8a5e !important;
+        border-color: #5e8a5e !important;
+        color: #fff !important;
+    }
+
+} /* end @media (max-width: 768px) */
+
 
 /* =========================================
    ★★★ HUB OVERLAY — 日式極簡白底版 ★★★
@@ -6043,9 +6276,9 @@ body.mode-b2b {
     position: fixed;
     /* Fixed background stays while content scrolls */
     inset: 0;
-    pointer-events: none;
+    pointer-events: none !important;
     overflow: hidden;
-    z-index: 0;
+    z-index: -1 !important;
 }
 
 .hub-bg-circle {
@@ -6496,29 +6729,94 @@ body.mode-b2b {
 .inquiry-steps {
     display: flex;
     flex-direction: row;
-    gap: 30px;
+    gap: 24px;
     margin-bottom: 30px;
     align-items: stretch;
+}
+
+@keyframes inquiry-float-1 {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-8px); }
+}
+@keyframes inquiry-float-2 {
+    0%, 100% { transform: translateY(-4px); }
+    50%       { transform: translateY(4px); }
+}
+@keyframes inquiry-float-3 {
+    0%, 100% { transform: translateY(-2px); }
+    50%       { transform: translateY(-10px); }
+}
+@keyframes inquiry-step-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .inquiry-step {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     align-items: center;
     text-align: center;
-    padding: 20px;
-    background: #fcfcfc;
-    border-radius: 8px;
-    border: 1px solid #f5f5f5;
+    padding: 28px 20px;
+    background: #fff;
+    border-radius: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.3s ease;
+    animation: inquiry-step-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: transform;
+}
+
+.inquiry-step:nth-child(1) {
+    animation-delay: 0.05s;
+    animation-name: inquiry-step-in, inquiry-float-1;
+    animation-duration: 0.6s, 5s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1), ease-in-out;
+    animation-iteration-count: 1, infinite;
+    animation-fill-mode: both, none;
+    animation-delay: 0.05s, 0.5s;
+}
+.inquiry-step:nth-child(2) {
+    animation-name: inquiry-step-in, inquiry-float-2;
+    animation-duration: 0.6s, 6s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1), ease-in-out;
+    animation-iteration-count: 1, infinite;
+    animation-fill-mode: both, none;
+    animation-delay: 0.15s, 1s;
+}
+.inquiry-step:nth-child(3) {
+    animation-name: inquiry-step-in, inquiry-float-3;
+    animation-duration: 0.6s, 4.5s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1), ease-in-out;
+    animation-iteration-count: 1, infinite;
+    animation-fill-mode: both, none;
+    animation-delay: 0.25s, 1.5s;
+}
+
+.inquiry-step:hover {
+    transform: translateY(-10px) scale(1.01) !important;
+    box-shadow: 0 24px 50px rgba(0,0,0,0.12), 0 6px 18px rgba(0,0,0,0.07);
+    border-color: rgba(0,0,0,0.10);
+    animation-play-state: paused, paused !important;
 }
 
 .step-num {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #d1c9bf;
-    letter-spacing: 2px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #c8bfb5;
+    letter-spacing: 3px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(210, 200, 190, 0.12);
+    border: 1px solid rgba(210, 200, 190, 0.3);
+    flex-shrink: 0;
 }
 
 .step-content h3 {
@@ -6603,7 +6901,16 @@ body.mode-b2b {
 @media (max-width: 768px) {
     .inquiry-guide-container {
         padding: 15px 12px;
+        padding-top: 72px; /* 讓開固定左上角返回按鈕 */
     }
+
+    /* OEM模式不需要 B2C topbar 的 padding-top */
+    body.mode-custom .main-content {
+        padding-top: 0 !important;
+    }
+
+    /* 手機 OEM：第二個規則移除衝突，保持小方場圖示頓 */
+    /* body.mode-custom .inquiry-return 已由 5629行定義，不再覆寫 */
 
     .inquiry-header {
         margin-bottom: 12px;
@@ -6717,93 +7024,107 @@ body.mode-b2b {
 /* ---- Mobile：一屏完成，不捲動 ---- */
 @media (max-width: 768px) {
 
+    .hub-overlay {
+        overflow-y: auto;
+    }
+
     .hub-container {
         width: 100%;
-        padding: 5px 15px 5px;
+        padding: 16px 16px 12px;
         margin: 0 auto;
-        height: 100vh;
+        min-height: 100vh;
+        height: auto;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.6);
-        /* Slightly lighter for clarity */
+        align-items: center;
+        overflow: visible;
+        background: transparent;
     }
 
     .hub-logo-area {
-        margin-bottom: 2px;
+        margin-bottom: 8px;
         flex-shrink: 0;
     }
 
     .hub-svg-logo {
-        width: 100px;
+        width: 180px;
+    }
+    .hub-svg-logo text {
+        font-size: 24px !important;
     }
 
-    .hub-subtitle {
-        font-size: 0.55rem;
-        margin-bottom: 5px;
-        flex-shrink: 0;
+    .hub-divider-line {
+        margin: 4px 0 12px;
     }
 
     .hub-main {
-        flex: 1;
+        width: 100%;
         display: flex;
         flex-direction: column;
-        width: 100%;
-        overflow: hidden;
-        min-height: 0;
-        /* Important for flex children to shrink */
+        align-items: center;
     }
 
     .hub-cards {
         display: flex;
         flex-direction: column;
-        flex: 1;
         gap: 8px;
-        width: 100%;
+        width: 90%;
+        max-width: 340px;
         align-items: center;
-        min-height: 0;
+        max-height: 75vh; /* 限制卡片區高度 */
+        overflow-y: auto; /* 若螢幕太小則卡片內部捲動 */
+        padding: 10px;
     }
 
     .hub-card {
-        flex: 1;
         width: 100%;
-        max-width: 310px;
-        display: flex;
-        min-height: 0;
+        max-width: 340px;
+        flex: none;
     }
 
     .hub-card-inner {
-        padding: 6px 20px;
-        gap: 0;
-        justify-content: center;
-        width: 100%;
-        overflow: hidden;
+        padding: 16px 20px 14px;
+        gap: 4px;
+        overflow: visible;
     }
 
     .hub-card-series-tag {
-        font-size: 0.55rem;
-        padding: 1px 6px;
-        margin-bottom: 2px;
+        font-size: 0.6rem;
+        padding: 2px 8px;
+        margin-bottom: 4px;
     }
 
     .hub-card-content h3 {
         font-size: 1.05rem;
-        margin-bottom: 0px;
+        margin-bottom: 4px;
     }
 
     .hub-card-content p {
-        display: none;
-        /* Hide descriptions to force 3 equal flat cards on mobile */
+        display: block;
+        font-size: 0.75rem;
+        color: #999;
+        line-height: 1.45;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
     }
 
     .hub-btn {
-        padding: 4px 0;
-        font-size: 0.65rem;
-        border: none;
-        margin-top: 2px;
+        padding: 6px 0;
+        font-size: 0.7rem;
+        border-top: 1px solid #f0ede8;
+        margin-top: 4px;
+    }
+
+    /* social links 在卡片下方 */
+    .hub-social-links {
+        flex-shrink: 0;
+        margin-top: 16px !important;
+        margin-bottom: 4px;
+        gap: 20px;
     }
 
     .hub-footer {
-        margin-top: 2px;
+        margin-top: 4px;
+        flex-shrink: 0;
     }
 }
