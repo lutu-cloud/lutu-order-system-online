@@ -6459,7 +6459,7 @@ body.mode-b2b {
 /* ---- 通用卡片樣式 ---- */
 .hub-card {
     flex: 1;
-    position: relative;
+    position: relative; /* 設為定位基準 */
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(20px);
@@ -6479,10 +6479,10 @@ body.mode-b2b {
 }
 
 .hub-card-inner {
-    padding: 35px 25px;
+    padding: 35px 25px 85px; /* 增加底部 padding 為按鈕留空間 */
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
     z-index: 2;
     gap: 15px;
     text-align: center;
@@ -6514,6 +6514,13 @@ body.mode-b2b {
     color: #888888;
 }
 
+.hub-card-content {
+    flex: 1; /* 新增 flex: 1，將按鈕推向底部 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .hub-card-content h3 {
     font-size: 1.4rem;
     font-weight: 300;
@@ -6530,7 +6537,10 @@ body.mode-b2b {
 }
 
 .hub-btn {
-    margin-top: auto;
+    position: absolute; /* 改為絕對定位 */
+    bottom: 25px; /* 固定距離底部高度 */
+    left: 25px;
+    right: 25px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -7030,7 +7040,7 @@ body.mode-b2b {
 
     .hub-container {
         width: 100%;
-        padding: 16px 16px 12px;
+        padding: 5px 16px 8px; /* 縮減上下間距 */
         margin: 0 auto;
         min-height: 100vh;
         height: auto;
@@ -7042,7 +7052,7 @@ body.mode-b2b {
     }
 
     .hub-logo-area {
-        margin-bottom: 8px;
+        margin-bottom: 2px; /* 從 8px 縮減 */
         flex-shrink: 0;
     }
 
@@ -7054,7 +7064,7 @@ body.mode-b2b {
     }
 
     .hub-divider-line {
-        margin: 4px 0 12px;
+        margin: 2px 0 8px; /* 從 4px 0 12px 縮減 */
     }
 
     .hub-main {
@@ -7109,6 +7119,7 @@ body.mode-b2b {
     }
 
     .hub-btn {
+        position: static; /* 手機版回歸正常排列 */
         padding: 6px 0;
         font-size: 0.7rem;
         border-top: 1px solid #f0ede8;
@@ -7118,8 +7129,8 @@ body.mode-b2b {
     /* social links 在卡片下方 */
     .hub-social-links {
         flex-shrink: 0;
-        margin-top: 16px !important;
-        margin-bottom: 4px;
+        margin-top: 5px !important; /* 從 16px 縮減，大幅往上提 */
+        margin-bottom: 2px;
         gap: 20px;
     }
 
