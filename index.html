@@ -59,7 +59,34 @@
         }
         .hub-divider-line {
             margin: 4px 0 12px;
-            background: rgba(255, 255, 255, 0.4); /* 改為白色帶透明度 */
+            background: rgba(255, 255, 255, 0.4); 
+        }
+
+        /* 工業幾何線框背景 */
+        .hub-iso-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .hub-iso-frame {
+            position: absolute;
+            stroke: #2c3e50;
+            stroke-width: 0.8;
+            fill: none;
+            opacity: 0.1;
+        }
+        .frame-1 { top: 10%; left: 5%; width: 300px; animation: isoFloat 20s infinite ease-in-out; }
+        .frame-2 { top: 55%; right: 5%; width: 350px; animation: isoFloat 25s infinite ease-in-out reverse; }
+        .frame-3 { top: 30%; left: 45%; width: 200px; opacity: 0.05; }
+
+        @keyframes isoFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(0.5deg); }
         }
 
         /* === B2C 動態色系統一 (完全對齊頂部選單的極淡莫蘭迪色) === */
@@ -272,13 +299,112 @@
         </button>
     </div>
 
-    <!-- 首頁分流樞紐 (Hub Overlay) -->
-    <div id="hub-overlay" class="hub-overlay">
-        <!-- 背景輪播圖 -->
+    <style>
+        /* 強制覆蓋為淺色莫蘭迪主題 */
+        .hub-overlay { background: #fafafa !important; }
+        .hub-card { background: rgba(255, 255, 255, 0.8) !important; border: 1px solid rgba(0,0,0,0.05) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important; }
+        .hub-card h3 { color: #333333 !important; text-shadow: none !important; }
+        .hub-card p { color: #666666 !important; text-shadow: none !important; }
+        .hub-btn { background: #ffffff !important; color: #333 !important; border: 1px solid #ddd !important; }
+        .hub-btn:hover { background: #f0f0f0 !important; }
+        .hub-svg-logo line { stroke: #333 !important; }
+        .hub-svg-logo text { fill: #333 !important; }
+        .hub-social-icon { color: #666 !important; }
+        .hub-social-icon:hover { color: #333 !important; }
+
+        /* 首頁四卡片並排 (Desktop) */
+        @media (min-width: 769px) {
+            .hub-cards { flex-wrap: nowrap !important; gap: 20px !important; }
+            .hub-card { width: 25% !important; min-width: 220px !important; max-width: 280px !important; padding: 30px 20px !important; }
+        }
+
+        /* 手機版卡片獨立捲動，社群固定置底 (Mobile) */
+        @media (max-width: 768px) {
+            .hub-overlay { overflow: hidden !important; }
+            .hub-container { height: 100vh !important; display: flex; flex-direction: column; overflow: hidden !important; padding-bottom: 20px !important; }
+            .hub-main { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; width: 100%; overflow: hidden; }
+            .hub-cards { max-height: 100% !important; overflow-y: auto !important; padding-bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+            .hub-cards::-webkit-scrollbar { display: none; }
+            .hub-logo-area, .hub-divider-line, .hub-social-links, .hub-footer { flex-shrink: 0; }
+            .hub-social-links { padding-bottom: 10px; margin-top: 10px !important; }
+        }
+    </style>
+    <div id="hub-overlay" class="hub-overlay" style="background: #fafafa; overflow: hidden; z-index: 10;">
+        <!-- 暫停輪播圖
         <div id="hub-slideshow" class="hub-slideshow-container"></div>
+        -->
 
-        <!-- 柔和背景光暈 (白底版) - 裝飾已由背景輪播圖取代 -->
+        <!-- 現代極簡：鋁擠型側面長條 (莫蘭迪色系) -->
+        <div class="modern-geo-bg">
+            <!-- 鋁擠橫條 1 (深灰) -->
+            <div class="geo-long geo-long-1" style="color: #9ca3af; height: 40px; top: 15%; animation-duration: 25s;">
+                <svg viewBox="0 0 1000 40" preserveAspectRatio="none" style="width: 100%; height: 100%;">
+                    <rect width="1000" height="40" fill="currentColor" opacity="0.8" rx="4" />
+                    <!-- 側面溝槽 -->
+                    <rect x="0" y="15" width="1000" height="10" fill="#ffffff" opacity="0.6" />
+                </svg>
+            </div>
+            
+            <!-- 鋁擠橫條 2 (中灰) -->
+            <div class="geo-long geo-long-2" style="color: #d1d5db; height: 60px; top: 45%; animation-duration: 30s;">
+                <svg viewBox="0 0 1000 60" preserveAspectRatio="none" style="width: 100%; height: 100%;">
+                    <rect width="1000" height="60" fill="currentColor" opacity="0.8" rx="6" />
+                    <rect x="0" y="15" width="1000" height="8" fill="#ffffff" opacity="0.6" />
+                    <rect x="0" y="37" width="1000" height="8" fill="#ffffff" opacity="0.6" />
+                </svg>
+            </div>
+            
+            <!-- 鋁擠橫條 3 (淺灰) -->
+            <div class="geo-long geo-long-3" style="color: #e5e7eb; height: 80px; bottom: 15%; animation-duration: 35s;">
+                <svg viewBox="0 0 1000 80" preserveAspectRatio="none" style="width: 100%; height: 100%;">
+                    <rect width="1000" height="80" fill="currentColor" opacity="0.8" rx="8" />
+                    <rect x="0" y="20" width="1000" height="12" fill="#ffffff" opacity="0.6" />
+                    <rect x="0" y="48" width="1000" height="12" fill="#ffffff" opacity="0.6" />
+                </svg>
+            </div>
+            
+            <!-- 莫蘭迪漸層光暈，增加空間感 -->
+            <div class="hub-bg-circle" style="position:absolute; top:-10%; right:-5%; width:40vw; height:40vw; border-radius:50%; background:radial-gradient(circle, rgba(179,199,217,0.5) 0%, rgba(250,250,250,0) 70%); pointer-events: none;"></div>
+            <div class="hub-bg-circle" style="position:absolute; bottom:-10%; left:-10%; width:50vw; height:50vw; border-radius:50%; background:radial-gradient(circle, rgba(230,217,198,0.4) 0%, rgba(250,250,250,0) 70%); pointer-events: none;"></div>
 
+            <!-- 工業櫃體幾何線框 (Isometric Cabinets - Expanded Layering) -->
+            <div class="hub-iso-bg">
+                <!-- 櫃體 A (中景) -->
+                <svg class="hub-iso-frame frame-1" viewBox="0 0 200 250" style="opacity:0.18;">
+                    <path d="M100 50 L160 80 L100 110 L40 80 Z" /> 
+                    <path d="M40 80 L40 200 L100 230 L100 110 Z" /> 
+                    <path d="M100 110 L100 230 L160 200 L160 80 Z" /> 
+                    <path d="M40 120 L100 150 L160 120" stroke-dasharray="4,2" /> 
+                    <path d="M40 160 L100 190 L160 160" stroke-dasharray="4,2" />
+                </svg>
+                <!-- 櫃體 B (遠景) -->
+                <svg class="hub-iso-frame frame-2" viewBox="0 0 200 250" style="opacity:0.08;">
+                    <path d="M100 30 L180 70 L100 110 L20 70 Z" /> 
+                    <path d="M20 70 L20 220 L100 260 L100 110 Z" />
+                    <path d="M100 110 L100 260 L180 220 L180 70 Z" />
+                </svg>
+                <!-- 櫃體 C (垂直高塔型 - 新增) -->
+                <svg class="hub-iso-frame" style="top:15%; left:75%; width:150px; opacity:0.12;" viewBox="0 0 100 300">
+                    <path d="M50 20 L85 40 L50 60 L15 40 Z" />
+                    <path d="M15 40 L15 260 L50 280 L50 60 Z" />
+                    <path d="M50 60 L50 280 L85 260 L85 40 Z" />
+                    <path d="M15 100 L50 120 L85 100" />
+                    <path d="M15 170 L50 190 L85 170" />
+                </svg>
+                <!-- 櫃體 D (工業工作站 - 新增) -->
+                <svg class="hub-iso-frame" style="bottom:15%; left:30%; width:300px; opacity:0.08;" viewBox="0 0 300 200">
+                    <path d="M60 60 L240 60 L240 85 L60 85 Z" fill="rgba(0,0,0,0.01)" /> 
+                    <path d="M60 85 L60 160 M240 85 L240 160 M150 85 L150 160" /> 
+                    <path d="M60 140 L240 140" stroke-dasharray="3,3" /> 
+                </svg>
+                <!-- 櫃體 E (精密複合模組 - 新增) -->
+                <svg class="hub-iso-frame" style="top:45%; right:35%; width:140px; opacity:0.05; filter:blur(1px);" viewBox="0 0 100 100">
+                    <path d="M10 10 L90 10 L90 90 L10 90 Z" />
+                    <circle cx="50" cy="50" r="30" stroke-dasharray="2,2" />
+                    <path d="M50 0 L50 100 M0 50 L100 50" />
+                </svg>
+            </div>
+        </div>
 
         <div class="hub-container">
 
@@ -346,6 +472,21 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- 品牌與藝廊 卡片 -->
+                    <div class="hub-card info" onclick="selectUserMode('INFO')">
+                        <div class="hub-card-inner">
+                            <div class="hub-card-series-tag info-tag">BRAND & GALLERY</div>
+                            <div class="hub-card-content">
+                                <h3>品牌與藝廊</h3>
+                                <p>探索專案範例、客製成品，以及關於 LUTU 鋁圖</p>
+                            </div>
+                            <div class="hub-btn info-btn">
+                                <span>深入了解</span>
+                                <span class="hub-arrow">→</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -357,6 +498,8 @@
                         class="fa-brands fa-threads"></i></a>
                 <a href="https://www.instagram.com/lutu_alumi?igsh=MXhoY3lldHhlZHh3dw==" target="_blank"
                     class="hub-social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.herald-alu.com/" target="_blank" class="hub-social-icon" title="官方網站"><i class="fas fa-globe"></i></a>
+                <a href="https://www.google.com.tw/maps/place/412%E5%8F%B0%E4%B8%AD%E5%B8%82%E5%A4%A7%E9%87%8C%E5%8D%80%E4%BB%81%E7%BE%8E%E8%B7%AF159%E5%B7%B711%E8%99%9F/@24.1031264,120.7076397,17z/data=!3m1!4b1!4m6!3m5!1s0x34693ccd618985a1:0x20c4b5c9ed633b6a!8m2!3d24.1031264!4d120.7102146!16s%2Fg%2F11f62nfj2j?entry=tts" target="_blank" class="hub-social-icon" title="Google 地圖"><i class="fas fa-map-marker-alt"></i></a>
                 <a href="javascript:void(0)" onclick="openCustomInquiry()" class="hub-social-icon" title="Email: lutu@herald-alu.com"><i
                         class="fas fa-envelope"></i></a>
             </div>
@@ -372,20 +515,30 @@
             <i class="fas fa-bars"></i>
         </button>
 
-        <!-- ★ 手機版 B2C 頂部導覽列（仿 B2B 風格） -->
-        <div class="mobile-b2c-topbar" id="mobileB2CTopbar">
-            <button class="mobile-b2c-back" onclick="returnToHub()">
+        <!-- ★ B2C 專屬極簡頂部導覽列 (僅留 20, 30, 40) -->
+        <div class="b2c-topbar" id="b2cTopbar">
+            <button class="b2c-back-btn" onclick="returnToHub()" title="返回首頁">
                 <i class="fas fa-chevron-left"></i>
             </button>
-            <span class="mobile-b2c-brand">LUTU <span class="b2c-tag">B2C</span></span>
-            <div class="mobile-b2c-tabs">
-                <button class="mobile-b2c-tab active" id="mb-tab-20" onclick="switchSeries('20'); setMobileB2CTab(this)">20系列</button>
-                <button class="mobile-b2c-tab" id="mb-tab-30" onclick="switchSeries('30'); setMobileB2CTab(this)">30系列</button>
-                <button class="mobile-b2c-tab" id="mb-tab-40" onclick="switchSeries('40'); setMobileB2CTab(this)">40系列</button>
-                <div class="mobile-b2c-sep"></div>
-                <button class="mobile-b2c-tab" onclick="switchView('projects'); setMobileB2CTab(this)">專案</button>
-                <button class="mobile-b2c-tab" onclick="switchView('custom'); setMobileB2CTab(this)">客製</button>
-                <button class="mobile-b2c-tab" onclick="switchView('about'); setMobileB2CTab(this)">關於</button>
+            <span class="b2c-brand-logo">LUTU <span class="b2c-tag">SHOP</span></span>
+            <div class="b2c-nav-tabs">
+                <button class="b2c-tab-btn active" id="b2c-tab-20" onclick="switchSeries('20')">20 系列</button>
+                <button class="b2c-tab-btn" id="b2c-tab-30" onclick="switchSeries('30')">30 系列</button>
+                <button class="b2c-tab-btn" id="b2c-tab-40" onclick="switchSeries('40')">40 系列</button>
+            </div>
+        </div>
+
+        <!-- ★ B2B 專屬專業導覽列 (由 JS 控制顯示) -->
+        <div class="b2b-topbar hidden" id="b2bTopbar">
+            <div class="b2b-topbar-inner">
+                <div class="b2b-brand" onclick="returnToHub()">
+                    <i class="fas fa-layer-group"></i> LUTU <b>PRO</b>
+                </div>
+                <div class="b2b-nav">
+                    <button class="b2b-nav-tab active" onclick="switchB2BSeries('20')">20系列</button>
+                    <button class="b2b-nav-tab" onclick="switchB2BSeries('30')">30系列</button>
+                    <button class="b2b-nav-tab" onclick="switchB2BSeries('40')">40系列</button>
+                </div>
             </div>
         </div>
 
@@ -404,17 +557,117 @@
 
             </nav>
 
-            <div class="separator"></div>
-            <div id="hot-sales-container" style="padding:10px;">
-                <!-- Hot Sales Content will be injected here -->
-            </div>
-
-            <!-- Social links moved to Hub -->
-            <!-- Height Visualization Removed -->
         </aside>
         <!-- Mobile Sidebar Overlay Backdrop -->
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
         <main class="main-content">
+            <!-- 品牌與藝廊專用：無界線懸浮導覽列 (Frameless Floating UI) -->
+            <nav id="info-topbar" class="info-topbar hidden">
+                <div class="info-topbar-container">
+                    <div class="info-return" onclick="returnToHub()">
+                        <i class="fas fa-chevron-left"></i> <span>返回首頁</span>
+                    </div>
+                    <div class="info-divider"></div>
+                    <button class="info-tab project-tab" onclick="switchView('projects')">專案範例</button>
+                    <button class="info-tab custom-tab" onclick="switchView('custom')">客製成品</button>
+                    <button class="info-tab about-tab" onclick="switchView('about')">關於我們</button>
+                </div>
+            </nav>
+            <style>
+                /* INFO 模式專用滿版覆蓋：消除外層預設的 30px padding */
+                body.mode-info .main-content {
+                    padding: 0 !important;
+                }
+                /* 讓其他清單頁面保有舒適的內縮，避免貼齊邊緣 */
+                body.mode-info #view-projects,
+                body.mode-info #view-custom {
+                    padding: 30px;
+                }
+                @media (max-width: 768px) {
+                    body.mode-info #view-projects,
+                    body.mode-info #view-custom {
+                        padding: 15px;
+                    }
+                }
+
+                .info-topbar {
+                    position: sticky;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    z-index: 1000;
+                    /* 改用微透的純白毛玻璃背景，確保標題不會透出干擾 */
+                    background: rgba(250, 250, 250, 0.9);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+                }
+                .info-topbar-container {
+                    display: flex;
+                    align-items: center;
+                    padding: 15px 40px;
+                    gap: 25px;
+                }
+                .info-return {
+                    cursor: pointer;
+                    font-size: 0.95rem;
+                    font-weight: 500;
+                    color: #111;
+                    letter-spacing: 2px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    transition: opacity 0.3s;
+                    opacity: 0.5;
+                }
+                .info-return:hover {
+                    opacity: 1;
+                }
+                .info-divider {
+                    width: 1px;
+                    height: 16px;
+                    background: rgba(0, 0, 0, 0.15);
+                    margin: 0 5px;
+                }
+                .info-tab {
+                    background: transparent !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                    font-size: 0.95rem;
+                    color: #777 !important;
+                    cursor: pointer;
+                    letter-spacing: 1.5px;
+                    padding: 5px 0;
+                    font-weight: 400;
+                    transition: color 0.3s, font-weight 0.3s, text-shadow 0.3s;
+                }
+                .info-tab:hover {
+                    color: #111 !important;
+                }
+                /* 高級的選中狀態：純文字，加深顏色，移除任何多餘的底色與線條 */
+                .info-tab.active {
+                    background: transparent !important;
+                    color: #111 !important;
+                    font-weight: 600 !important;
+                    border-bottom: none !important;
+                    text-shadow: 0 0 1px rgba(0,0,0,0.1);
+                }
+                .info-tab.active::after {
+                    display: none !important; /* 強制覆蓋舊的樣式 */
+                }
+                @media (max-width: 768px) {
+                    .info-topbar-container {
+                        padding: 15px 20px;
+                        gap: 15px;
+                        overflow-x: auto;
+                    }
+                    .info-tab {
+                        font-size: 0.85rem;
+                        white-space: nowrap;
+                    }
+                }
+            </style>
+
             <div id="view-product" class="content-view">
                 <header class="page-header">
                     <h2 id="page-title">20 系列選購</h2>
@@ -434,7 +687,7 @@
                                 已選擇：<span id="selected-profile-name" class="highlight-text"></span>
                             </div>
                             <div class="input-group">
-                                <input type="number" id="profile-len" placeholder="長度 (至少10cm)" min="10" step="0.1">
+                                <input type="number" id="profile-len" placeholder="長度 (至少100mm)" min="100" step="1">
                                 <input type="number" id="profile-qty" placeholder="數量" min="1" value="1">
                                 <button class="btn-add" onclick="addProfileToCart()">加入清單</button>
                             </div>
@@ -472,19 +725,138 @@
                     <p class="loading-text">載入中...</p>
                 </div>
             </div>
-            <div id="view-about" class="content-view hidden">
-                <header class="page-header">
-                    <h2>關於我們</h2>
-                </header>
-                <div class="about-content">
-                    <h3>LUTU 鋁圖</h3>
-                    <p>我們致力於提供高品質的鋁擠型材料與配件，協助您輕鬆完成各種專案。</p>
-                    <div style="margin-top:20px;">
-                        <p><strong>聯絡方式：</strong></p>
-                        <p><i class="fab fa-line"></i> Line ID: herald8283</p>
-                        <p><i class="fas fa-envelope"></i> Email: lutu@herald-alu.com</p>
-                    </div>
+            
+            <div id="view-about" class="content-view hidden" style="position: relative; overflow: hidden; height: calc(100vh - 55px); display: flex; flex-direction: column; background: #fafafa; padding: 0;">
+                
+                <!-- 滿版無漸層照片 (固定 45% 高度) -->
+                <div style="position: relative; height: 45%; min-height: 200px; width: 100%; overflow: hidden; background: #eee; flex-shrink: 0;">
+                    <div id="about-slideshow" class="hub-slideshow-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></div>
                 </div>
+
+                <!-- 下半部：書面/雜誌感 (固定高度，不捲動) -->
+                <div style="position: relative; flex: 1; width: 100%; display: flex; justify-content: center; align-items: center; z-index: 3; padding: 0 40px; background: #fafafa;">
+                    
+                    <div class="about-content-fade-in" style="max-width: 850px; width: 100%;">
+                        <!-- 頂部低調黑線 -->
+                        <div style="width: 100%; height: 1px; background: #ddd; margin-bottom: 35px;"></div>
+                        
+                        <div style="display: flex; gap: 60px; align-items: flex-start;">
+                            <!-- 左側：標題區 -->
+                            <div style="width: 200px; flex-shrink: 0;">
+                                <h2 style="font-weight: 300; letter-spacing: 6px; color: #111; font-size: 1.8rem; margin: 0; line-height: 1.4;">
+                                    LUTU<br>
+                                    <span style="font-size: 0.95rem; letter-spacing: 10px; color: #888;">鋁圖</span>
+                                </h2>
+                            </div>
+                            
+                            <!-- 右側：內文區 -->
+                            <div style="flex: 1;">
+                                <div style="color: #444; line-height: 2; font-size: 0.92rem; font-weight: 300; letter-spacing: 1px; text-align: justify;">
+                                    <p style="margin-bottom: 20px;">
+                                        我們專注於工業級鋁擠型的應用設計與銷售，致力於提供最直覺、高質感的模組化結構方案。在瞬息萬變的自造者時代，我們深知結構的穩定性與彈性擴充對於每一個專案的成敗至關重要。
+                                    </p>
+                                    <p style="margin-bottom: 35px; color: #666;">
+                                        從個人創客的 DIY 專案，到企業級的自動化機架，LUTU 都能為您提供專業的材料與技術支援。我們不僅提供精密零件，更期許能成為您將每一個構想化為真實的堅實後盾。
+                                    </p>
+                                </div>
+
+                                <div style="display: flex; gap: 15px; align-items: center; margin-top: 5px; flex-wrap: wrap;">
+                                    <a href="https://lin.ee/O1O2D4k" target="_blank" class="about-social-icon" title="官方 LINE 客服">
+                                        <i class="fab fa-line"></i>
+                                    </a>
+                                    <a href="https://www.instagram.com/lutu_alumi" target="_blank" class="about-social-icon" title="Instagram @lutu_alumi">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+                                    <a href="https://www.threads.net/@lutu_alumi" target="_blank" class="about-social-icon" title="Threads @lutu_alumi">
+                                        <i class="fa-brands fa-threads"></i>
+                                    </a>
+                                    <a href="https://www.herald-alu.com/" target="_blank" class="about-social-icon" title="官方網站">
+                                        <i class="fas fa-globe"></i>
+                                    </a>
+                                    <a href="https://www.google.com.tw/maps/place/412%E5%8F%B0%E4%B8%AD%E5%B8%82%E5%A4%A7%E9%87%8C%E5%8D%80%E4%BB%81%E7%BE%8E%E8%B7%AF159%E5%B7%B711%E8%99%9F/@24.1031264,120.7076397,17z/data=!3m1!4b1!4m6!3m5!1s0x34693ccd618985a1:0x20c4b5c9ed633b6a!8m2!3d24.1031264!4d120.7102146!16s%2Fg%2F11f62nfj2j?entry=tts" target="_blank" class="about-social-icon" title="Google 地圖">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </a>
+                                    <a href="mailto:lutu@herald-alu.com" class="about-social-icon" title="Email: lutu@herald-alu.com">
+                                        <i class="fas fa-envelope"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 動畫樣式定義 -->
+                <style>
+                    /* 莫蘭迪三色漸層流動骨架屏 */
+                    @keyframes morandiFlow {
+                        0% { background-position: 0% 50%; }
+                        50% { background-position: 100% 50%; }
+                        100% { background-position: 0% 50%; }
+                    }
+                    .morandi-skeleton {
+                        background: linear-gradient(-45deg, #d1d5d8, #e3e0d8, #cbd2cc);
+                        background-size: 400% 400%;
+                        animation: morandiFlow 8s ease infinite;
+                    }
+                    /* 覆蓋 HUB 的預設黑底與 70% 透明度，讓關於我們頁面的照片 100% 明亮並能透出骨架屏 */
+                    #about-slideshow {
+                        background-color: transparent !important;
+                    }
+                    #about-slideshow .hub-slide.active {
+                        opacity: 1 !important;
+                    }
+
+                    .about-content-fade-in {
+                        animation: aboutFadeInUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    @keyframes aboutFadeInUp {
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    .editorial-btn:hover {
+                        background: #fff !important;
+                        color: #111 !important;
+                    }
+                    .editorial-link:hover {
+                        color: #111 !important;
+                        border-bottom: 1px solid #111 !important;
+                    }
+                    .about-social-icon {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        border: 1px solid rgba(0,0,0,0.15);
+                        color: #555;
+                        font-size: 1.05rem;
+                        text-decoration: none;
+                        transition: all 0.25s ease;
+                    }
+                    .about-social-icon:hover {
+                        background: #111;
+                        border-color: #111;
+                        color: #fff;
+                        transform: translateY(-2px);
+                    }
+                    @media (max-width: 768px) {
+                        #view-about > div:nth-child(2) > div {
+                            flex-direction: column !important;
+                            gap: 30px !important;
+                        }
+                        #view-about > div:nth-child(2) {
+                            padding: 30px 20px !important;
+                            align-items: flex-start !important;
+                        }
+                        #view-about {
+                            height: auto !important; /* 手機版不強制一頁滿版，避免字被裁切 */
+                            min-height: calc(100vh - 55px);
+                        }
+                    }
+                </style>
             </div>
 
             <!-- 客製設計詢問導引 (INQUIRY GUIDE) -->

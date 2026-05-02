@@ -332,9 +332,6 @@ async function initData() {
     // This ensures UI has data even while waiting
     processData(rawData);
     
-    // 立即啟動輪播（使用預設或剛抓到的圖）
-    initHubSlideshow();
-
     // 2. Try Fetching from API (Async Update)
     try {
         console.log("Fetching up-to-date data from Google Sheet:", API_URL);
@@ -467,27 +464,7 @@ function processData(data) {
                 yt: row[3],
                 pdf: row[4],
                 // 首頁背景圖解析
-                sceneImg: (function() {
-                    if (data.hubBackground && data.hubBackground.length > 0) {
-                        // 如果雲端有資料，則替換掉預設的本地圖片
-                        let cloudImages = data.hubBackground
-                            .map(row => row.find(cell => String(cell).match(/\.(jpg|jpeg|png|webp|gif)/i) || String(cell).startsWith('http')))
-                            .filter(url => url)
-                            .map(url => {
-                                url = url.trim();
-                                if (url.startsWith('assets/')) return url;
-                                if (url.startsWith('http')) return url;
-                                return 'assets/' + url;
-                            });
-                            
-                        if (cloudImages.length > 0) {
-                            hubBackgrounds = cloudImages;
-                            // 重新啟動輪播以載入新圖
-                            initHubSlideshow();
-                        }
-                    }
-                    return row[5];
-                })(),
+                sceneImg: row[5],
                 completeImg: row[6],
                 steps: [
                     (row.length > 7 && row[7]) ? { img: row[7], text: '步驟1' } : null,
@@ -561,15 +538,7 @@ function processData(data) {
         }
 
 
-        // --- 備用方案：如果最終還是沒抓到任何照片，才使用提示圖 ---
-        if (typeof window._firstLoadDone !== 'undefined' && hubBackgrounds.length === 0) {
-            console.log("No hub backgrounds detected. Using fallback placeholders.");
-            hubBackgrounds = [
-                "https://placehold.co/1920x1080/f0f2f5/333333?text=LUTU+HUB+Slideshow+Loading...",
-                "https://placehold.co/1920x1080/e2e8f0/666666?text=Check+Assets+Folder+and+Sheet"
-            ];
-            setTimeout(initHubSlideshow, 1000);
-        }
+        // --- 備用方案：莫蘭迪骨架屏處理等待中的畫面，不再需要 placehold.co ---
 
 
 
@@ -666,55 +635,7 @@ function renderHotSalesMobile() {
     container.innerHTML = html;
 }
 
-function renderHotSales() {
-    let container = document.getElementById('hot-sales-container');
-    if (!container) return;
-
-    // Mock Data (Using Global)
-    let hotProfiles = hotProfilesData;
-    let hotAccessories = hotAccessoriesData;
-
-    let html = '<div class="hot-sales-title"><i class="fas fa-crown"></i> 熱銷排行</div>';
-
-    // Helper to create Sidebar Card
-    const createSidebarCard = (item) => {
-        let rankClass = `rank-${item.rank}`;
-        // Find product image (Prioritize 3D for accessories)
-        let product = products.find(p => p.name === item.name);
-        let imgSrc = 'https://placehold.co/100x100?text=No+Img';
-        if (product) {
-            let file = (product.type === '配件' && product.img3d) ? product.img3d : (product.img2d || "");
-            if (file) imgSrc = 'assets/' + file;
-        }
-
-        return `
-        <div class="desktop-hot-card" onclick="goToProduct('${item.name}', '${item.series}')">
-            <div class="mobile-hot-rank-badge ${rankClass}" style="width:20px; height:20px; font-size:0.7rem;">${item.rank}</div>
-            <img src="${imgSrc}" class="desktop-hot-img">
-            <div class="desktop-hot-info">
-                <div class="desktop-hot-name">${item.name}</div>
-            </div>
-        </div>`;
-    };
-
-    // 1. Profiles
-    html += '<div style="font-size:0.8rem; color:#7f8c8d; margin:8px 0 4px; border-bottom:1px solid #e2e8f0; padding-bottom:2px;">🔥 鋁材規格 (Top 3)</div>';
-    html += '<div class="desktop-hot-list">';
-    hotProfiles.forEach(item => {
-        html += createSidebarCard(item);
-    });
-    html += '</div>';
-
-    // 2. Accessories
-    html += '<div style="font-size:0.8rem; color:#7f8c8d; margin:12px 0 4px; border-bottom:1px solid #e2e8f0; padding-bottom:2px;">🔧 精選配件 (Top 3)</div>';
-    html += '<div class="desktop-hot-list">';
-    hotAccessories.forEach(item => {
-        html += createSidebarCard(item);
-    });
-    html += '</div>';
-
-    container.innerHTML = html;
-}
+// --- [移除] 熱銷排行函數 ---
 
 window.goToProduct = function (name, series) {
     // 1. Switch to Series
@@ -748,83 +669,85 @@ window.goToProduct = function (name, series) {
 function renderCustomCases() {
     let container = document.getElementById('custom-cases-container');
     if (!customCases || customCases.length === 0) {
-        container.innerHTML = '<p style="text-align:center; padding:20px; color:#999;">目前無客製成品資料，請確認後台是否已更新。</p>';
+        container.innerHTML = '<p style="text-align:center; padding:40px; color:#999;">目前無客製成品資料，請確認後台是否已更新。</p>';
         return;
     }
-    let html = '';
-    customCases.forEach(function (c) {
-        // Direct mapping from Cols F, G, H
-        let collage1 = (c.img1 && c.img1.trim()) ? 'assets/' + c.img1.trim() : 'https://placehold.co/300x200?text=正面';
-        let collage2 = (c.img2 && c.img2.trim()) ? 'assets/' + c.img2.trim() : 'https://placehold.co/300x200?text=側面';
-        let collage3 = (c.img3 && c.img3.trim()) ? 'assets/' + c.img3.trim() : 'https://placehold.co/300x400?text=客戶實拍';
 
-        let pdfUrl = (c.pdf && c.pdf !== '') ? c.pdf : '#';
-        let pdfTarget = (pdfUrl !== '#') ? 'target="_blank"' : '';
-        let pdfBtn = '<a href="' + pdfUrl + '" ' + pdfTarget + ' class="btn-pdf"><i class="fas fa-file-pdf"></i> 下載 PDF</a>';
+    const formatText = (text) => {
+        if (!text) return '';
+        if (!text.match(/[\r\n]/) && text.trim().startsWith('n')) {
+            return text.split('n').map(line => line.replace(/^[ \u3000\t]+|[ \u3000\t]+$/g, '')).join('<br>');
+        }
+        return text.split(/\r\n|\r|\n/).map(line => line.replace(/^[ \u3000\t]+|[ \u3000\t]+$/g, '')).join('<br>');
+    };
 
-        // Helper to format text (handles both \n and legacy 'n' delimiters)
-        const formatText = (text) => {
-            if (!text) return '';
-            // If text has no standard newlines but looks like legacy 'n' format (starts with n)
-            if (!text.match(/[\r\n]/) && text.trim().startsWith('n')) {
-                return text.split('n')
-                    .map(line => line.replace(/^[ \u3000\t]+|[ \u3000\t]+$/g, ''))
-                    .join('<br>');
-            }
-            // Standard formatting
-            return text.split(/\r\n|\r|\n/)
-                .map(line => line.replace(/^[ \u3000\t]+|[ \u3000\t]+$/g, ''))
-                .join('<br>');
-        };
-
-        let matText = (c.materialText) ? formatText(c.materialText) : '無材料表資料';
-        let descText = (c.desc) ? formatText(c.desc) : '';
+    let html = '<div class="masonry-grid">';
+    customCases.forEach(function (c, idx) {
+        let thumb = (c.img1 && c.img1.trim()) ? 'assets/' + c.img1.trim() :
+                    (c.img2 && c.img2.trim()) ? 'assets/' + c.img2.trim() :
+                    (c.img3 && c.img3.trim()) ? 'assets/' + c.img3.trim() : '';
+        if (!thumb) return;
 
         html += `
-        <div class="custom-case-row">
-            <!-- 1. Info Column -->
-            <div class="case-info">
-                <div>
-                    <div class="case-title">${c.name}</div>
-                    <div class="case-desc">${descText}</div>
-                </div>
-                <div>
-                ${pdfBtn}
-                </div>
-            </div>
-            
-            <!-- 2. Material Text Column (Replacing Image) -->
-            <div class="case-material" style="position:relative;">
-                <div class="collage-label" style="top:5px; left:5px; background:rgba(255,255,255,0.9);">材料表</div>
-                <div class="material-text-content">${matText}</div>
-            </div>
-
-            <!-- 3. Collage Column -->
-            <div class="case-collage">
-                <div class="collage-left">
-                    <div class="collage-item">
-                        <div class="collage-label">正面</div>
-                        <img src="${collage1}" class="collage-img" onclick="showLightbox(this.src)">
-                    </div>
-                    <div class="collage-item">
-                        <div class="collage-label">側面</div>
-                        <img src="${collage2}" class="collage-img" onclick="showLightbox(this.src)">
-                    </div>
-                </div>
-                <div class="collage-right">
-                    <div class="collage-item">
-                        <div class="collage-label">客戶實拍</div>
-                        <img src="${collage3}" class="collage-img h-full" onclick="showLightbox(this.src)">
-                    </div>
-                </div>
+        <div class="masonry-card" onclick="openCaseModal(${idx})">
+            <img src="${thumb}" class="masonry-img" loading="lazy" onerror="this.parentElement.style.display='none'">
+            <div class="masonry-overlay">
+                <div class="masonry-title">${c.name || ''}</div>
+                <div class="masonry-sub">${c.id || ''}</div>
             </div>
         </div>`;
     });
+    html += '</div>';
     container.innerHTML = html;
 }
 
+window.openCaseModal = function(idx) {
+    const c = customCases[idx];
+    if (!c) return;
+
+    const formatText = (text) => {
+        if (!text) return '';
+        if (!text.match(/[\r\n]/) && text.trim().startsWith('n')) {
+            return text.split('n').map(line => line.replace(/^[ \u3000\t]+|[ \u3000\t]+$/g, '')).join('<br>');
+        }
+        return text.split(/\r\n|\r|\n/).map(line => line.replace(/^[ \u3000\t]+|[ \u3000\t]+$/g, '')).join('<br>');
+    };
+
+    let imgs = [c.img1, c.img2, c.img3].filter(Boolean).map(i => 'assets/' + i.trim());
+    let imgHtml = imgs.map(src => `<img src="${src}" class="modal-gallery-img" onclick="showLightbox('${src}')">`).join('');
+    let pdfUrl = (c.pdf && c.pdf !== '') ? c.pdf : null;
+    let pdfBtn = pdfUrl ? `<a href="${pdfUrl}" target="_blank" class="modal-pdf-btn"><i class="fas fa-file-pdf"></i> 下載 PDF</a>` : '';
+    let matText = formatText(c.materialText);
+    let descText = formatText(c.desc);
+
+    injectModal(`
+        <div class="modal-layout">
+            <div class="modal-gallery">${imgHtml || '<p style="color:#aaa">無圖片</p>'}</div>
+            <div class="modal-detail">
+                <div class="modal-tag">${c.id || 'CUSTOM'}</div>
+                <h2 class="modal-name">${c.name || ''}</h2>
+                ${descText ? `<p class="modal-desc">${descText}</p>` : ''}
+                ${matText ? `<div class="modal-mat"><div class="modal-mat-title">材料表</div><div class="modal-mat-body">${matText}</div></div>` : ''}
+                ${pdfBtn}
+            </div>
+        </div>
+    `);
+};
+
+
+
+
+// 輔助函數：從鋁材名稱提取截面尺寸 (例如 3060 -> 30 x 60 mm)
+function getProfileDimensions(name) {
+    const match = name.match(/(\d{2})(\d{2})/);
+    if (match) {
+        return `${match[1]} x ${match[2]} mm`;
+    }
+    return "";
+}
+
 window.switchView = function (view) {
-    let btns = document.querySelectorAll('.nav-item');
+    let btns = document.querySelectorAll('.nav-item, .info-tab');
     for (let i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); }
 
     document.getElementById('view-product').classList.add('hidden');
@@ -835,15 +758,21 @@ window.switchView = function (view) {
     // Remove series classes by default for non-product views (so background becomes white)
     document.body.classList.remove('series-20', 'series-30', 'series-40');
 
+    // Update Topbar Tabs
+    document.querySelectorAll('.b2c-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.id === 'b2c-tab-' + view) btn.classList.add('active');
+    });
+
     if (view === 'projects') {
-        document.querySelector('.project-tab').classList.add('active');
+        document.querySelectorAll('.project-tab').forEach(el => el.classList.add('active'));
         document.getElementById('view-projects').classList.remove('hidden');
         renderProjects();
     } else if (view === 'about') {
-        document.querySelector('.about-tab').classList.add('active');
+        document.querySelectorAll('.about-tab').forEach(el => el.classList.add('active'));
         document.getElementById('view-about').classList.remove('hidden');
     } else if (view === 'custom') {
-        document.querySelector('.custom-tab').classList.add('active');
+        document.querySelectorAll('.custom-tab').forEach(el => el.classList.add('active'));
         document.getElementById('view-custom').classList.remove('hidden');
         renderCustomCases();
     } else {
@@ -855,6 +784,10 @@ window.switchView = function (view) {
             // Highlight active series tab
             document.querySelectorAll('.nav-item').forEach(btn => {
                 if (btn.textContent.includes(currentSeries)) btn.classList.add('active');
+            });
+            // Also update topbar if in product view
+            document.querySelectorAll('.b2c-tab-btn').forEach(btn => {
+                if (btn.id === 'b2c-tab-' + currentSeries) btn.classList.add('active');
             });
         }
     }
@@ -871,28 +804,48 @@ function renderSeries(series) {
         for (let i = 0; i < al.length; i++) {
             let p = al[i];
 
-            // Weight Label (模糊比對修正：支援 [HR-0001] 格式)
-            let weight = 0;
-            for (let key in weightMap) {
-                if (p.name.includes(key)) { weight = weightMap[key]; break; }
-            }
-            let weightHtml = weight ? `<span class="img-label" style="background:rgba(0,0,0,0.7); color:#fff; padding:4px 8px; border-radius:4px; font-size:11px; backdrop-filter:blur(2px); border:1px solid rgba(255,255,255,0.1);">${weight} kg/m</span>` : '';
+            // 取得系列顏色
+            let seriesColor = "#ddd"; // 預設
+            if (p.name.startsWith('20')) seriesColor = "#b3c7d9";
+            else if (p.name.startsWith('30') || p.name.startsWith('60')) seriesColor = "#e6d9c6";
+            else if (p.name.startsWith('40')) seriesColor = "#b8ccb8";
 
-            // Check Rank
-            let hotItem = hotProfilesData.find(h => h.name === p.name);
-            let badgeHtml = '';
-            if (hotItem) {
-                badgeHtml = `<div class="rank-badge-overlay rank-${hotItem.rank}">TOP ${hotItem.rank}</div>`;
-            }
-
+            // 2D & 3D 圖片處理
             let delay = (i % 8) * 0.05;
-            alHtml += '<div class="profile-card" onclick="selectProfile(\'' + p.name + '\')" id="card-' + p.name + '" style="position:relative; animation-delay:' + delay + 's;">';
-            alHtml += '<div class="profile-img" style="position:relative;">';
-            alHtml += weightHtml; // Top-Left Weight
-            alHtml += badgeHtml; // Top-Right Rank
-            alHtml += '<img src="assets/' + p.img2d + '" style="width:100%;height:100%;object-fit:contain;padding:10px;" onerror="this.src=\'https://placehold.co/100?text=No+Img\'"></div>';
-            alHtml += '<div>' + p.name + '</div>';
-            alHtml += '<div style="color:#e74c3c; font-weight:300; font-size:1.1rem;">NT$' + p.price + '/' + p.unit + '</div>';
+            let dims = getProfileDimensions(p.name);
+            let weightHtml = dims ? `<span class="img-label" style="background:${seriesColor}; color:#444; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:600; border:1px solid rgba(0,0,0,0.05); position:absolute; top:10px; left:10px; z-index:5;">${dims}</span>` : '';
+            let img2dPath = 'assets/' + p.img2d;
+            let img3dPath = (p.img3d && p.img3d !== '-') ? 'assets/' + p.img3d : '';
+
+            alHtml += '<div class="profile-card premium-wide" onclick="selectProfile(\'' + p.name + '\')" id="card-' + p.name + '" style="position:relative; animation-delay:' + delay + 's;">';
+            alHtml +=   '<div class="profile-img-split">';
+            // Left: 2D
+            alHtml +=     '<div class="img-pane pane-2d" onclick="event.stopPropagation(); showLightbox(\'' + img2dPath + '\')">';
+            alHtml +=       weightHtml;
+            alHtml +=       '<span class="pane-label">剖面規格</span>';
+            alHtml +=       '<img src="' + img2dPath + '" onerror="this.src=\'https://placehold.co/100?text=2D\'">';
+            alHtml +=     '</div>';
+            // Right: 3D
+            alHtml +=     '<div class="img-pane pane-3d" onclick="event.stopPropagation(); if(\'' + img3dPath + '\') showLightbox(\'' + img3dPath + '\')">';
+            alHtml +=       '<span class="pane-label">立體外觀</span>';
+            if (img3dPath) {
+                alHtml +=   '<img src="' + img3dPath + '" onerror="this.src=\'https://placehold.co/100?text=3D\'">';
+            } else {
+                alHtml +=   '<div class="no-img-placeholder">3D (待補)</div>';
+            }
+            alHtml +=     '</div>';
+            alHtml +=   '</div>'; // end split
+            alHtml +=   '<div class="profile-card-info">';
+            alHtml +=     '<div class="p-name">' + p.name + '</div>';
+            alHtml +=     '<div class="p-price"><span style="color: #e74c3c;">NT$' + p.price + '</span><span style="color: #222;">/' + (p.unit === "cm" ? "10mm" : p.unit) + '</span></div>';
+            alHtml +=     '<div class="inline-action-panel" id="inline-panel-' + p.name + '" style="display:none; border-top: 1px dashed #eee; padding-top: 15px; margin-top: 10px; animation: fadeIn 0.3s;">';
+            alHtml +=       '<div style="display:flex; gap:10px; align-items:center;">';
+            alHtml +=         '<input type="number" id="inline-len-' + p.name + '" placeholder="長度(mm)" style="flex:1; width:0; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;" onclick="event.stopPropagation()">';
+            alHtml +=         '<input type="number" id="inline-qty-' + p.name + '" value="1" min="1" style="width:60px; padding:8px; border:1px solid #ccc; border-radius:6px; text-align:center; font-family:inherit;" onclick="event.stopPropagation()">';
+            alHtml +=         '<button onclick="event.stopPropagation(); window.addInlineItem(\'' + p.name + '\')" style="background:#2c3e50; color:#fff; padding:8px 15px; border:none; border-radius:6px; cursor:pointer; font-weight:600; white-space:nowrap; transition:all 0.3s;">加入</button>';
+            alHtml +=       '</div>';
+            alHtml +=     '</div>';
+            alHtml +=   '</div>';
             alHtml += '</div>';
         }
     } else { alHtml = '<p>無資料</p>'; }
@@ -1051,6 +1004,40 @@ function renderAccessoryList() {
     document.getElementById('selected-accessories-list').innerHTML = html;
 }
 
+window.addInlineItem = function (name) {
+    let lenInput = document.getElementById('inline-len-' + name);
+    let qtyInput = document.getElementById('inline-qty-' + name);
+    if (!lenInput || !qtyInput) return;
+    
+    let lenRaw = parseFloat(lenInput.value);
+    let qty = parseInt(qtyInput.value);
+    
+    if (!lenRaw || lenRaw < 100 || lenRaw > 6000 || !qty || qty < 1) {
+        alert("長度必須在 100 至 6000 mm 之間,數量不能為 0");
+        return;
+    }
+    
+    let len = lenRaw / 10; // 轉換為公分 (系統底層使用公分)
+    if (Math.round(len * 10) / 10 !== len) {
+        alert("長度最小單位為 0.1 公分");
+        return;
+    }
+    
+    let profile = products.find(p => p.name === name);
+    if(profile) {
+        addToCart(profile, qty, len);
+        renderSpecList();
+        
+        if(window.event) {
+            let btn = window.event.target;
+            let oldText = btn.innerText;
+            btn.innerText = '已加入 ✓';
+            btn.style.background = '#27ae60';
+            setTimeout(() => { btn.innerText = oldText; btn.style.background = '#2c3e50'; }, 1500);
+        }
+    }
+};
+
 window.selectProfile = function (name) {
     let cards = document.querySelectorAll('.profile-card');
     for (let i = 0; i < cards.length; i++) { cards[i].classList.remove('selected'); }
@@ -1060,7 +1047,15 @@ window.selectProfile = function (name) {
 
     selectedProfile = products.find(function (p) { return p.name === name; });
     document.getElementById('selected-profile-name').innerText = name;
-    document.getElementById('aluminum-input-area').classList.remove('hidden');
+    if (document.body.classList.contains('mode-b2c')) {
+        document.getElementById('aluminum-input-area').classList.add('hidden');
+        let panels = document.querySelectorAll('.inline-action-panel');
+        for (let i = 0; i < panels.length; i++) { panels[i].style.display = 'none'; }
+        let activePanel = document.getElementById('inline-panel-' + name);
+        if (activePanel) activePanel.style.display = 'block';
+    } else {
+        document.getElementById('aluminum-input-area').classList.remove('hidden');
+    }
 
     // Apply series-specific color to the add button (對齊頂部選單的極淡莫蘭迪色)
     const addBtn = document.querySelector('.btn-add');
@@ -1104,10 +1099,11 @@ window.selectProfile = function (name) {
 
 window.addProfileToCart = function () {
     let len = parseFloat(document.getElementById('profile-len').value);
+    if (len) len = len / 10;
     let qty = parseInt(document.getElementById('profile-qty').value);
 
     if (!len || len < 10 || len > 600 || !qty || qty < 1) {
-        alert("長度需介於 10 與 600 公分之間，且數量需大於 0");
+        alert("長度需介於 100 與 6000 mm 之間，且數量需大於 0");
         return;
     }
 
@@ -1149,7 +1145,7 @@ function renderSpecList() {
             <div class="spec-row" style="background:${rowBg}; border-color:${color}40;">
                 <div class="spec-info">
                     <span class="model-badge" style="color:${color};">${item.name}</span>
-                    <span>長度 ${item.len.toFixed(1)} cm</span>
+                    <span>長度 ${Math.round(item.len * 10)} mm</span>
                     <span style="color:#aaa;"></span>
                     <span style="color:#e74c3c; font-weight:300;">NT$${Math.round(item.price * item.len * item.qty)}</span>
                 </div>
@@ -1268,7 +1264,7 @@ function renderCart() {
             let item = cart[i];
             let sub = (item.type === '鋁材' && item.unit === 'cm') ? item.price * item.len * item.qty : item.price * item.qty;
             total += sub;
-            let specText = (item.len > 0) ? `長度 ${item.len.toFixed(1)}cm` : '標準規格';
+            let specText = (item.len > 0) ? `長度 ${Math.round(item.len * 10)}mm` : '標準規格';
 
             html += `
             <div class="cart-item">
@@ -1506,101 +1502,85 @@ function hideLoadingAnimation() {
 
 function renderProjects() {
     let container = document.getElementById('projects-container');
-    if (!projects || projects.length === 0) { container.innerHTML = '<p>無專案資料</p>'; return; }
-    let html = '';
-    projects.forEach(function (p) {
-        // Buttons Only PDF
-        let pdfUrl = (p.pdf && p.pdf !== '') ? p.pdf : '#';
-        let pdfTarget = (pdfUrl !== '#') ? 'target="_blank"' : '';
-        let pdfBtn = '<a href="' + pdfUrl + '" ' + pdfTarget + ' class="btn-pdf"><i class="fas fa-file-pdf"></i> 下載 PDF</a>';
+    if (!projects || projects.length === 0) {
+        container.innerHTML = '<p style="text-align:center; padding:40px; color:#999;">尚無專案範例。</p>';
+        return;
+    }
 
-        let completeImg = (p.completeImg) ? 'assets/' + p.completeImg : 'https://placehold.co/300x200?text=Complete';
-
-        // Prepare Steps Images
-        let s1 = p.steps[0] ? (p.steps[0].img ? 'assets/' + p.steps[0].img : 'https://placehold.co/150x150?text=Step1') : '';
-        let s2 = p.steps[1] ? (p.steps[1].img ? 'assets/' + p.steps[1].img : 'https://placehold.co/150x150?text=Step2') : '';
-        let s3 = p.steps[2] ? (p.steps[2].img ? 'assets/' + p.steps[2].img : 'https://placehold.co/150x150?text=Step3') : '';
-        let s4 = p.steps[3] ? (p.steps[3].img ? 'assets/' + p.steps[3].img : 'https://placehold.co/150x150?text=Step4') : '';
-
-        // Logic to choose between YouTube (Col D) or Image (Col F) for Scene Column
-        let sceneContent = '';
-        let ytId = extractYoutubeId(p.yt); // Check Col D for ID
-        let sceneVal = (p.sceneImg) ? p.sceneImg.trim() : '';
-
-        if (ytId) {
-            // Render YouTube Iframe
-            sceneContent = `
-            <div style="width:100%; height:100%; border-radius:6px; overflow:hidden; border:1px solid #eee;">
-                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>`;
-        } else {
-            // Render Image from Scene Column (Default)
-            let finalImg = (sceneVal) ? 'assets/' + sceneVal : 'https://placehold.co/300x500?text=Scene';
-            sceneContent = `<img src="${finalImg}" class="scene-img-vertical" style="width:100%; height:100%; object-fit:contain; border-radius:6px; border:1px solid #eee;" onclick="showLightbox(this.src)">`;
-        }
-
-        // Helper to format Description (Robust Trim)
-        const formatDesc = (text) => {
-            if (!text) return '';
-            // Split by newline, trim each line (including full-width spaces), join back
-            return text.split('\n').map(line => line.replace(/^[ \u3000\t]+|[ \u3000\t]+$/g, '')).join('\n').trim();
-        };
+    let html = '<div class="masonry-grid">';
+    projects.forEach(function (p, idx) {
+        let thumb = p.sceneImg ? 'assets/' + p.sceneImg.trim() :
+                    (p.completeImg ? 'assets/' + p.completeImg.trim() : '');
+        if (!thumb) return;
 
         html += `
-        <div class="project-row">
-            <!-- 1. Info Title, Desc, Complete Img, PDF -->
-            <div class="project-info">
-                <div>
-                    <div class="case-title">${p.title}</div>
-                    <div class="case-desc">${formatDesc(p.desc)}</div>
-                    <!-- Moved Complete Image Here -->
-                    <div class="info-complete-img">
-                         <div class="collage-label" style="top:5px; left:5px;">完成成品</div>
-                         <img src="${completeImg}" style="width:100%; border-radius:6px; border:1px solid #eee;" onclick="showLightbox(this.src)">
-                    </div>
-                </div>
-                <!-- Only PDF Button remains -->
-                <div class="btn-group" style="margin-top:15px;">
-                    ${pdfBtn}
-                </div>
-            </div>
-            
-            <!-- 2. Scene Video or Image -->
-            <div class="project-scene full-height" style="position:relative;">
-                <div class="collage-label" style="top:5px; left:5px;">情境示意</div>
-                <div style="flex:1; display:flex; flex-direction:column; min-height: 0;">
-                    ${sceneContent}
-                </div>
-            </div>
-
-            <!-- 3. Steps (Collage Style: 2x2 split columns) -->
-            <div class="case-collage">
-
-                <div class="collage-left">
-                    <div class="collage-item">
-                        <div class="collage-label">步驟 1</div>
-                        <img src="${s1}" class="collage-img" onclick="showLightbox(this.src)">
-                    </div>
-                    <div class="collage-item">
-                        <div class="collage-label">步驟 2</div>
-                        <img src="${s2}" class="collage-img" onclick="showLightbox(this.src)">
-                    </div>
-                </div>
-                <div class="collage-right">
-                    <div class="collage-item">
-                        <div class="collage-label">步驟 3</div>
-                        <img src="${s3}" class="collage-img" onclick="showLightbox(this.src)">
-                    </div>
-                    <div class="collage-item">
-                        <div class="collage-label">步驟 4</div>
-                        <img src="${s4}" class="collage-img" onclick="showLightbox(this.src)">
-                    </div>
-                </div>
+        <div class="masonry-card" onclick="openProjectModal(${idx})">
+            <img src="${thumb}" class="masonry-img" loading="lazy" onerror="this.parentElement.style.display='none'">
+            <div class="masonry-overlay">
+                <div class="masonry-title">${p.title || ''}</div>
+                <div class="masonry-sub">${p.id || ''}</div>
             </div>
         </div>`;
     });
+    html += '</div>';
     container.innerHTML = html;
 }
+
+window.openProjectModal = function(idx) {
+    const p = projects[idx];
+    if (!p) return;
+
+    const formatDesc = (text) => {
+        if (!text) return '';
+        return text.split(/\r\n|\r|\n/).map(l => l.replace(/^[ \u3000\t]+|[ \u3000\t]+$/g, '')).join('<br>');
+    };
+
+    let ytId = extractYoutubeId(p.yt);
+    let mediaHtml = '';
+    if (ytId) {
+        mediaHtml = `<div class="modal-yt"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen></iframe></div>`;
+    } else {
+        let imgs = [p.sceneImg, p.completeImg, ...(p.steps||[]).map(s=>s&&s.img)].filter(Boolean).map(i => 'assets/' + i.trim());
+        mediaHtml = imgs.map(src => `<img src="${src}" class="modal-gallery-img" onclick="showLightbox('${src}')">`).join('');
+    }
+    let pdfUrl = (p.pdf && p.pdf !== '') ? p.pdf : null;
+    let pdfBtn = pdfUrl ? `<a href="${pdfUrl}" target="_blank" class="modal-pdf-btn"><i class="fas fa-file-pdf"></i> 下載教學 PDF</a>` : '';
+
+    injectModal(`
+        <div class="modal-layout">
+            <div class="modal-gallery">${mediaHtml || '<p style="color:#aaa">無圖片</p>'}</div>
+            <div class="modal-detail">
+                <div class="modal-tag">${p.id || 'PROJECT'}</div>
+                <h2 class="modal-name">${p.title || ''}</h2>
+                ${p.desc ? `<p class="modal-desc">${formatDesc(p.desc)}</p>` : ''}
+                ${pdfBtn}
+            </div>
+        </div>
+    `);
+};
+
+function injectModal(contentHtml) {
+    // 移除舊的 Modal
+    let old = document.getElementById('gallery-modal');
+    if (old) old.remove();
+
+    let modal = document.createElement('div');
+    modal.id = 'gallery-modal';
+    modal.className = 'gallery-modal-backdrop';
+    modal.innerHTML = `
+        <div class="gallery-modal-box">
+            <button class="gallery-modal-close" onclick="document.getElementById('gallery-modal').remove()">
+                <i class="fas fa-times"></i>
+            </button>
+            ${contentHtml}
+        </div>`;
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) modal.remove();
+    });
+    document.body.appendChild(modal);
+    requestAnimationFrame(() => modal.classList.add('visible'));
+}
+
 
 function extractYoutubeId(url) {
     if (!url || url === '') return null;
@@ -1623,6 +1603,11 @@ window.switchSeries = function (series) {
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.classList.remove('active');
         if (btn.textContent.includes(series)) btn.classList.add('active');
+    });
+    // Update Topbar Tab
+    document.querySelectorAll('.b2c-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.id === 'b2c-tab-' + series) btn.classList.add('active');
     });
 
     // Update Title
@@ -1889,13 +1874,13 @@ window.selectUserMode = function (mode) {
         });
     }
 
-    const b2cTopbar = document.getElementById('mobileB2CTopbar');
+    const b2cTopbar = document.getElementById('b2cTopbar');
+    const b2bTopbar = document.getElementById('b2bTopbar');
 
     // UI Shell Toggling (Sidebar and Floating Buttons)
-    const b2cShellElements = [
-        document.getElementById('b2cSidebar'),
+    const sidebar = document.getElementById('b2cSidebar');
+    const floatingButtons = [
         document.querySelector('.floating-cart-btn'),
-        document.querySelector('.floating-hot-btn'),
         document.querySelector('.mobile-hamburger')
     ];
 
@@ -1904,35 +1889,54 @@ window.selectUserMode = function (mode) {
         document.getElementById('b2b-dashboard').classList.remove('hidden');
         document.getElementById('view-custom-inquiry')?.classList.add('hidden');
 
-        // Hide B2C Shell + topbar
-        b2cShellElements.forEach(el => el?.classList.add('hidden'));
-        if (b2cTopbar) b2cTopbar.style.display = 'none';
+        // Show B2B Topbar, Hide B2C Topbar and Sidebar
+        sidebar?.classList.add('hidden');
+        if (b2cTopbar) b2cTopbar.classList.add('hidden');
+        if (b2bTopbar) b2bTopbar.classList.remove('hidden');
+
+        floatingButtons.forEach(el => el?.classList.add('hidden'));
 
         switchB2BSeries('20');
         setTimeout(renderB2BDashboard, 100);
         renderAnalysisAndManifest();
-    } else {
-        document.body.classList.remove('mode-b2b');
-        document.getElementById('b2b-dashboard').classList.add('hidden');
+    } else if (mode === 'CUSTOM') {
+        document.body.classList.add('mode-custom');
+        document.getElementById('view-custom-inquiry')?.classList.remove('hidden');
+        document.querySelectorAll('.content-view').forEach(v => {
+            if (v.id !== 'view-custom-inquiry') v.classList.add('hidden');
+        });
+        sidebar?.classList.add('hidden');
+        if (b2cTopbar) b2cTopbar.classList.add('hidden');
+        if (b2bTopbar) b2bTopbar.classList.add('hidden');
+        document.getElementById('info-topbar')?.classList.add('hidden');
+    } else if (mode === 'INFO') {
+        document.body.classList.remove('mode-custom');
+        document.body.classList.add('mode-info');
+        document.getElementById('view-custom-inquiry')?.classList.add('hidden');
+        
+        sidebar?.classList.add('hidden');
+        if (b2cTopbar) b2cTopbar.classList.add('hidden');
+        if (b2bTopbar) b2bTopbar.classList.add('hidden');
+        document.getElementById('info-topbar')?.classList.remove('hidden');
 
-        if (mode === 'CUSTOM') {
-            document.body.classList.add('mode-custom');
-            document.getElementById('view-custom-inquiry')?.classList.remove('hidden');
-            document.querySelectorAll('.content-view').forEach(v => {
-                if (v.id !== 'view-custom-inquiry') v.classList.add('hidden');
-            });
-            // Hide B2C Shell + topbar（OEM 頁面不顯示 B2C 導覽）
-            b2cShellElements.forEach(el => el?.classList.add('hidden'));
-            if (b2cTopbar) b2cTopbar.style.display = 'none';
-        } else {
-            document.body.classList.remove('mode-custom');
-            // This is B2C Mode
-            switchSeries('20');
-            document.getElementById('view-custom-inquiry')?.classList.add('hidden');
-            // Show B2C Shell + topbar
-            b2cShellElements.forEach(el => el?.classList.remove('hidden'));
-            if (b2cTopbar) b2cTopbar.style.display = '';
-        }
+        switchView('about');
+    } else {
+        // This is B2C Mode
+        document.body.classList.remove('mode-custom', 'mode-info', 'mode-b2b');
+        document.body.classList.add('mode-b2c');
+        document.getElementById('view-custom-inquiry')?.classList.add('hidden');
+        document.getElementById('b2b-dashboard').classList.add('hidden');
+        document.getElementById('info-topbar')?.classList.add('hidden');
+        
+        if (b2cTopbar) b2cTopbar.classList.remove('hidden');
+        if (b2bTopbar) b2bTopbar.classList.add('hidden');
+
+        floatingButtons.forEach(el => el?.classList.remove('hidden'));
+        // 強制隱藏熱銷排行按鈕 (使用者要求)
+        const hotBtn = document.querySelector('.floating-hot-btn');
+        if (hotBtn) hotBtn.classList.add('hidden');
+
+        switchSeries('20');
     }
 };
 
@@ -1945,49 +1949,49 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- [新增] 首頁背景輪播邏輯 ---
+// --- [新增] 關於我們 背景輪播邏輯 ---
 function initHubSlideshow() {
-    const container = document.getElementById('hub-slideshow');
-    const hubOverlay = document.getElementById('hub-overlay');
+    const container = document.getElementById('about-slideshow');
     
     if (!container || hubBackgrounds.length === 0) {
         console.warn("Slideshow init failed: Container not found or no images.");
         return;
     }
 
-    // 預設保持實色背景
-    if (hubOverlay) {
-        hubOverlay.classList.remove('slideshow-ready');
-    }
-
     // 清除舊的
     container.innerHTML = '';
-    if (slideshowInterval) clearInterval(slideshowInterval);
+    if (slideshowInterval) {
+        clearInterval(slideshowInterval);
+        slideshowInterval = null;
+    }
 
-    // 建立幻燈片
-    hubBackgrounds.forEach((url, idx) => {
-        const slide = document.createElement('div');
-        slide.className = 'hub-slide' + (idx === 0 ? ' active' : '');
-        slide.style.backgroundImage = `url('${url}')`;
-        // 加入載入監聽，幫助除錯
+    // 改為智慧型載入：檔案存在才加進畫面，解決黑畫面問題
+    let loadedSlidesCount = 0;
+
+    hubBackgrounds.forEach((url) => {
         let img = new Image();
         img.onload = () => {
-            console.log("Slide Image Loaded:", url);
-            // 只有當第一張照片載入成功，才讓背景變透明，防止看到後台雜訊
-            if (idx === 0 && hubOverlay) {
-                hubOverlay.classList.add('slideshow-ready');
+            const slide = document.createElement('div');
+            slide.className = 'hub-slide';
+            // 第一張載入成功的自動變成 active
+            if (loadedSlidesCount === 0) slide.classList.add('active');
+            
+            slide.style.backgroundImage = `url('${url}')`;
+            container.appendChild(slide);
+            loadedSlidesCount++;
+
+            // 只要有 2 張以上的圖片成功載入，就啟動輪播
+            if (loadedSlidesCount > 1 && !slideshowInterval) {
+                currentSlideIndex = 0;
+                slideshowInterval = setInterval(nextHubSlide, 6000);
             }
         };
-        img.onerror = () => console.error("Slide Image Load Failed:", url);
+        img.onerror = () => {
+            // 檔案不存在（例如被刪除了），直接略過，不加入 DOM
+            console.log("跳過不存在的輪播圖片:", url);
+        };
         img.src = url;
-        
-        container.appendChild(slide);
     });
-
-    // 開始輪播
-    if (hubBackgrounds.length > 1) {
-        currentSlideIndex = 0;
-        slideshowInterval = setInterval(nextHubSlide, 6000);
-    }
 }
 
 
@@ -2026,8 +2030,7 @@ window.returnToHub = function () {
     }
 
     // Hide everything else
-    document.body.classList.remove('mode-b2b');
-    document.body.classList.remove('mode-custom');
+    document.body.classList.remove('mode-b2b', 'mode-b2c', 'mode-custom', 'mode-info');
     document.getElementById('b2b-dashboard')?.classList.add('hidden');
     document.getElementById('view-custom-inquiry')?.classList.add('hidden');
 
@@ -2035,10 +2038,14 @@ window.returnToHub = function () {
     const b2cShellElements = [
         document.getElementById('b2cSidebar'),
         document.querySelector('.floating-cart-btn'),
-        document.querySelector('.floating-hot-btn'),
         document.querySelector('.mobile-hamburger')
     ];
     b2cShellElements.forEach(el => el?.classList.add('hidden'));
+    document.querySelector('.floating-hot-btn')?.classList.add('hidden');
+    
+    // Hide Both Topbars
+    document.getElementById('b2cTopbar')?.classList.add('hidden');
+    document.getElementById('b2bTopbar')?.classList.add('hidden');
 };
 
 // Track current B2B series for navigation
@@ -2052,10 +2059,10 @@ window.switchB2BSeries = function (series) {
     document.body.classList.remove('series-20', 'series-30', 'series-40');
     document.body.classList.add('series-' + series);
 
-    // 1. Update Tabs Visual
-    document.querySelectorAll('.b2b-tab-btn').forEach(btn => {
+    // 1. Update B2B Topbar Tabs Visual
+    document.querySelectorAll('#b2bTopbar .b2b-nav-tab').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.getAttribute('data-series') === series) {
+        if (btn.textContent.includes(series)) {
             btn.classList.add('active');
         }
     });
@@ -2184,14 +2191,12 @@ window.handleB2BSearch = function (keyword) {
         let skuCode = b2bMatch ? parseSKU(b2bMatch.name) : null;
         const mainCodeHtml = skuCode ? `<span class="sku-main-code" style="background:var(--series-bg, #eee); color:var(--series-color, #666); padding:1px 4px; border-radius:3px; font-weight:bold;">${skuCode}</span>` : '';
 
-        let weight = 0;
-        for (let key in weightMap) {
-            if (p.name.includes(key)) { weight = weightMap[key]; break; }
-        }
-        const weightHtml = weight ? `<span style="opacity:0.6; font-size:0.75rem;"><i class="fas fa-weight-hanging"></i> ${weight} kg/m</span>` : '';
+        // 尺寸標籤 (B2B 模式)
+        let dims = getProfileDimensions(p.name);
+        const weightHtml = dims ? `<span class="b2b-dim-tag" style="opacity:0.8; font-size:0.75rem; color:#444; border:1px solid rgba(0,0,0,0.05); padding:2px 8px; border-radius:4px; background:var(--series-bg, #eee); font-weight:600;"><i class="fas fa-ruler-combined"></i> ${dims}</span>` : '';
 
         const priceDisplay = p.price;
-        const unitDisplay = (p.type === '鋁材') ? 'cm' : (p.unit || '個');
+        const unitDisplay = (p.type === '鋁材' || p.unit === 'cm') ? '10mm' : (p.unit || '個');
 
         let accordionHtml = renderProductAccordion(p);
         const seriesPrefix = p.series ? p.series.split('-')[0] : '20';
@@ -2255,7 +2260,7 @@ function renderProductAccordion(p) {
             <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:14px; margin-top:10px; background:#fff; border-radius:12px; border:1px solid #e8e8e8; box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow:hidden;">
                  <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
                      <div class="batch-row" style="display:flex; gap:8px; align-items:stretch; margin-bottom:10px; box-sizing:border-box; width:100%;">
-                          <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1; min-width:0; height:38px; box-sizing:border-box;">
+                          <input type="number" class="detail-input input-len" placeholder="長度(mm)" min="100" step="1" style="flex:1; min-width:0; height:38px; box-sizing:border-box;">
                           <input type="number" class="detail-input input-qty" value="1" min="1" style="width:56px; flex-shrink:0; height:38px; font-size:1.05rem; font-weight:700; text-align:center; border:1px solid #d1d5db; border-radius:8px; background:#f8f9fa; color:#2c3e50; box-sizing:border-box;">
                      </div>
                  </div>
@@ -2301,7 +2306,7 @@ window.addBatchRow = function (containerId) {
     newRow.className = 'batch-row';
     newRow.style.cssText = 'display:flex; gap:10px; align-items:center; margin-bottom:10px; animation: slideInDown 0.2s ease;';
     newRow.innerHTML = `
-        <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1; height:36px;" onclick="event.stopPropagation()">
+        <input type="number" class="detail-input input-len" placeholder="長度(mm)" min="100" step="1" style="flex:1; height:36px;" onclick="event.stopPropagation()">
         <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:75px; height:36px;" onclick="event.stopPropagation()">
         <button onclick="this.parentElement.remove()" style="background:none; border:none; color:#e74c3c; cursor:pointer; padding:5px;"><i class="fas fa-times"></i></button>
     `;
@@ -2322,6 +2327,7 @@ window.addToCartBatch = function (productName, containerId, btnEl) {
         const qtyInput = row.querySelector('.input-qty');
 
         let len = lenInput ? parseFloat(lenInput.value) : 0;
+        if (len) len = len / 10;
         let qty = parseInt(qtyInput ? qtyInput.value : 1) || 0;
 
         if (qty > 0) {
@@ -2428,9 +2434,10 @@ function renderSeriesOverview(series) {
     `;
 
     items.forEach(p => {
-        // 根據類型決定顯示哪張圖：配件優先顯示 3D 圖，鋁材顯示 2D 剖面圖
-        let rawImg = (p.type === '配件' && p.img3d) ? p.img3d : (p.img2d || p.image2D || "");
-        const imgUrl = (rawImg && rawImg !== '-') ? `assets/${rawImg}` : `https://placehold.co/100x100?text=${encodeURIComponent(p.name)}`;
+        // 根據類型決定預設顯示哪張圖
+        let img2dUrl = (p.img2d && p.img2d !== '-') ? `assets/${p.img2d}` : `https://placehold.co/100?text=2D`;
+        let img3dUrl = (p.img3d && p.img3d !== '-') ? `assets/${p.img3d}` : null;
+        const imgUrl = (p.type === '配件' && img3dUrl) ? img3dUrl : img2dUrl;
         const displayName = p.name;
 
         // Data Extraction
@@ -2438,14 +2445,12 @@ function renderSeriesOverview(series) {
         let skuCode = b2bMatch ? parseSKU(b2bMatch.name) : null;
         const mainCodeHtml = skuCode ? `<span class="sku-main-code" style="background:var(--series-bg, #eee); color:var(--series-color, #666); padding:1px 4px; border-radius:3px; font-weight:bold;">${skuCode}</span>` : '';
 
-        let weight = 0;
-        for (let key in weightMap) {
-            if (p.name.includes(key)) { weight = weightMap[key]; break; }
-        }
-        const weightHtml = weight ? `<span style="opacity:0.6; font-size:0.75rem;"><i class="fas fa-weight-hanging"></i> ${weight} kg/m</span>` : '';
+        // 尺寸標籤 (B2B 模式)
+        let dims = getProfileDimensions(p.name);
+        const weightHtml = dims ? `<span class="b2b-dim-tag" style="opacity:0.8; font-size:0.75rem; color:#444; border:1px solid rgba(0,0,0,0.05); padding:2px 8px; border-radius:4px; background:var(--series-bg, #eee); font-weight:600;"><i class="fas fa-ruler-combined"></i> ${dims}</span>` : '';
 
         const priceDisplay = p.price;
-        const unitDisplay = p.unit || '個';
+        const unitDisplay = p.unit === 'cm' ? '10mm' : (p.unit || '個');
 
         // Accordion content
         let accordionHtml = renderProductAccordion(p);
@@ -2472,7 +2477,11 @@ function renderSeriesOverview(series) {
              
              <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
                 <div class="col-img" style="flex:0 0 65px; position:relative;">
-                    <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:6px; object-fit: cover; cursor:zoom-in; border:1px solid #eee;" onclick="event.stopPropagation(); showLightbox(this.src)">
+                    <img src="${imgUrl}" class="b2b-thumb" id="thumb-${p.id || p.name}" 
+                         data-2d="${img2dUrl}" data-3d="${img3dUrl || ''}"
+                         style="width:65px; height:65px; border-radius:6px; object-fit: cover; cursor:zoom-in; border:1px solid #eee;" 
+                         onclick="event.stopPropagation(); showLightbox(this.src)">
+                    ${img3dUrl ? `<div class="b2b-thumb-toggle" onclick="event.stopPropagation(); toggleB2BThumb('${p.id || p.name}')" title="切換 2D/3D"><i class="fas fa-sync-alt"></i></div>` : ''}
                     <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:var(--series-color, #999); color:white; font-size:0.75rem; font-weight:600; line-height:1;">${seriesPrefix}</div>
                 </div>
                 <div class="col-name" style="padding-left:15px; min-width:0; flex:1;">
@@ -2545,9 +2554,10 @@ window.addToCartSimple = function (productName, btnEl) {
 
     let qty = parseInt(qtyInput ? qtyInput.value : 1) || 1;
     let len = lenInput ? parseFloat(lenInput.value) : 0;
+    if (len) len = len / 10;
 
     if (lenInput && (isNaN(len) || len < 10)) {
-        alert("請輸入有效長度 (最小 10cm)");
+        alert("請輸入有效長度 (最小 100mm)");
         return;
     }
 
@@ -2757,7 +2767,7 @@ function renderProductDetailPanel(p) {
 
     // Unit display
     let unitDisplay = p.unit || '個';
-    if (isProfile) unitDisplay = 'cm';
+    if (isProfile || unitDisplay === 'cm') unitDisplay = '10mm';
 
     // Series Colors
     const seriesColors = {
@@ -2784,7 +2794,7 @@ function renderProductDetailPanel(p) {
                 </label>
                 <div id="detail-input-rows">
                     <div class="detail-row-flex">
-                        <input type="number" class="detail-input input-len" placeholder="長度(cm)" step="0.1" min="10" oninput="calculateLiveSubtotal(${p.price}, true)">
+                        <input type="number" class="detail-input input-len" placeholder="長度(mm)" step="1" min="100" oninput="calculateLiveSubtotal(${p.price}, true)">
                         <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" oninput="calculateLiveSubtotal(${p.price}, true)">
                         <button class="btn-xs" onclick="if(document.querySelectorAll('.detail-row-flex').length > 1) this.parentElement.remove(); calculateLiveSubtotal(${p.price}, true);" 
                                 style="background:#fff; color:#e74c3c; border:1px solid #fee2e2; padding:8px 12px; border-radius:8px; cursor:pointer; flex: 0 0 auto;">
@@ -2918,7 +2928,7 @@ window.calculateLiveSubtotal = function (price, isProfile) {
     if (isProfile) {
         let rows = document.querySelectorAll('#detail-input-rows .detail-row-flex');
         rows.forEach(row => {
-            let len = parseFloat(row.querySelector('.input-len').value) || 0;
+            let len = (parseFloat(row.querySelector('.input-len').value) || 0) / 10;
             let qty = parseInt(row.querySelector('.input-qty').value) || 0;
             total += (price * len * qty);
         });
@@ -2939,7 +2949,7 @@ window.addDetailRow = function () {
     let div = document.createElement('div');
     div.className = 'detail-row-flex';
     div.innerHTML = `
-        <input type="number" class="detail-input input-len" placeholder="長度(cm)" step="0.1" min="10" oninput="calculateLiveSubtotal(${currentProductPrice}, true)">
+        <input type="number" class="detail-input input-len" placeholder="長度(mm)" step="1" min="100" oninput="calculateLiveSubtotal(${currentProductPrice}, true)">
         <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" oninput="calculateLiveSubtotal(${currentProductPrice}, true)">
         <button class="btn-xs" onclick="if(document.querySelectorAll('.detail-row-flex').length > 1) this.parentElement.remove(); calculateLiveSubtotal(${currentProductPrice}, true);" 
                 style="background:#fff; color:#e74c3c; border:1px solid #fee2e2; padding:8px 12px; border-radius:8px; cursor:pointer; flex: 0 0 auto;">
@@ -3050,10 +3060,11 @@ window.addToCartFromDetail = function (productName) {
             let lenInput = row.querySelector('.input-len');
             let qtyInput = row.querySelector('.input-qty');
             let length = parseFloat(lenInput.value);
+            if (length) length = length / 10;
             let qty = parseInt(qtyInput.value);
 
             if (length < 10 || length > 600) {
-                alert("裁切長度必須介於 10 與 600 cm 之間");
+                alert("裁切長度必須介於 100 與 6000 mm 之間");
                 return;
             }
 
@@ -3182,7 +3193,7 @@ function renderFocusPanel(p) {
                 </div>
                 <div class="focus-info">
                     <div class="focus-title">${p.name}</div>
-                    <div class="focus-meta">${p.series}系列 / ${p.type} / 單位: ${p.unit}</div>
+                    <div class="focus-meta">${p.series}系列 / ${p.type} / 單位: ${p.unit === 'cm' ? '10mm' : p.unit}</div>
                     
                     <div class="focus-price-box">
                         <span>建議售價</span>
@@ -3237,11 +3248,7 @@ window.addToCartFocus = function (nameOrId) {
             let lenInput = row.querySelector('.input-len');
             let qtyInput = row.querySelector('.input-qty');
             let len = parseFloat(lenInput.value);
-            // Convert mm to cm if user inputs mm? The placeholder says mm. 
-            // Existing logic uses cm. Let's assume input needs /10.
-            // Wait, standard UI was cm. Let's keep cm.
             if (len) len = len / 10;
-
             let qty = parseInt(qtyInput.value);
 
             if (len > 0 && len <= 600 && qty > 0) {
@@ -3386,7 +3393,7 @@ function renderAnalysisAndManifest() {
         if (items.length === 0) continue;
         // Group Header? Optional. For now flat list look is cleaner.
         items.forEach((item, index) => {
-            let spec = (item.type === '鋁材') ? `L:${item.len}` : '';
+            let spec = (item.type === '鋁材') ? `L:${Math.round(item.len * 10)}mm` : '';
 
             // Weight Calc for Right Panel
             let weightInfo = '';
@@ -3443,7 +3450,7 @@ function renderAnalysisAndManifest() {
                             ${weightInfo ? `<span style="opacity:0.4; font-size:0.7rem;">|</span> ${weightInfo}` : ''}
                         </div>
                         <div style="font-size:0.7rem; color:#aaa; margin-top:1px; font-family:monospace;">
-                            $${item.price}/${item.unit}${item.len > 0 ? ` × ${item.len}cm` : ''}
+                            $${item.price}/${item.unit === 'cm' ? '10mm' : item.unit}${item.len > 0 ? ` × ${Math.round(item.len * 10)}mm` : ''}
                         </div>
                      </div>
                      <div style="text-align:right; flex:0 0 80px;">
@@ -3688,7 +3695,7 @@ function updatePreview(headerRow) {
         if (isInstruction || rawName.toString().includes('請勿更動') || rawName.toString().includes('填寫說明')) {
             html += `<tr style="border-bottom:1px solid #f1f2f6; background:#fff9db; opacity:0.8;">`;
             html += `<td style="padding:5px;">${rawName || '說明'}</td>`;
-            html += `<td style="padding:5px;">L:${rawLen} / Q:-</td>`;
+            html += `<td style="padding:5px;">L:${rawLen ? Math.round(rawLen * 10) + 'mm' : '-'} / Q:-</td>`;
             html += `<td style="padding:5px; color:#f39c12;"><i>說明列 (已略過)</i></td>`;
             html += `</tr>`;
             return;
@@ -3716,7 +3723,7 @@ function updatePreview(headerRow) {
         // Show all rows
         html += `<tr style="border-bottom:1px solid #f1f2f6;">`;
         html += `<td style="padding:5px;">${rawName}</td>`;
-        html += `<td style="padding:5px;">L:${rawLen || '-'} / Q:${qVal || '-'}</td>`;
+        html += `<td style="padding:5px;">L:${rawLen ? Math.round(rawLen * 10) + 'mm' : '-'} / Q:${qVal || '-'}</td>`;
         html += `<td style="padding:5px;">${statusHtml}</td>`;
         html += `</tr>`;
     });
@@ -4092,7 +4099,7 @@ window.addBatchRow = function (containerId) {
 
     if (isAl) {
         div.innerHTML = `
-            <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;">
+            <input type="number" class="detail-input input-len" placeholder="長度(mm)" min="100" step="1" style="flex:1;">
             <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:70px;">
             <button onclick="event.stopPropagation(); this.parentElement.remove()" style="border:none; background:none; color:#e74c3c; cursor:pointer;" title="移除"><i class="fas fa-minus-circle"></i></button>
         `;
@@ -4122,6 +4129,7 @@ window.addToCartBatch = function (productName, containerId, btnEl) {
 
         let qty = parseInt(qtyInput ? qtyInput.value : 0);
         let len = lenInput ? parseFloat(lenInput.value) : 0;
+        if (len) len = len / 10;
 
         if (qty > 0) {
             // Robust check for Aluminum type
@@ -4154,7 +4162,7 @@ window.addToCartBatch = function (productName, containerId, btnEl) {
         if (isProfile) {
             container.innerHTML = `
                 <div class="batch-row" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                    <input type="number" class="detail-input input-len" placeholder="長度(cm)" min="10" step="0.1" style="flex:1;">
+                    <input type="number" class="detail-input input-len" placeholder="長度(mm)" min="100" step="1" style="flex:1;">
                     <input type="number" class="detail-input input-qty" placeholder="數量" value="1" min="1" style="width:75px;">
                 </div>`;
         } else {
@@ -4164,7 +4172,7 @@ window.addToCartBatch = function (productName, containerId, btnEl) {
                 </div>`;
         }
     } else {
-        alert("請輸入有效的數量或長度 (長度需介於 10-600 cm)");
+        alert("請輸入有效的數量或長度 (長度需介於 100-6000 mm)");
     }
 };
 
@@ -4243,12 +4251,14 @@ window.renderCuttingVisualsPreview = function () {
             let partsHtml = '';
             bar.parts.forEach(p => {
                 let pct = (p / BAR_LEN) * 100;
-                partsHtml += `<div style="width:${pct}%; background:${barColor}; color:white; font-size:0.75rem; display:flex; align-items:center; justify-content:center; border-right:1px solid rgba(255,255,255,0.3); overflow:hidden;" title="${p}cm">${p}</div>`;
+                let displayVal = Math.round(p * 10);
+                partsHtml += `<div style="width:${pct}%; background:${barColor}; color:white; font-size:0.7rem; display:flex; align-items:center; justify-content:center; border-right:1px solid rgba(255,255,255,0.3); overflow:hidden; white-space:nowrap;" title="${displayVal}mm">${displayVal}</div>`;
             });
             let remain = BAR_LEN - bar.filled;
             let remainPct = (remain / BAR_LEN) * 100;
             if (remain > 0) {
-                partsHtml += `<div style="width:${remainPct}%; background:#ecf0f1; color:#bdc3c7; font-size:0.75rem; display:flex; align-items:center; justify-content:center; overflow:hidden;" title="餘料 ${remain}cm">餘 ${remain}</div>`;
+                let displayRemain = Math.round(remain * 10);
+                partsHtml += `<div style="width:${remainPct}%; background:#ecf0f1; color:#bdc3c7; font-size:0.7rem; display:flex; align-items:center; justify-content:center; overflow:hidden; white-space:nowrap;" title="餘料 ${displayRemain}mm">餘 ${displayRemain}</div>`;
             }
             barsHtml += `
             <div style="height:24px; width:100%; background:#ecf0f1; border-radius:4px; margin-bottom:5px; display:flex; overflow:hidden;">
@@ -4377,4 +4387,18 @@ window.openCustomInquiry = function () {
 
     const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
     window.open(gmailUrl, '_blank');
+};
+
+/* B2B Thumb Toggle Logic */
+window.toggleB2BThumb = function(id) {
+    const img = document.getElementById("thumb-" + id);
+ if (!img) return;
+ const current = img.src;
+ const d2 = img.getAttribute("data-2d");
+ const d3 = img.getAttribute("data-3d");
+ if (d3 && current.includes(d2)) {
+ img.src = d3;
+ } else {
+ img.src = d2;
+ }
 };
