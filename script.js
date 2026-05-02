@@ -755,6 +755,11 @@ window.switchView = function (view) {
     document.getElementById('view-about').classList.add('hidden');
     document.getElementById('view-custom').classList.add('hidden');
 
+    let fabCart = document.querySelector('.floating-cart-btn');
+    let fabHot = document.querySelector('.floating-hot-btn');
+    if (fabCart) fabCart.style.display = 'none';
+    if (fabHot) fabHot.style.display = 'none';
+
     // Remove series classes by default for non-product views (so background becomes white)
     document.body.classList.remove('series-20', 'series-30', 'series-40');
 
@@ -778,6 +783,8 @@ window.switchView = function (view) {
     } else {
         // Default: Product View (e.g. view === 'product')
         document.getElementById('view-product').classList.remove('hidden');
+        if (fabCart) fabCart.style.display = 'flex';
+        if (fabHot) fabHot.style.display = 'flex';
         // Restore series background
         if (typeof currentSeries !== 'undefined' && currentSeries) {
             document.body.classList.add('series-' + currentSeries);
