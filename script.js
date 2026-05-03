@@ -844,7 +844,7 @@ function renderSeries(series) {
             alHtml +=   '</div>'; // end split
             alHtml +=   '<div class="profile-card-info">';
             alHtml +=     '<div class="p-name">' + p.name + '</div>';
-            alHtml +=     '<div class="p-price"><span style="color: #e74c3c;">NT$' + p.price + '</span><span style="color: #222;">/' + (p.unit === "cm" ? "10mm" : p.unit) + '</span></div>';
+            alHtml +=     `<div class="p-price"><span style="color: #e74c3c;">NT$${p.price}</span><span style="color: #666; font-size: 0.85rem; font-weight: 400; margin-left: 2px;"> /${p.unit === "cm" ? "10mm" : p.unit}</span></div>`;
             alHtml +=     '<div class="inline-action-panel" id="inline-panel-' + p.name + '" style="display:none; border-top: 1px dashed #eee; padding-top: 15px; margin-top: 10px; animation: fadeIn 0.3s;">';
             alHtml +=       '<div style="display:flex; gap:10px; align-items:center;">';
             alHtml +=         '<input type="number" id="inline-len-' + p.name + '" placeholder="長度(mm)" style="flex:1; width:0; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;" onclick="event.stopPropagation()">';
@@ -878,65 +878,54 @@ function renderSeries(series) {
                 badgeHtml = `<div class="rank-badge-overlay rank-${hotItem.rank}">TOP ${hotItem.rank}</div>`;
             }
 
-            let img3dSrc = (p.img3d && p.img3d !== '') ? 'assets/' + p.img3d : '';
-            let img3dError = "this.parentElement.style.background='#eee';this.style.display='none';this.parentElement.innerHTML='<span style=\"color:#999;font-size:12px;\">3D (待補)</span>'";
-
-            let delay = (i % 8) * 0.05;
-            accHtml += '<div class="acc-card" id="acc-card-' + p.name + '" style="display:flex; flex-direction:column; justify-content:space-between; position:relative; animation-delay:' + delay + 's;">';
-            accHtml += '<div class="acc-images" style="margin-bottom:5px;">';
-
-            // 2D Image
-            accHtml += '<div class="acc-img-wrapper" onclick="showLightbox(\'assets/' + p.img2d + '\')">';
-            accHtml += '<span class="img-label">2D</span>';
-            accHtml += badgeHtml; // Inject Badge on 2D
-            accHtml += '<img src="assets/' + p.img2d + '" class="acc-img">';
-            accHtml += '</div>';
-
-            // 3D Image
-            accHtml += '<div class="acc-img-wrapper" onclick="if(\'' + img3dSrc + '\') showLightbox(\'' + img3dSrc + '\')">';
-            accHtml += '<span class="img-label">3D</span>';
-            if (img3dSrc) {
-                accHtml += '<img src="' + img3dSrc + '" class="acc-img" onerror="' + img3dError + '">';
-            } else {
-                accHtml += '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:0.8rem;">無 3D 圖</div>';
-            }
-            accHtml += '</div>';
-            accHtml += '</div>'; // end acc-images
-
+            // 取得現在購物車中的數量
             let existing = cart.find(item => item.id === p.name + '_' + series);
             let currentQty = existing ? existing.qty : 0;
 
-            // Define Series Colors (Pastel)
-            let seriesColor = '#eee';
-            let grayColor = '#e0e0e0'; // Fixed Gray for decrease
-            if (series === '20') { seriesColor = '#BDE0F5'; }
-            if (series === '30') { seriesColor = '#F5C2A5'; }
-            if (series === '40') { seriesColor = '#B7E0A1'; }
+            // 圖片處理
+            let img2dPath = 'assets/' + p.img2d;
+            let img3dPath = (p.img3d && p.img3d !== '-' && p.img3d !== '') ? 'assets/' + p.img3d : '';
+            let seriesColor = (series === '20') ? '#b3c7d9' : (series === '30' ? '#e6d9c6' : '#b8ccb8');
+            let delay = (i % 8) * 0.05;
 
-            // New Layout: Split Bottom Row
-            accHtml += '<div style="display:flex; flex:1; gap:8px; margin-top:5px;">';
+            // --- 套用旗艦雙屏卡片 (Premium Wide) ---
+            accHtml += `<div class="profile-card premium-wide" style="position:relative; animation-delay:${delay}s;">`;
+            
+            // 頂部圖片併排
+            accHtml +=   '<div class="profile-img-split">';
+            // Left: 2D
+            accHtml +=     `<div class="img-pane pane-2d" onclick="showLightbox('${img2dPath}')">`;
+            accHtml +=       badgeHtml;
+            accHtml +=       '<span class="pane-label">2D 實拍</span>';
+            accHtml +=       `<img src="${img2dPath}" onerror="this.src='https://placehold.co/100?text=2D'">`;
+            accHtml +=     '</div>';
+            // Right: 3D
+            accHtml +=     `<div class="img-pane pane-3d" onclick="if('${img3dPath}') showLightbox('${img3dPath}')">`;
+            accHtml +=       '<span class="pane-label">3D 預覽</span>';
+            if (img3dPath) {
+                accHtml +=   `<img src="${img3dPath}" onerror="this.src='https://placehold.co/100?text=3D'">`;
+            } else {
+                accHtml +=   '<div class="no-img-placeholder">3D (待補)</div>';
+            }
+            accHtml +=     '</div>';
+            accHtml +=   '</div>';
 
-            // Left Column: Name & Controls
-            accHtml += '<div style="display:flex; flex-direction:column; justify-content:space-between; flex:1;">';
-            accHtml += '<div style="font-weight:300; font-size:1rem; color:#333; line-height:1.2;">' + p.name + '</div>';
-
-            accHtml += '<div style="display:flex; align-items:center; gap:8px; margin-top:5px;">';
-            accHtml += '<div style="color:#e74c3c; font-weight:300; font-size:1.1rem;">NT$' + p.price + '</div>';
-            accHtml += `<input type="number" id="acc-input-${p.name}" class="input-qty-no-arrow" value="${currentQty}" min="0" onchange="updateAccessory('${p.name}',this.value, '${series}')" style="border:1px solid #ddd; border-radius:4px; width:50px; text-align:center; height:32px; font-size:1rem; background:#fff; padding:0;">`;
+            // 資訊與控制區
+            accHtml +=   '<div class="profile-card-info">';
+            accHtml +=     `<div class="p-name">${p.name}</div>`;
+            accHtml +=     '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">';
+            accHtml +=       `<div class="p-price"><span style="color: #e74c3c;">NT$${p.price}</span><span style="color: #666; font-size:0.85rem;"> /${p.unit}</span></div>`;
+            
+            // 數量控制組
+            accHtml +=       '<div class="acc-controls-premium" style="display:flex; align-items:center; gap:4px;">';
+            accHtml +=         `<button class="btn-qty-p" style="background:#f1f5f9; color:#333; width:36px; height:36px; border-radius:8px; border:none; cursor:pointer; font-weight:bold;" onclick="changeAccQty('${p.name}', -1, '${series}')">-</button>`;
+            accHtml +=         `<input type="number" id="acc-input-${p.name}" class="input-qty-no-arrow" value="${currentQty}" min="0" onchange="updateAccessory('${p.name}', this.value, '${series}')" style="width:48px; height:36px; border:1px solid #f1f5f9; border-radius:8px; text-align:center; font-size:1.1rem; font-family:inherit;">`;
+            accHtml +=         `<button class="btn-qty-p" style="background:${seriesColor}; color:#333; width:36px; height:36px; border-radius:8px; border:none; cursor:pointer; font-weight:bold;" onclick="changeAccQty('${p.name}', 1, '${series}')">+</button>`;
+            accHtml +=       '</div>';
+            
+            accHtml +=     '</div>';
+            accHtml +=   '</div>';
             accHtml += '</div>';
-            accHtml += '</div>'; // End Left Col
-
-            // Right Column: Tall Buttons
-            accHtml += '<div style="display:flex; flex-direction:column; width:40px; gap:2px;">';
-            // Increase (+)
-            accHtml += `<button class="btn-qty" style="background:${seriesColor}; color:#333; border-radius:4px 4px 0 0; flex:1; display:flex; align-items:center; justify-content:center; padding:0; border:none; cursor:pointer;" onclick="changeAccQty('${p.name}', 1, '${series}')"><span style="font-size:1.2rem; font-weight:bold; line-height:1;">+</span></button>`;
-            // Decrease (-)
-            accHtml += `<button class="btn-qty" style="background:${grayColor}; color:#333; border-radius:0 0 4px 4px; flex:1; display:flex; align-items:center; justify-content:center; padding:0; border:none; cursor:pointer;" onclick="changeAccQty('${p.name}', -1, '${series}')"><span style="font-size:1.2rem; font-weight:bold; line-height:1;">-</span></button>`;
-            accHtml += '</div>'; // End Right Col (Buttons)
-
-            accHtml += '</div>'; // End Bottom Row
-
-            accHtml += '</div>'; // end acc-card
         }
     } else { accHtml = '<p>無資料</p>'; }
 
@@ -1035,12 +1024,35 @@ window.addInlineItem = function (name) {
         addToCart(profile, qty, len);
         renderSpecList();
         
-        if(window.event) {
-            let btn = window.event.target;
-            let oldText = btn.innerText;
-            btn.innerText = '已加入 ✓';
-            btn.style.background = '#27ae60';
-            setTimeout(() => { btn.innerText = oldText; btn.style.background = '#2c3e50'; }, 1500);
+        if(window.event || arguments.callee.caller.arguments[0]) {
+            let e = window.event || arguments.callee.caller.arguments[0];
+            let btn = e.target;
+            if (btn.tagName !== 'BUTTON') btn = btn.closest('button');
+            
+            if (btn) {
+                let oldText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> 已加入';
+                btn.style.setProperty('background', '#27ae60', 'important');
+                btn.style.setProperty('border-color', '#27ae60', 'important');
+                btn.style.color = '#fff';
+                btn.disabled = true;
+                
+                setTimeout(() => { 
+                    btn.innerHTML = oldText; 
+                    btn.style.removeProperty('background');
+                    btn.style.removeProperty('border-color');
+                    btn.style.color = '';
+                    btn.disabled = false;
+                }, 1500);
+            }
+        }
+        
+        // 觸發購物車數字動畫
+        const badge = document.getElementById('cart-count');
+        if (badge) {
+            badge.classList.remove('badge-bounce');
+            void badge.offsetWidth; // 強制重繪
+            badge.classList.add('badge-bounce');
         }
     }
 };
@@ -1257,6 +1269,14 @@ function addToCart(p, qty, len, isUpdate) {
         if (typeof renderAnalysisAndManifest === 'function') renderAnalysisAndManifest();
     } else {
         renderCart();
+    }
+
+    // 觸發購物車數字動畫反饋
+    const badge = document.getElementById('cart-count');
+    if (badge) {
+        badge.classList.remove('badge-bounce');
+        void badge.offsetWidth; // 強制重繪
+        badge.classList.add('badge-bounce');
     }
 }
 
@@ -2444,7 +2464,12 @@ function renderSeriesOverview(series) {
         // 根據類型決定預設顯示哪張圖
         let img2dUrl = (p.img2d && p.img2d !== '-') ? `assets/${p.img2d}` : `https://placehold.co/100?text=2D`;
         let img3dUrl = (p.img3d && p.img3d !== '-') ? `assets/${p.img3d}` : null;
+        
         const imgUrl = (p.type === '配件' && img3dUrl) ? img3dUrl : img2dUrl;
+        const toggle2dUrl = img2dUrl;
+        const toggle3dUrl = img3dUrl || `https://placehold.co/100?text=3D(%E5%BE%85%E8%A3%9C)`;
+        const initialState = (imgUrl === img3dUrl) ? 'd3' : 'd2';
+        
         const displayName = p.name;
 
         // Data Extraction
@@ -2485,10 +2510,10 @@ function renderSeriesOverview(series) {
              <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
                 <div class="col-img" style="flex:0 0 65px; position:relative;">
                     <img src="${imgUrl}" class="b2b-thumb" id="thumb-${p.id || p.name}" 
-                         data-2d="${img2dUrl}" data-3d="${img3dUrl || ''}"
+                         data-2d="${toggle2dUrl}" data-3d="${toggle3dUrl}" data-current-state="${initialState}"
                          style="width:65px; height:65px; border-radius:6px; object-fit: cover; cursor:zoom-in; border:1px solid #eee;" 
                          onclick="event.stopPropagation(); showLightbox(this.src)">
-                    ${img3dUrl ? `<div class="b2b-thumb-toggle" onclick="event.stopPropagation(); toggleB2BThumb('${p.id || p.name}')" title="切換 2D/3D"><i class="fas fa-sync-alt"></i></div>` : ''}
+                    <div class="b2b-thumb-toggle" onclick="event.stopPropagation(); toggleB2BThumb('${p.id || p.name}')" title="切換 2D/3D"><i class="fas fa-sync-alt"></i></div>
                     <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:var(--series-color, #999); color:white; font-size:0.75rem; font-weight:600; line-height:1;">${seriesPrefix}</div>
                 </div>
                 <div class="col-name" style="padding-left:15px; min-width:0; flex:1;">
@@ -4399,13 +4424,16 @@ window.openCustomInquiry = function () {
 /* B2B Thumb Toggle Logic */
 window.toggleB2BThumb = function(id) {
     const img = document.getElementById("thumb-" + id);
- if (!img) return;
- const current = img.src;
- const d2 = img.getAttribute("data-2d");
- const d3 = img.getAttribute("data-3d");
- if (d3 && current.includes(d2)) {
- img.src = d3;
- } else {
- img.src = d2;
- }
+    if (!img) return;
+    let state = img.getAttribute("data-current-state");
+    const d2 = img.getAttribute("data-2d");
+    const d3 = img.getAttribute("data-3d");
+    
+    if (state === 'd2') {
+        img.src = d3;
+        img.setAttribute("data-current-state", "d3");
+    } else {
+        img.src = d2;
+        img.setAttribute("data-current-state", "d2");
+    }
 };

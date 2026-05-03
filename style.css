@@ -5168,12 +5168,12 @@ body.mode-b2b .profile-card {
     }
 
     .col-img {
-        flex: 0 0 50px !important;
+        flex: 0 0 72px !important;
     }
 
     .b2b-thumb {
-        width: 50px !important;
-        height: 50px !important;
+        width: 72px !important;
+        height: 72px !important;
     }
 
     .col-price {
@@ -7321,7 +7321,7 @@ body.mode-b2b {
 .img-pane:hover { background: #f0f0f0; }
 .pane-2d { border-right: 1px solid #eee; }
 .pane-label { position: absolute; top: 8px; right: 8px; font-size: 10px; color: #999; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-.img-pane img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.05)); }
+.img-pane img { width: 100%; height: 100%; object-fit: cover; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.05)); }
 .profile-card-info { padding: 15px 20px; text-align: left; }
 .profile-card-info .p-name { font-weight: 400; color: #333; margin-bottom: 5px; font-size: 1.1rem; }
 .profile-card-info .p-price { color: #222 !important; font-weight: 400; font-size: 1.3rem; }
@@ -7334,11 +7334,77 @@ body.mode-b2b {
 /* Grid Update */
 .mode-b2c .aluminum-grid-container { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)) !important; }
 @media (max-width: 768px) {
-  .mode-b2c .aluminum-grid-container { grid-template-columns: 1fr !important; }
-  .mode-b2c .accessories-container { grid-template-columns: repeat(2, 1fr) !important; padding: 10px !important; }
+  .mode-b2c .aluminum-grid-container { grid-template-columns: 1fr !important; padding: 0 !important; }
+  .mode-b2c .accessories-container { 
+      grid-template-columns: 1fr !important; 
+      padding: 0 !important; 
+      gap: 12px !important; 
+  }
   .profile-card.premium-wide { max-width: 100% !important; }
+  
+  /* 手機版配件卡片改為橫向佈局 */
+  .mode-b2c .acc-card {
+      flex-direction: row !important;
+      align-items: center !important;
+      padding: 12px !important;
+      gap: 15px !important;
+  }
+  .mode-b2c .acc-images {
+      flex: 0 0 100px !important;
+      margin-bottom: 0 !important;
+  }
+  .mode-b2c .acc-card > div[style*="display:flex; flex:1"] {
+      margin-top: 0 !important;
+  }
+
+  /* 列表底部避讓按鈕空間 */
+  .mode-b2c .content-view {
+      padding-bottom: 120px !important;
+  }
+
+  /* 統一內層底色區塊左右基準線 */
+  .mode-b2c #view-product .page-header,
+  .mode-b2c #view-product .section-block,
+  .mode-b2c #view-product .series-desc-container,
+  .mode-b2c #view-product .section-title {
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+  }
+  .mode-b2c #view-product .aluminum-grid-container,
+  .mode-b2c #view-product .accessories-container {
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+  }
 }
+
+/* 購物車數字動畫 */
+@keyframes badge-bounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+.badge-bounce {
+    animation: badge-bounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: #e74c3c !important;
+}
+
 
 /* B2C: 隱藏多餘的下方配件清單區塊（右側欄已有明細） */
 .mode-b2c #accessories-panel,
 .mode-b2c #aluminum-input-area { display: none !important; }
+
+/* =========================================================================
+   手機版 B2C 系列說明文字優化
+   ========================================================================= */
+@media (max-width: 768px) {
+    .series-desc-container {
+        background: transparent !important;
+        border-left: none !important;
+        border-radius: 0 !important;
+        padding: 4px 2px 8px 2px !important;
+        margin-bottom: 8px !important;
+        font-size: 0.88rem !important;
+        color: #555 !important;
+        line-height: 1.5 !important;
+    }
+}
