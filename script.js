@@ -1437,10 +1437,11 @@ document.getElementById('order-form').addEventListener('submit', function (e) {
     customerData.address = addrPrefix + (customerData.address || "").trim();
 
     let enrichedCart = cart.map(item => {
-        let exactName = item.name;
-        if (item.sku) {
-            exactName = `${item.name} [${item.sku}]`;
-        }
+        // [修復] 自動從品名或 item.sku 提取 SKU 並嵌入訂單文字
+        // 這樣以後在 Sheet 新增配件只要有 SKU，下單就自動帶入，不需要再改程式
+        const extractedSku = item.sku || (window.parseSKU ? window.parseSKU(item.name) : null);
+        const baseName = (window.removeSKU ? window.removeSKU(item.name) : item.name);
+        const exactName = extractedSku ? `${baseName} [${extractedSku}]` : baseName;
         return Object.assign({}, item, { name: exactName });
     });
 
