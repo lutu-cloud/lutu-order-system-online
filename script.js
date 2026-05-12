@@ -31,22 +31,22 @@ const rawData = {
         ["鋁材", "40系列", "4080重型", 9.5, "4080重型.jpg", "", "cm", "", "", ""],
         ["", "", "", "", "", "", "", "", "", ""],
         // --- 配件 20系列 ---
-        ["配件", "20系列", "M4內六角螺絲/螺母/墊片/墊司 (10枚/包)", 40, "20M4六角螺絲2D.png", "20螺絲3D.png", "包", "", "", ""],
-        ["配件", "20系列", "三角連結塊", 10, "20三角連結塊2D.png", "20三角連結塊3D.png", "個", "", "", ""],
-        ["配件", "20系列", "M4六角板手", 10, "203mm六角板手2D.png", "203mm六角板手3D.png", "支", "", "", ""], // ⚠️ 請確認單價
+        ["配件", "20系列", "M4內六角螺絲/螺母/墊片/墊司 (10枚/包)", 40, "20M4六角螺絲2D.png", "20螺絲3D.png", "包", "", "", "M4-IOOO"],
+        ["配件", "20系列", "三角連結塊", 10, "20三角連結塊2D.png", "20三角連結塊3D.png", "個", "", "", "M4-333"],
+        ["配件", "20系列", "M4六角板手", 10, "203mm六角板手2D.png", "203mm六角板手3D.png", "支", "", "", "M4-6"], // ⚠️ 請確認單價
         ["", "", "", "", "", "", "", "", "", ""],
         // --- 配件 30系列 ---
-        ["配件", "30系列", "M6內六角螺絲/螺母/墊片/墊司 (10枚/包)", 60, "30M6六角螺絲2D.png", "30螺絲3D.png", "包", "", "", ""],
-        ["配件", "30系列", "三角連結塊", 15, "30三角連結塊2D.png", "30三角連結塊3D.png", "個", "", "", ""],
-        ["配件", "30系列", "平板連結片", 15, "30平板連結片2D.png", "30平板連結片3D.png", "個", "", "", ""], // ⚠️ 請確認單價
-        ["配件", "30系列", "靜音輪/腳杯固定器", 30, "30靜音輪腳架固定器2D.png", "30靜音輪腳架固定器3D.png", "個", "", "", ""],
-        ["配件", "30系列", "M6六角板手", 12, "305mm六角板手2D.png", "305mm六角板手3D.png", "支", "", "", ""],
+        ["配件", "30系列", "M6內六角螺絲/螺母/墊片/墊司 (10枚/包)", 60, "30M6六角螺絲2D.png", "30螺絲3D.png", "包", "", "", "M6-IOOO"],
+        ["配件", "30系列", "三角連結塊", 15, "30三角連結塊2D.png", "30三角連結塊3D.png", "個", "", "", "M6-333"],
+        ["配件", "30系列", "平板連結片", 15, "30平板連結片2D.png", "30平板連結片3D.png", "個", "", "", "M6-L"], // ⚠️ 請確認單價
+        ["配件", "30系列", "靜音輪/腳杯固定器", 30, "30靜音輪腳架固定器2D.png", "30靜音輪腳架固定器3D.png", "個", "", "", "M6-FEET"],
+        ["配件", "30系列", "M6六角板手", 12, "305mm六角板手2D.png", "305mm六角板手3D.png", "支", "", "", "M6-6"],
         ["", "", "", "", "", "", "", "", "", ""],
         // --- 配件 40系列 ---
-        ["配件", "40系列", "M8內六角螺絲/螺母/墊片/墊司 (10枚/包)", 80, "40M8六角螺絲2D.png", "40螺絲3D.png", "包", "", "", ""], // ⚠️ 請確認單價
-        ["配件", "40系列", "三角連結塊", 20, "40三角連結塊2D.png", "40三角連結塊3D.png", "個", "", "", ""],
-        ["配件", "40系列", "40靜音輪/腳杯固定器", 40, "40靜音輪腳架固定器2D.png", "40靜音輪腳架固定器3D.png", "個", "", "", ""],
-        ["配件", "40系列", "M8六角板手", 15, "406mm六角板手2D.png", "406mm六角板手3D.png", "支", "", "", ""]
+        ["配件", "40系列", "M8內六角螺絲/螺母/墊片/墊司 (10枚/包)", 80, "40M8六角螺絲2D.png", "40螺絲3D.png", "包", "", "", "M8-IOOO"], // ⚠️ 請確認單價
+        ["配件", "40系列", "三角連結塊", 20, "40三角連結塊2D.png", "40三角連結塊3D.png", "個", "", "", "M8-333"],
+        ["配件", "40系列", "40靜音輪/腳杯固定器", 40, "40靜音輪腳架固定器2D.png", "40靜音輪腳架固定器3D.png", "個", "", "", "M8-FEET"],
+        ["配件", "40系列", "M8六角板手", 15, "406mm六角板手2D.png", "406mm六角板手3D.png", "支", "", "", "M8-6"]
     ],
     projects: [
         ["ID", "專案名稱", "描述", "Youtube", "PDF", "情境圖", "完成圖", "step1", "step2", "step3", "step4"],
@@ -1437,11 +1437,46 @@ document.getElementById('order-form').addEventListener('submit', function (e) {
     customerData.address = addrPrefix + (customerData.address || "").trim();
 
     let enrichedCart = cart.map(item => {
-        // [修復] 自動從品名或 item.sku 提取 SKU 並嵌入訂單文字
-        // 這樣以後在 Sheet 新增配件只要有 SKU，下單就自動帶入，不需要再改程式
-        const extractedSku = item.sku || (window.parseSKU ? window.parseSKU(item.name) : null);
-        const baseName = (window.removeSKU ? window.removeSKU(item.name) : item.name);
-        const exactName = extractedSku ? `${baseName} [${extractedSku}]` : baseName;
+        const baseName = (window.removeSKU ? window.removeSKU(item.name) : item.name).trim();
+
+        // 1. 先試從 item.sku 或品名中提取
+        let finalSku = item.sku || (window.parseSKU ? window.parseSKU(item.name) : null);
+
+        // 2. 如果沒抓到，用 series + 品名 去 products 陣列找對應 SKU
+        //    這樣即使 Google Sheets API 沒有回傳 SKU 欄位也能正確帶入
+        if (!finalSku && item.series) {
+            const matched = products.find(p =>
+                p.series === item.series &&
+                (window.removeSKU ? window.removeSKU(p.name) : p.name).trim() === baseName
+            );
+            if (matched && matched.sku) finalSku = matched.sku;
+        }
+
+        // 3. 最後備用：hardcoded 系列+品名對照（防止 products 都沒有 SKU 的情況）
+        if (!finalSku && item.series) {
+            const seriesNum = parseInt(item.series);
+            const n = baseName;
+            if (n.includes('三角連結塊')) {
+                if (seriesNum === 20) finalSku = 'M4-333';
+                else if (seriesNum === 30) finalSku = 'M6-333';
+                else if (seriesNum === 40) finalSku = 'M8-333';
+            } else if (n.includes('平板連結片')) {
+                if (seriesNum === 30) finalSku = 'M6-L';
+            } else if (n.includes('靜音輪') || n.includes('腳杯固定器')) {
+                if (seriesNum === 30) finalSku = 'M6-FEET';
+                else if (seriesNum === 40) finalSku = 'M8-FEET';
+            } else if (n.includes('六角板手')) {
+                if (seriesNum === 20) finalSku = 'M4-6';
+                else if (seriesNum === 30) finalSku = 'M6-6';
+                else if (seriesNum === 40) finalSku = 'M8-6';
+            } else if (n.includes('內六角螺絲') || n.includes('10枚/包')) {
+                if (seriesNum === 20) finalSku = 'M4-IOOO';
+                else if (seriesNum === 30) finalSku = 'M6-IOOO';
+                else if (seriesNum === 40) finalSku = 'M8-IOOO';
+            }
+        }
+
+        const exactName = finalSku ? `${baseName} [${finalSku}]` : baseName;
         return Object.assign({}, item, { name: exactName });
     });
 
@@ -3992,39 +4027,48 @@ window.submitB2BOrder = function (e) {
 
     // Inject exact official name (with brackets and SKU) before sending B2B order
     let enrichedCart = cart.map(item => {
-        let exactName = item.name;
-        if (typeof b2bRawData !== 'undefined' && b2bRawData.length > 0) {
-            let match = b2bRawData.find(raw => {
-                let rBase = String(raw.name || "").split('[')[0].split('(')[0].trim();
-                let iBase = String(item.name || "").split('[')[0].split('(')[0].trim();
-                if (!rBase || !iBase) return false;
+        const baseName = (window.removeSKU ? window.removeSKU(item.name) : item.name).trim();
 
-                let rStripped = rBase.replace(/^(20|30|40)(?![0-9])/, '');
-                let iStripped = iBase.replace(/^(20|30|40)(?![0-9])/, '');
+        // 1. 先試從 item.sku 或品名中提取
+        let finalSku = item.sku || (window.parseSKU ? window.parseSKU(item.name) : null);
 
-                let isNameMatch = rBase === iBase || rStripped === iStripped || rStripped === iBase || iStripped === rBase;
-                let isSeriesMatch = !item.series || !raw.series || String(raw.series) === String(item.series);
-                return isNameMatch && isSeriesMatch && (!item.type || !raw.type || item.type === raw.type);
-            });
-
-            if (!match) {
-                match = b2bRawData.find(raw => {
-                    let rBase = String(raw.name || "").split('[')[0].split('(')[0].trim();
-                    let iBase = String(item.name || "").split('[')[0].split('(')[0].trim();
-                    if (!rBase || !iBase) return false;
-
-                    if (rBase.length > 2 && iBase.length > 2) {
-                        let isNameMatch = rBase.includes(iBase) || iBase.includes(rBase);
-                        let isSeriesMatch = !item.series || !raw.series || String(raw.series) === String(item.series);
-                        if (isNameMatch && isSeriesMatch && (!item.type || !raw.type || item.type === raw.type)) return true;
-                    }
-                    return false;
-                });
-            }
-            if (match && match.name) exactName = match.name;
+        // 2. 用 series + 品名 去 products 陣列找對應 SKU
+        if (!finalSku && item.series) {
+            const matched = products.find(p =>
+                p.series === item.series &&
+                (window.removeSKU ? window.removeSKU(p.name) : p.name).trim() === baseName
+            );
+            if (matched && matched.sku) finalSku = matched.sku;
         }
+
+        // 3. 最後備用：hardcoded 系列+品名對照
+        if (!finalSku && item.series) {
+            const seriesNum = parseInt(item.series);
+            const n = baseName;
+            if (n.includes('三角連結塊')) {
+                if (seriesNum === 20) finalSku = 'M4-333';
+                else if (seriesNum === 30) finalSku = 'M6-333';
+                else if (seriesNum === 40) finalSku = 'M8-333';
+            } else if (n.includes('平板連結片')) {
+                if (seriesNum === 30) finalSku = 'M6-L';
+            } else if (n.includes('靜音輪') || n.includes('腳杯固定器')) {
+                if (seriesNum === 30) finalSku = 'M6-FEET';
+                else if (seriesNum === 40) finalSku = 'M8-FEET';
+            } else if (n.includes('六角板手')) {
+                if (seriesNum === 20) finalSku = 'M4-6';
+                else if (seriesNum === 30) finalSku = 'M6-6';
+                else if (seriesNum === 40) finalSku = 'M8-6';
+            } else if (n.includes('內六角螺絲') || n.includes('10枚/包')) {
+                if (seriesNum === 20) finalSku = 'M4-IOOO';
+                else if (seriesNum === 30) finalSku = 'M6-IOOO';
+                else if (seriesNum === 40) finalSku = 'M8-IOOO';
+            }
+        }
+
+        const exactName = finalSku ? `${baseName} [${finalSku}]` : baseName;
         return Object.assign({}, item, { name: exactName });
     });
+
 
     let payload = {
         customer: customerData,
