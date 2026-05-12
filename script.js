@@ -2122,10 +2122,18 @@ window.switchB2BSeries = function (series) {
     document.body.classList.remove('series-20', 'series-30', 'series-40');
     document.body.classList.add('series-' + series);
 
-    // 1. Update B2B Topbar Tabs Visual
+    // 1. Update B2B Topbar Tabs Visual (desktop topbar)
     document.querySelectorAll('#b2bTopbar .b2b-nav-tab').forEach(btn => {
         btn.classList.remove('active');
         if (btn.textContent.includes(series)) {
+            btn.classList.add('active');
+        }
+    });
+
+    // 1b. Update B2B Dashboard inline tabs (.b2b-tab-btn, inside b2b-header)
+    document.querySelectorAll('.b2b-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-series') === series) {
             btn.classList.add('active');
         }
     });
