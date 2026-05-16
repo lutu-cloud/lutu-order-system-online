@@ -5,25 +5,33 @@
 }
 
 :root {
-    /* === Tool-First Minimalist (工具型極簡) === */
-    --bg-primary: #fafafa;
-    /* 統一淺灰背景 */
+    /* === ALUMIBRO 鋁材兄弟 品牌色票 === */
+
+    /* 品牌主色 (LOGO 深藍灰 PANTONE 18-4218 TCX) */
+    --brand-primary: #4A5A6B;
+    --brand-primary-dark: #2C3742;
+
+    /* 背景 - 深色品牌主題 */
+    --bg-primary: #3D4D5C;
+    /* 深藍灰主背景 (比 LOGO 色稍淺，內容區用) */
     --surface: #ffffff;
-    /* 純白卡片 */
+    /* 純白卡片 (深底上的白卡片對比超好) */
 
     /* 文字顏色 - 統一中性灰 */
-    --text-primary: #545454;
-    /* 深灰文字 */
-    --text-secondary: #737373;
+    --text-primary: #2C3742;
+    /* 深藍灰文字 (取代原 #545454) */
+    --text-secondary: #666666;
     /* 次要文字 */
+    --text-tertiary: #888888;
+    /* 輔助提示 */
 
-    /* 互動元素 - 單一強調色 */
-    --accent: #3b82f6;
-    /* 中性藍 (唯一強調色) */
-    --accent-hover: #2563eb;
+    /* 互動強調色 - 古銅金 (取代原刺眼藍 #B8864B) */
+    --accent: #B8864B;
+    /* ALUMIBRO 古銅金 (唯一強調色) */
+    --accent-hover: #9E7340;
     /* 懸停加深 */
 
-    /* 系列識別色 - 莫蘭迪色系 (Morandi Palette) */
+    /* 系列識別色 - 莫蘭迪色系 (Morandi Palette) - 保留原色號 */
     --accent-20: #b3c7d9;
     /* Lighter Slate Blue */
     --accent-30: #e6d9c6;
@@ -31,26 +39,24 @@
     --accent-40: #b8ccb8;
     /* Lighter Morandi Green */
 
-    /* 系列背景色 - 淺莫蘭迪色 (Lighter versions for backgrounds) */
+    /* 系列背景色 - 淺莫蘭迪色 */
     --bg-20: #f0f4f8;
     --bg-30: #f8f4f0;
     --bg-40: #f0f8f0;
 
-    /* 邊框與陰影 - 專業層次感 */
-    --border: #e5e5e5;
+    /* 邊框與陰影 */
+    --border: #E0E0E0;
     /* 統一邊框色 */
     --shadow-base: 0 2px 8px rgba(0, 0, 0, 0.08);
-    /* 基礎浮起 */
     --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
-    /* 懸停強化 */
-    --shadow-active: 0 0 0 4px rgba(59, 130, 246, 0.15);
-    /* 選中發光 */
+    --shadow-active: 0 0 0 4px rgba(184, 134, 75, 0.18);
+    /* 選中發光改為古銅金 */
 
     /* 舊變數兼容 */
-    --primary: #fafafa;
+    --primary: #3D4D5C;
     --white: #ffffff;
     --bg-secondary: #f5f5f5;
-    --text-dark: #0a0a0a;
+    --text-dark: #2C3742;
     --shadow-sm: var(--shadow-base);
     --shadow-md: var(--shadow-base);
     --shadow-lg: var(--shadow-hover);
@@ -67,25 +73,20 @@
 .b2b-search-box {
     position: relative;
     width: 250px;
-    /* Reduced slightly for more breathing room */
     transition: none;
-    /* Instant for stability */
 }
 
 .b2b-search-box input {
     width: 100%;
     padding: 10px 16px 10px 38px;
-    font-size: 0.95rem;
-    color: #2c3e50;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 24px;
+    font-size: 0.9rem;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
     outline: none;
     transition: all 0.3s ease;
-    box-shadow:
-        0 2px 5px rgba(0, 0, 0, 0.05),
-        inset 0 1px 2px rgba(255, 255, 255, 0.8);
+    box-shadow: none;
     font-family: 'Noto Sans TC', sans-serif;
     letter-spacing: 0.5px;
     box-sizing: border-box !important;
@@ -97,38 +98,32 @@
     left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: #adb5bd;
+    color: rgba(255, 255, 255, 0.4);
     font-size: 0.9rem;
     transition: all 0.3s ease;
     z-index: 2;
 }
 
-/* Focus State - The "AI Glow" */
+/* Focus State */
 .b2b-search-box input:focus {
-    background: #ffffff;
-    width: 100%;
-    /* Stay within container */
-    border-color: rgba(59, 130, 246, 0.5);
-    box-shadow:
-        0 4px 20px rgba(59, 130, 246, 0.15),
-        0 0 0 4px rgba(59, 130, 246, 0.05);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(184, 134, 75, 0.6);
+    box-shadow: 0 0 0 3px rgba(184, 134, 75, 0.15);
 }
 
 .b2b-search-box input:focus+i.fa-search {
-    color: #3b82f6;
-    /* Blue Icon on focus */
+    color: #B8864B;
 }
 
 /* Placeholder Style */
 .b2b-search-box input::placeholder {
-    color: #adb5bd;
+    color: rgba(255, 255, 255, 0.4);
     font-weight: 400;
 }
 
 /* Hover Effect */
 .b2b-search-box:hover input {
-    border-color: rgba(0, 0, 0, 0.2);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: rgba(255, 255, 255, 0.35);
 }
 
 /* B2B Header Action Group (Desktop) */
@@ -140,34 +135,35 @@
 }
 
 .btn-query {
-    background: #3a3a3a !important;
+    background: #B8864B !important;
     color: white !important;
     border: none !important;
-    padding: 10px 18px !important;
-    border-radius: 6px !important;
+    padding: 8px 18px !important;
+    border-radius: 20px !important;
     cursor: pointer !important;
-    font-weight: 300 !important;
-    /* Start applying thinner font */
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
     display: flex !important;
     align-items: center !important;
     gap: 6px !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 8px rgba(184, 134, 75, 0.3) !important;
     transition: all 0.2s !important;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
 }
 
 .btn-query:hover {
-    background: #555555 !important;
+    background: #9E7340 !important;
     transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(184, 134, 75, 0.4) !important;
 }
 
 /* B2B Action Buttons (Import/Template) */
 .btn-xs.btn-outline {
-    background: white !important;
-    color: #3a3a3a !important;
-    border: 1px solid #3a3a3a !important;
-    padding: 7px 12px !important;
-    border-radius: 4px !important;
+    background: transparent !important;
+    color: rgba(255,255,255,0.8) !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
     font-size: 0.85rem !important;
     font-weight: 500 !important;
     cursor: pointer !important;
@@ -175,8 +171,9 @@
 }
 
 .btn-xs.btn-outline:hover {
-    background: #f5f5f5 !important;
-    border-color: #000 !important;
+    background: rgba(255,255,255,0.1) !important;
+    border-color: rgba(255,255,255,0.6) !important;
+    color: #ffffff !important;
 }
 
 /* Mobile Responsiveness */
@@ -203,7 +200,7 @@ html {
 body {
     font-family: "Noto Sans TC", sans-serif;
     margin: 0;
-    background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+    background: #3D4D5C;
     background-attachment: fixed;
     color: var(--text-primary);
     overflow-x: hidden;
@@ -253,7 +250,7 @@ body {
     font-size: 1.5rem;
     font-weight: 300;
     margin-bottom: 32px;
-    color: #2c3e50;
+    color: #4A5A6B;
     letter-spacing: 4px;
     transition: all 0.3s ease;
     cursor: default;
@@ -283,14 +280,14 @@ body {
 
 .nav-item:hover {
     background: #f8fafc;
-    color: #2c3e50;
+    color: #4A5A6B;
 }
 
 .nav-item.active {
     background: #f1f5f9 !important;
-    color: #2c3e50 !important;
+    color: #4A5A6B !important;
     font-weight: 300;
-    border-left: 2px solid #2c3e50;
+    border-left: 2px solid #4A5A6B;
 }
 
 /* Series-specific colors for navigation */
@@ -349,7 +346,7 @@ body {
 .about-tab.active,
 .custom-tab.active {
     background: var(--white) !important;
-    color: #1e293b !important;
+    color: #2C3742 !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -359,7 +356,7 @@ body {
     overflow-y: auto;
     position: relative;
     color: var(--text-primary) !important;
-    background: #fafafa;
+    background: #3D4D5C;
     transition: background 0.4s ease, color 0.4s ease;
 }
 
@@ -369,11 +366,11 @@ body {
     padding-top: 70px; /* 為頂部導覽列留空間 */
 }
 
-/* Series backgrounds reverted to white */
+/* Series backgrounds - 深色統一 */
 .series-20 .main-content,
 .series-30 .main-content,
 .series-40 .main-content {
-    background: #fafafa;
+    background: #3D4D5C;
 }
 
 .hidden {
@@ -402,13 +399,12 @@ body {
 
 /* Added for visibility on light theme */
 .series-desc-container {
-    color: var(--text-primary) !important;
+    color: rgba(255,255,255,0.8) !important;
     font-size: 0.95rem;
     margin-bottom: 20px;
     padding: 12px 16px;
-    background: #f5f5f5;
+    background: rgba(255,255,255,0.08);
     border-left: 3px solid var(--accent-20);
-    /* Default to 20 */
     border-radius: 0 8px 8px 0;
 }
 
@@ -427,21 +423,19 @@ body {
     border-left-color: var(--accent-40);
 }
 
-/* Ultra-strong override for series description */
+/* Override for series description on dark bg */
 #series-desc-container,
 div.series-desc-container,
 #aluminum-section .series-desc-container {
-    color: #171717 !important;
+    color: rgba(255,255,255,0.8) !important;
 }
 
 #page-title {
     font-size: 2.8rem;
     font-weight: 300;
-    /* Thinner page title */
-    color: var(--text-primary);
+    color: #ffffff;
     margin: 0 0 10px 0;
     letter-spacing: 2.5px;
-    /* Elegantly spaced */
 }
 
 .divider {
@@ -450,19 +444,54 @@ div.series-desc-container,
     margin: 25px 0;
 }
 
-/* Force dark text for all views */
+/* Force light text for dark background (outside cards) */
 #view-product,
 #view-projects,
 #view-about,
 #view-custom {
-    color: var(--text-primary) !important;
+    color: #E8E8E8 !important;
 }
 
-#view-product *,
-#view-projects *,
-#view-about *,
-#view-custom * {
-    color: inherit;
+/* Force dark text INSIDE white cards only - surgical targeting */
+.profile-card .p-name {
+    color: #2C3742 !important;
+    font-weight: 400 !important;
+}
+.profile-card .p-price,
+.profile-card .p-price span,
+.acc-card .p-name,
+.acc-card .p-price,
+.acc-card .p-price span {
+    color: #2C3742 !important;
+}
+.profile-card b {
+    color: #2C3742 !important;
+}
+.profile-card-info {
+    color: #2C3742 !important;
+}
+.inline-action-panel,
+.inline-action-panel input,
+.inline-action-panel label {
+    color: #2C3742 !important;
+}
+
+/* 白底面板內文字強制深色 */
+.inquiry-step h3,
+.inquiry-step p,
+.step-content h3,
+.step-content p,
+.step-icons span {
+    color: #2C3742 !important;
+}
+
+/* 保留按鈕原本顏色 (不被覆蓋) */
+.inline-action-panel button,
+.b2c-topbar *,
+.b2b-topbar *,
+.info-topbar *,
+.hub-overlay * {
+    /* 不加 !important，讓原本 CSS 控制 */
 }
 
 /* Specific overrides for commonly white elements */
@@ -534,10 +563,9 @@ button {
 }
 
 .profile-card b {
-    color: #444;
+    color: #2C3742;
     font-size: 1.05rem;
-    font-weight: 300;
-    /* Soften from bold */
+    font-weight: 400;
     letter-spacing: 0.5px;
 }
 
@@ -863,13 +891,13 @@ button {
 
 /* B2B Bottom Submit Button */
 .b2b-btn-submit {
-    background: #3a3a3a !important;
+    background: #B8864B !important;
     color: white !important;
     border: none !important;
     padding: 14px 24px !important;
     border-radius: 8px !important;
     font-size: 1rem !important;
-    font-weight: 300 !important;
+    font-weight: 500 !important;
     cursor: pointer !important;
     width: 100% !important;
     display: flex !important;
@@ -878,13 +906,13 @@ button {
     gap: 8px !important;
     letter-spacing: 2px !important;
     transition: all 0.2s ease !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 4px 12px rgba(184, 134, 75, 0.3) !important;
 }
 
 .b2b-btn-submit:hover {
-    background: #555555 !important;
+    background: #9E7340 !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 6px 16px rgba(184, 134, 75, 0.4) !important;
 }
 
 /* 配件的輸入框 */
@@ -910,7 +938,7 @@ button {
     border-color: var(--accent) !important;
     background: white;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(184, 134, 75, 0.1);
 }
 
 /* 尺寸列表 */
@@ -1002,7 +1030,7 @@ button {
     gap: 10px;
     transition: all 0.3s ease;
     letter-spacing: 1.5px;
-    background: #2c3e50;
+    background: #4A5A6B;
     color: white;
     border: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -1028,14 +1056,14 @@ button {
     gap: 8px;
     transition: all 0.3s ease;
     letter-spacing: 1px;
-    background: #2c3e50;
+    background: #4A5A6B;
     color: white;
     border: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .floating-hot-btn:hover {
-    background: #34495e;
+    background: #B8864B;
     transform: translateY(-4px) scale(1.03);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
 }
@@ -1059,7 +1087,7 @@ button {
     width: 330px;
     height: 100%;
     background: #ffffff;
-    color: #2c3e50 !important;
+    color: #4A5A6B !important;
     box-shadow: none;
     border-left: 1px solid #e2e8f0;
     transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
@@ -1075,7 +1103,7 @@ button {
 .cart-header {
     padding: 24px;
     background: #ffffff;
-    color: #2c3e50;
+    color: #4A5A6B;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1085,7 +1113,7 @@ button {
 .cart-title {
     font-size: 1.3rem;
     font-weight: 300;
-    color: #2c3e50;
+    color: #4A5A6B;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1229,7 +1257,7 @@ button {
     align-items: center;
     font-size: 1.15rem;
     font-weight: 300;
-    color: #2c3e50;
+    color: #4A5A6B;
     margin-bottom: 20px;
     padding: 16px;
     background: #f8fafc;
@@ -1251,28 +1279,28 @@ button {
     border-radius: 4px;
     font-size: 0.95rem;
     background: #ffffff;
-    color: #2c3e50 !important;
+    color: #4A5A6B !important;
     box-sizing: border-box;
     transition: all 0.2s;
 }
 
 #order-form input:focus,
 #order-form textarea:focus {
-    background: rgba(59, 130, 246, 0.05);
+    background: rgba(184, 134, 75, 0.05);
     border-color: var(--accent-20);
     outline: none;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 0 4px rgba(184, 134, 75, 0.15);
 }
 
 .btn-submit {
     width: 100%;
-    background: #3a3a3a !important;
+    background: #B8864B !important;
     color: white !important;
     border: none;
     padding: 14px;
     border-radius: 12px;
     font-size: 1.1rem;
-    font-weight: 300 !important;
+    font-weight: 500 !important;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -1282,9 +1310,9 @@ button {
 }
 
 .btn-submit:hover {
-    background: #555555 !important;
+    background: #9E7340 !important;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 25px rgba(184, 134, 75, 0.4);
 }
 
 .btn-submit:active {
@@ -1698,7 +1726,7 @@ button {
     gap: 20px;
     padding: 20px;
     overflow: hidden;
-    background: #f1f2f6;
+    background: #3D4D5C;
 }
 
 .b2b-product-panel {
@@ -1706,39 +1734,36 @@ button {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: white;
+    background: transparent;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: none;
     overflow: hidden;
     transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s ease;
 }
 
-/* Series Background Themes with Variables */
+/* Series Background Themes - transparent to show dark bg */
 .b2b-product-panel.theme-20 {
-    --series-color: #3498db;
-    --series-bg: #f1f8ff;
-    --series-hover: #ffffff;
-    --series-active: rgba(52, 152, 219, 0.12);
-    /* Slightly cleaner */
-    background-color: var(--series-bg);
+    --series-color: #7a9ab5;
+    --series-bg: transparent;
+    --series-hover: rgba(255,255,255,0.08);
+    --series-active: rgba(179, 199, 217, 0.15);
+    background-color: transparent;
 }
 
 .b2b-product-panel.theme-30 {
-    --series-color: #b08850;
-    --series-bg: #fdf6ed;
-    --series-hover: #ffffff;
-    --series-active: rgba(176, 136, 80, 0.12);
-    /* Refined warm tea, not yellow */
-    background-color: var(--series-bg);
+    --series-color: #b8a48e;
+    --series-bg: transparent;
+    --series-hover: rgba(255,255,255,0.08);
+    --series-active: rgba(230, 217, 198, 0.15);
+    background-color: transparent;
 }
 
 .b2b-product-panel.theme-40 {
-    --series-color: #2ecc71;
-    --series-bg: #f3f8f3;
-    --series-hover: #ffffff;
-    --series-active: rgba(46, 204, 113, 0.12);
-    /* Slightly cleaner */
-    background-color: var(--series-bg);
+    --series-color: #7a9e7a;
+    --series-bg: transparent;
+    --series-hover: rgba(255,255,255,0.08);
+    --series-active: rgba(184, 204, 184, 0.15);
+    background-color: transparent;
 }
 
 .b2b-product-list {
@@ -1750,7 +1775,7 @@ button {
 
 /* Series Item Header (Dark Mode) */
 .b2b-table-header {
-    background: #2c3e50;
+    background: #4A5A6B;
     /* Deep Slate */
     color: #ecf0f1;
     padding: 12px 15px;
@@ -1765,36 +1790,34 @@ button {
     margin-bottom: 2px;
 }
 
-/* Enhanced Product Row */
+/* Enhanced Product Row - white cards on dark bg */
 .b2b-product-row {
     display: flex;
     padding: 12px 15px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: none;
+    margin-bottom: 4px;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(4px);
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
     position: relative;
     border-left: 4px solid transparent;
-    /* Prepare for active border */
 }
 
-/* Priority Fix: Explicitly handle hover for active rows to ensure it turns white */
+/* Hover */
 .b2b-product-row:hover,
 .b2b-product-row.active-row:hover {
-    background-color: var(--series-hover) !important;
-    /* Solid White */
+    background-color: #ffffff !important;
     transform: translateX(4px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     z-index: 2;
-    /* Lift above neighbors */
 }
 
 .b2b-product-row.active-row {
     background-color: #fff;
-    border-left: 4px solid #aaa;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    border-left: 4px solid #B8864B;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 /* 2. Middle: Hero Detail & Editor Area */
@@ -1819,21 +1842,26 @@ button {
     min-width: 0;
 }
 
-/* Detail Card: Workspace filling the entire middle column */
+/* Detail Card: transparent,融入深色背景 */
 .b2b-product-detail-card {
-    background: white;
+    background: transparent;
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    box-shadow: none;
     display: flex;
     flex-direction: column;
     flex: 1;
     height: auto !important;
     min-height: 0;
     overflow-y: auto;
-    border: 1px solid #eee;
+    border: 1px solid rgba(255,255,255,0.1);
     box-sizing: border-box;
     width: 100%;
+    color: rgba(255,255,255,0.8);
+}
+
+.b2b-product-detail-card .detail-placeholder {
+    color: rgba(255,255,255,0.4) !important;
 }
 
 .detail-input {
@@ -1951,7 +1979,7 @@ button {
 .b2b-detail-info-main h2 {
     margin: 5px 0 10px 0;
     font-size: 1.35rem;
-    color: #2c3e50;
+    color: #4A5A6B;
     line-height: 1.2;
     font-weight: 300;
     /* Sophisticated Light Weight */
@@ -2003,7 +2031,7 @@ button {
 }
 
 .detail-row-flex input:focus {
-    border-color: #007bff;
+    border-color: #B8864B;
     outline: none;
     background: #fff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
@@ -2070,15 +2098,24 @@ button {
 .analysis-value {
     font-size: 1.4rem;
     font-weight: 300;
-    color: #2c3e50;
+    color: #4A5A6B;
     letter-spacing: 0.5px;
 }
 
 /* === B2B Mode Visibility Control (Fix content bleeding) === */
 body.mode-b2b .app-container,
 body.mode-b2b .floating-cart-btn,
+body.mode-b2b .floating-hot-btn,
 body.mode-b2b .top-banner,
 body.mode-b2b #hub-overlay {
+    display: none !important;
+}
+
+/* OEM 和 BRAND 也隱藏 B2C 浮動按鈕 */
+body.mode-custom .floating-cart-btn,
+body.mode-custom .floating-hot-btn,
+body.mode-info .floating-cart-btn,
+body.mode-info .floating-hot-btn {
     display: none !important;
 }
 
@@ -2659,16 +2696,26 @@ body.mode-b2b button {
 
 /* Sticky Header */
 .b2b-header {
-    background: white;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    /* Stronger shadow */
+    background: #2C3742;
+    color: white;
+    border-bottom: 2px solid #4A5A6B;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     padding: 15px 20px;
     position: sticky;
     top: 0;
     z-index: 1010;
-    /* Above sidebar */
 }
+
+.b2b-header h2,
+.b2b-header h2 i {
+    color: white !important;
+}
+
+.b2b-header .pro-tag {
+    color: #B8864B !important;
+}
+
+/* B2B header search/buttons already unified in main definitions */
 
 .b2b-content {
     display: flex;
@@ -2685,42 +2732,39 @@ body.mode-b2b button {
     box-sizing: border-box;
 }
 
-/* Left: Product Panel (Natural Growth) */
+/* Left: Product Panel - transparent on dark bg */
 .b2b-product-panel {
     flex: 6;
-    background: white;
-    border: 1px solid #eee;
+    background: transparent;
+    border: none;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-    /* No overflow/height constraints -> grows with list */
+    box-shadow: none;
 }
 
 .b2b-table-header {
     display: flex;
     padding: 12px 15px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #ddd;
-    color: #888;
-    font-weight: 300;
+    background: rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    font-weight: 400;
     font-size: 0.85rem;
     letter-spacing: 1px;
     position: sticky;
-    /* Table header sticks inside panel? No, difficult with main scroll. Keep static or top 60px if needed. */
 }
 
 .b2b-product-list {
-    /* Natural height */
     overflow: visible;
     padding-bottom: 20px;
 }
 
-/* Right: Analysis Panel (Sticky) */
+/* Right: Analysis Panel - transparent on dark bg */
 .b2b-analysis-panel {
     flex: 4;
-    background: #fff;
-    border: 1px solid #ddd;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 8px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: none;
 
     /* STICKY MAGIC */
     position: sticky;
@@ -2736,59 +2780,51 @@ body.mode-b2b button {
 
 /* Series Tabs */
 .b2b-tab-btn {
-    padding: 8px 30px;
-    border: 1px solid #ddd;
-    /* Thinner border */
-    background: white;
+    padding: 8px 18px;
+    border: none;
+    background: transparent;
     font-size: 0.95rem;
-    font-weight: 300;
-    /* Thinner font */
-    color: #888;
-    border-radius: 6px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     letter-spacing: 1px;
 }
 
 .b2b-tab-btn:hover {
-    background: #fdfdfd;
-    transform: translateY(-1px);
+    color: #ffffff;
+    background: rgba(255,255,255,0.1);
 }
 
 .b2b-tab-btn[data-series="20"] {
-    border-color: #d0dae5;
-    color: #6b8db0;
+    color: rgba(255,255,255,0.6);
 }
 
 .b2b-tab-btn[data-series="20"].active {
-    background: #6b8db0;
-    color: white;
-    border-color: #6b8db0;
-    box-shadow: 0 4px 12px rgba(107, 141, 176, 0.25);
+    background: #b3c7d9 !important;
+    color: #2C3742 !important;
+    box-shadow: 0 4px 12px rgba(179, 199, 217, 0.3);
 }
 
 .b2b-tab-btn[data-series="30"] {
-    border-color: #e5dacd;
-    color: #b08850;
+    color: rgba(255,255,255,0.6);
 }
 
 .b2b-tab-btn[data-series="30"].active {
-    background: #b08850;
-    color: white;
-    border-color: #b08850;
-    box-shadow: 0 4px 12px rgba(176, 136, 80, 0.25);
+    background: #e6d9c6 !important;
+    color: #2C3742 !important;
+    box-shadow: 0 4px 12px rgba(230, 217, 198, 0.3);
 }
 
 .b2b-tab-btn[data-series="40"] {
-    border-color: #d1dbd1;
-    color: #5e8a5e;
+    color: rgba(255,255,255,0.6);
 }
 
 .b2b-tab-btn[data-series="40"].active {
-    background: #5e8a5e;
-    color: white;
-    border-color: #5e8a5e;
-    box-shadow: 0 4px 12px rgba(94, 138, 94, 0.25);
+    background: #b8ccb8 !important;
+    color: #2C3742 !important;
+    box-shadow: 0 4px 12px rgba(184, 204, 184, 0.3);
 }
 
 /* Columns */
@@ -2903,7 +2939,7 @@ body.mode-b2b button {
         background: #fff;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
-        color: #2c3e50;
+        color: #4A5A6B;
         font-size: 1.2rem;
         z-index: 10005;
         /* MUST BE TOP TO CLICK 'X' */
@@ -2941,7 +2977,7 @@ body.mode-b2b button {
         width: 100%;
         font-size: 1.2rem;
         letter-spacing: 2px;
-        color: #2c3e50;
+        color: #4A5A6B;
         font-weight: 300;
     }
 
@@ -3043,7 +3079,7 @@ body.mode-b2b button {
     font-size: 0.95rem;
     font-weight: 300;
     margin-bottom: 8px;
-    color: #2c3e50;
+    color: #4A5A6B;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -3094,7 +3130,7 @@ body.mode-b2b button {
 /* Bronze */
 
 .hot-name {
-    color: #34495e;
+    color: #B8864B;
     font-size: 0.9rem;
     font-weight: 300;
 }
@@ -3285,7 +3321,7 @@ body.mode-b2b button {
 
 .desktop-hot-name {
     font-size: 0.85rem;
-    color: #34495e;
+    color: #B8864B;
     line-height: 1.2;
     font-weight: 300;
 }
@@ -3475,13 +3511,13 @@ body.mode-b2b button {
 
     0%,
     100% {
-        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+        box-shadow: 0 0 0 0 rgba(184, 134, 75, 0.7);
         border-color: var(--accent-20);
     }
 
     50% {
-        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
-        border-color: rgba(59, 130, 246, 0.5);
+        box-shadow: 0 0 0 10px rgba(184, 134, 75, 0);
+        border-color: rgba(184, 134, 75, 0.5);
     }
 }
 
@@ -3544,7 +3580,7 @@ body.series-40 {
     left: 0;
     right: 0;
     height: 48px;
-    background: #2c3e50;
+    background: #4A5A6B;
     color: white;
     display: flex;
     align-items: center;
@@ -3748,7 +3784,7 @@ body.banner-hidden {
 .loading-title {
     font-size: 2rem;
     margin-bottom: 40px;
-    color: #2c3e50;
+    color: #4A5A6B;
     font-weight: 300;
 }
 
@@ -3801,9 +3837,9 @@ body.banner-hidden {
     opacity: 1;
     transform: scale(1.1);
     background: rgba(30, 41, 59, 1);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 20px rgba(184, 134, 75, 0.5);
     /* 默認藍光 */
-    border-color: #3b82f6;
+    border-color: #B8864B;
 }
 
 /* 步驟2 特殊色 */
@@ -3830,7 +3866,7 @@ body.banner-hidden {
 .process-line-fill {
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #10b981);
+    background: linear-gradient(90deg, #B8864B, #10b981);
     transition: width 2s linear;
     /* 線性動畫核心 */
 }
@@ -4020,7 +4056,7 @@ body.banner-hidden {
 }
 
 .hub-card:nth-child(1):hover {
-    border-color: #3b82f6;
+    border-color: #B8864B;
 }
 
 /* Pro Card */
@@ -4264,9 +4300,9 @@ body.mode-b2b .analysis-panel {
 
 /* 1. Sidebar Change */
 body.mode-b2b .sidebar {
-    background: #2c3e50;
+    background: #4A5A6B;
     /* Professional Dark Blue/Grey */
-    border-right: 1px solid #34495e;
+    border-right: 1px solid #B8864B;
 }
 
 body.mode-b2b .brand::after {
@@ -4345,7 +4381,7 @@ body.mode-b2b .profile-card {
 }
 
 .structure-seg-al {
-    background: #3b82f6;
+    background: #B8864B;
     /* Blue for Aluminum */
 }
 
@@ -4490,12 +4526,14 @@ body.mode-b2b .profile-card {
     flex: 1;
     overflow-y: auto;
     padding: 0;
+    background: transparent;
+    color: rgba(255,255,255,0.8);
 }
 
 .b2b-cart-item {
     display: flex;
     padding: 10px 20px;
-    border-bottom: 1px solid #f1f2f6;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
     align-items: center;
     justify-content: space-between;
     font-size: 0.9rem;
@@ -4503,26 +4541,27 @@ body.mode-b2b .profile-card {
 
 .b2b-footer {
     padding: 20px;
-    border-top: 1px solid #eee;
-    background: #f8f9fa;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    background: transparent;
 }
 
 .b2b-total {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #2d3436;
+    color: rgba(255,255,255,0.8);
     text-align: right;
     margin-bottom: 15px;
 }
 
 #b2b-total-price {
-    color: #444 !important;
+    color: #B8864B !important;
+    font-weight: 600 !important;
 }
 
 .b2b-btn-submit {
     width: 100%;
     padding: 12px;
-    background: #2c3e50;
+    background: #4A5A6B;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -4600,7 +4639,7 @@ body.mode-b2b .profile-card {
 }
 
 .b2b-tree-header.active {
-    background: #2c3e50;
+    background: #4A5A6B;
     color: #f59e0b;
     border-left: 3px solid #f59e0b;
 }
@@ -4750,7 +4789,7 @@ body.mode-b2b .profile-card {
 .btn-add-focus {
     width: 100%;
     padding: 12px;
-    background: #2c3e50;
+    background: #4A5A6B;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -4761,7 +4800,7 @@ body.mode-b2b .profile-card {
 }
 
 .btn-add-focus:hover {
-    background: #34495e;
+    background: #B8864B;
 }
 
 /* =========================================================================
@@ -4794,12 +4833,14 @@ body.mode-b2b .profile-card {
 
 /* Product Detail Card */
 .b2b-product-detail-card {
-    background: white;
+    background: rgba(44, 55, 66, 0.75);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 15px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: none;
+    border: 1px solid rgba(255,255,255,0.1);
     min-height: 220px;
+    color: rgba(255,255,255,0.85);
 }
 
 .detail-placeholder {
@@ -4807,7 +4848,7 @@ body.mode-b2b .profile-card {
     align-items: center;
     justify-content: center;
     height: 180px;
-    color: #999;
+    color: rgba(255,255,255,0.35);
     font-size: 1.1rem;
     flex-direction: column;
     gap: 10px;
@@ -4923,7 +4964,7 @@ body.mode-b2b .profile-card {
 .btn-add-detail {
     width: 100%;
     padding: 12px 20px;
-    background: #2c3e50;
+    background: #4A5A6B;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -5216,9 +5257,9 @@ body.mode-b2b .hot-sales-sidebar {
     height: 100%;
     overflow-y: hidden;
     /* Use child scroll */
-    background: #fff;
+    background: transparent;
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    border: none;
     display: flex;
     flex-direction: column;
 }
@@ -5232,10 +5273,10 @@ body.mode-b2b .hot-sales-sidebar {
 .b2b-detail-panel {
     height: 100%;
     overflow-y: auto;
-    background: #fff;
+    background: rgba(44, 55, 66, 0.75);
     border-radius: 12px;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: none;
     display: flex;
     flex-direction: column;
     padding: 0 !important;
@@ -5247,9 +5288,9 @@ body.mode-b2b .hot-sales-sidebar {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #fff;
+    background: rgba(44, 55, 66, 0.75);
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid rgba(255,255,255,0.1);
     overflow: hidden;
 }
 
@@ -5260,13 +5301,16 @@ body.mode-b2b .hot-sales-sidebar {
     height: auto !important;
     /* Override explicit heights */
     max-height: none !important;
+    background: transparent;
+    color: rgba(255,255,255,0.8);
 }
 
 .b2b-footer {
     padding: 15px;
-    border-top: 1px solid #eee;
-    background: #f8f9fa;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    background: #1e2a33;
     flex-shrink: 0;
+    color: rgba(255,255,255,0.7);
 }
 
 #b2b-analysis-charts {
@@ -5601,30 +5645,28 @@ body.mode-b2b {
         display: flex;
         align-items: center;
         position: fixed;
-        top: 12px;
-        left: 12px;
-        right: 12px;
+        top: 0;
+        left: 0;
+        right: 0;
         z-index: 1050;
-        height: 48px;
-        background: rgba(255, 255, 255, 0.97);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 14px;
-        border: 1px solid rgba(0,0,0,0.06);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.10);
-        padding: 0 10px;
+        height: 52px;
+        background: #2C3742;
+        border-radius: 0;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        padding: 0 12px;
         gap: 8px;
     }
 
     .mobile-b2c-back {
         flex-shrink: 0;
-        width: 38px;
-        height: 38px;
+        width: 36px;
+        height: 36px;
         border: none;
-        background: #f3f3f3;
+        background: rgba(255,255,255,0.1);
         border-radius: 10px;
         font-size: 1rem;
-        color: #555;
+        color: rgba(255,255,255,0.7);
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -5633,10 +5675,10 @@ body.mode-b2b {
 
     .mobile-b2c-brand {
         flex-shrink: 0;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: #2a2a2a;
-        letter-spacing: 2px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: 1px;
         white-space: nowrap;
     }
 
@@ -5644,8 +5686,8 @@ body.mode-b2b {
         font-size: 0.6rem;
         font-weight: 600;
         letter-spacing: 1px;
-        background: #f0f4f8;
-        color: #8496b0;
+        background: rgba(255,255,255,0.15);
+        color: rgba(255,255,255,0.8);
         padding: 1px 5px;
         border-radius: 4px;
         vertical-align: middle;
@@ -5667,48 +5709,47 @@ body.mode-b2b {
     .mobile-b2c-tab {
         flex-shrink: 0;
         padding: 5px 12px;
-        border: 1px solid #e8e8e8;
+        border: none;
         background: transparent;
         border-radius: 20px;
         font-size: 0.78rem;
-        color: #888;
+        color: rgba(255,255,255,0.5);
         cursor: pointer;
         white-space: nowrap;
         transition: all 0.2s;
     }
 
     .mobile-b2c-tab.active {
-        background: var(--accent, #8496b0);
+        background: var(--accent, #B8864B);
         color: #fff;
-        border-color: var(--accent, #8496b0);
+        border: none;
     }
 
-    /* 20系列：藍灰 */
+    /* 莫蘭迪系列選中 */
     body.series-20 .mobile-b2c-tab.active {
-        background: var(--accent);
-        border-color: var(--accent);
+        background: #b3c7d9;
+        color: #2C3742;
     }
-    /* 30系列：暖橙 */
     body.series-30 .mobile-b2c-tab.active {
-        background: var(--accent);
-        border-color: var(--accent);
+        background: #e6d9c6;
+        color: #2C3742;
     }
-    /* 40系列：深綠 */
     body.series-40 .mobile-b2c-tab.active {
-        background: var(--accent);
-        border-color: var(--accent);
+        background: #b8ccb8;
+        color: #2C3742;
     }
 
     .mobile-b2c-sep {
         width: 1px;
         height: 20px;
-        background: #e0e0e0;
+        background: rgba(255,255,255,0.2);
         flex-shrink: 0;
         margin: 0 2px;
     }
 
     /* ---- OEM 手機返回：正方形卡片，只顯示箭頭（仿 B2B 風格）---- */
     body.mode-custom .inquiry-return {
+
         position: fixed;
         top: 12px;
         left: 12px;
@@ -5735,6 +5776,7 @@ body.mode-b2b {
         margin-right: 0;
     }
     body.mode-custom .inquiry-return {
+
         /* 用 text-indent 或 font-size 0 隱藏文字節點 */
         color: transparent;
         font-size: 0;
@@ -6209,26 +6251,24 @@ body.mode-b2b {
         display: flex;
         align-items: center;
         position: fixed;
-        top: 12px;
-        left: 12px;
-        right: 12px;
+        top: 0;
+        left: 0;
+        right: 0;
         z-index: 1050;
-        height: 48px;
-        background: rgba(255, 255, 255, 0.97);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 14px;
-        border: 1px solid rgba(0,0,0,0.06);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.10);
-        padding: 0 10px;
+        height: 52px;
+        background: #2C3742;
+        border-radius: 0;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        padding: 0 12px;
         gap: 8px;
     }
 
-    /* B2B 查詢按鈕深色 */
+    /* B2B 查詢按鈕古銅金 */
     .mobile-b2b-query {
-        background: #3a3a3a !important;
+        background: #B8864B !important;
         color: #fff !important;
-        border-color: #3a3a3a !important;
+        border: none !important;
     }
 
     /* B2B main 讓開固定 topbar */
@@ -6236,21 +6276,21 @@ body.mode-b2b {
         padding-top: 76px !important;
     }
 
-    /* ---- B2B 手機 topbar 系列標籤顏色（直接用 ID，不依賴 CSS variable 鏈）---- */
+    /* ---- B2B 手機 topbar 莫蘭迪系列標籤顏色 ---- */
     #mb-b2b-20.active {
-        background: #6b8db0 !important;
-        border-color: #6b8db0 !important;
-        color: #fff !important;
+        background: #b3c7d9 !important;
+        border: none !important;
+        color: #2C3742 !important;
     }
     #mb-b2b-30.active {
-        background: #b08850 !important;
-        border-color: #b08850 !important;
-        color: #fff !important;
+        background: #e6d9c6 !important;
+        border: none !important;
+        color: #2C3742 !important;
     }
     #mb-b2b-40.active {
-        background: #5e8a5e !important;
-        border-color: #5e8a5e !important;
-        color: #fff !important;
+        background: #b8ccb8 !important;
+        border: none !important;
+        color: #2C3742 !important;
     }
 
 } /* end @media (max-width: 768px) */
@@ -6712,7 +6752,7 @@ body.mode-b2b {
     max-width: 1100px;
     margin: 0 auto;
     padding: 30px 20px;
-    background: #ffffff;
+    background: transparent;
     min-height: auto;
 }
 
@@ -6726,26 +6766,26 @@ body.mode-b2b {
     align-items: center;
     gap: 8px;
     font-size: 0.9rem;
-    color: #999;
+    color: rgba(255,255,255,0.6);
     cursor: pointer;
     margin-bottom: 10px;
     transition: color 0.3s;
 }
 
 .inquiry-return:hover {
-    color: var(--accent);
+    color: #B8864B;
 }
 
 .inquiry-header h2 {
     font-size: 1.8rem;
     font-weight: 300;
-    color: #282828;
+    color: #ffffff;
     margin-bottom: 4px;
     letter-spacing: 2px;
 }
 
 .inquiry-header p {
-    color: #999;
+    color: rgba(255,255,255,0.6);
     font-size: 1rem;
     letter-spacing: 1px;
     margin: 0;
@@ -6786,11 +6826,10 @@ body.mode-b2b {
     padding: 28px 20px;
     background: #fff;
     border-radius: 18px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+    border: none;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                border-color 0.3s ease;
+                box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     animation: inquiry-step-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
     will-change: transform;
 }
@@ -6831,7 +6870,7 @@ body.mode-b2b {
 .step-num {
     font-size: 0.75rem;
     font-weight: 700;
-    color: #c8bfb5;
+    color: #B8864B;
     letter-spacing: 3px;
     width: 36px;
     height: 36px;
@@ -6839,8 +6878,8 @@ body.mode-b2b {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(210, 200, 190, 0.12);
-    border: 1px solid rgba(210, 200, 190, 0.3);
+    background: rgba(184, 134, 75, 0.1);
+    border: 1px solid rgba(184, 134, 75, 0.3);
     flex-shrink: 0;
 }
 
@@ -6875,19 +6914,19 @@ body.mode-b2b {
 .inquiry-cta-area {
     text-align: center;
     padding: 20px;
-    background: #fdfaf7;
+    background: transparent;
     border-radius: 12px;
-    border: 1px solid #f0e6d8;
+    border: none;
     margin-bottom: 15px;
 }
 
 .inquiry-main-btn {
-    background: #3a3a3a;
+    background: #B8864B;
     color: white;
     border: none;
-    padding: 12px 30px;
+    padding: 14px 36px;
     font-size: 1.05rem;
-    border-radius: 8px;
+    border-radius: 24px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     letter-spacing: 2px;
@@ -6897,16 +6936,17 @@ body.mode-b2b {
     display: inline-block;
     text-decoration: none;
     line-height: normal;
+    box-shadow: 0 4px 16px rgba(184, 134, 75, 0.3);
 }
 
 .inquiry-main-btn:hover {
-    background: #000;
+    background: #9E7340;
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 24px rgba(184, 134, 75, 0.4);
 }
 
 .inquiry-hint {
-    color: #b4a498;
+    color: rgba(255,255,255,0.5);
     font-size: 0.85rem;
     font-style: italic;
 }
@@ -6914,7 +6954,7 @@ body.mode-b2b {
 .inquiry-contact-alt {
     text-align: center;
     font-size: 0.9rem;
-    color: #999;
+    color: rgba(255,255,255,0.6);
 }
 
 .inquiry-contact-alt a {
@@ -6942,6 +6982,7 @@ body.mode-b2b {
     }
 
     .inquiry-return {
+
         margin-bottom: 8px;
         font-size: 0.8rem;
     }
@@ -7241,17 +7282,28 @@ body.mode-b2b {
 /* B2C Modernization UI Styles */
 .mode-b2c .sidebar { display: none !important; }
 .mode-b2c .main-content { padding: 0 !important; padding-top: 70px !important; }
-.b2c-topbar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; padding: 0 30px; z-index: 1040; box-shadow: 0 2px 15px rgba(0,0,0,0.03); }
-.b2c-back-btn { background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-right: 15px; }
-.b2c-brand-logo { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; color: #1e293b; margin-right: 40px; white-space: nowrap; }
+.b2c-topbar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: #2C3742; border-bottom: none; display: flex; align-items: center; padding: 0 30px; z-index: 1040; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.b2c-back-btn { background: rgba(255,255,255,0.1); border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-right: 15px; }
+.b2c-back-btn:hover { background: rgba(255,255,255,0.2); color: #ffffff; }
+.b2c-brand-logo { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; color: #ffffff; margin-right: 40px; white-space: nowrap; }
 .b2c-nav-tabs { display: flex; gap: 10px; align-items: center; flex: 1; }
-.b2c-tab-btn { background: transparent; border: 1px solid transparent; padding: 8px 18px; font-size: 0.9rem; font-weight: 500; color: #64748b; cursor: pointer; border-radius: 12px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-.b2c-tab-btn.active { background: #2c3e50; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.series-20 .b2c-tab-btn#b2c-tab-20 { background: #b3c7d9; color: #2c3e50; }
-.series-30 .b2c-tab-btn#b2c-tab-30 { background: #e6d9c6; color: #2c3e50; }
-.series-40 .b2c-tab-btn#b2c-tab-40 { background: #b8ccb8; color: #2c3e50; }
+.b2c-tab-btn { background: transparent; border: 1px solid transparent; padding: 8px 18px; font-size: 0.9rem; font-weight: 500; color: rgba(255,255,255,0.6); cursor: pointer; border-radius: 12px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+.b2c-tab-btn:hover { color: #ffffff; background: rgba(255,255,255,0.1); }
+.b2c-tab-btn.active { background: #B8864B; color: white; box-shadow: 0 4px 12px rgba(184,134,75,0.3); }
+.series-20 .b2c-tab-btn#b2c-tab-20 { background: #b3c7d9; color: #4A5A6B; }
+.series-30 .b2c-tab-btn#b2c-tab-30 { background: #e6d9c6; color: #4A5A6B; }
+.series-40 .b2c-tab-btn#b2c-tab-40 { background: #b8ccb8; color: #4A5A6B; }
 .mode-b2c .aluminum-grid-container { grid-template-columns: repeat(auto-fill, minmax(750px, 1fr)) !important; gap: 30px !important; padding: 40px !important; }
 .mode-b2c .accessories-container { grid-template-columns: repeat(4, 1fr) !important; gap: 20px !important; padding: 20px 40px !important; width: 100% !important; max-width: none !important; margin: 0; }
+
+/* B2C 桌機版標題左邊對齊卡片 */
+.mode-b2c #view-product #page-title,
+.mode-b2c #view-product .section-title,
+.mode-b2c #view-product .series-desc-container,
+.mode-b2c #view-product .section-block {
+    padding-left: 40px;
+    padding-right: 40px;
+}
 @media (max-width: 768px) { .b2c-topbar { padding: 0 15px; height: 60px; } .b2c-brand-logo { display: none; } .b2c-nav-tabs { gap: 5px; overflow-x: auto; } .b2c-tab-btn { padding: 6px 12px; font-size: 0.8rem; } .mode-b2c .main-content { padding-top: 80px !important; } }
 
 /* === LUTU Premium System: Restored & Modernized Sections === */
@@ -7265,28 +7317,29 @@ body.mode-b2b {
 /* B2C Modernization Styles (New) */
 .mode-b2c .sidebar { display: none !important; }
 .mode-b2c .main-content { padding: 0 !important; padding-top: 70px !important; }
-.b2c-topbar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; padding: 0 30px; z-index: 1040; box-shadow: 0 2px 15px rgba(0,0,0,0.03); }
-.b2c-tab-btn { background: transparent; border: none; padding: 8px 18px; font-size: 0.95rem; font-weight: 500; color: #64748b; cursor: pointer; border-radius: 12px; transition: all 0.25s; }
-.b2c-tab-btn.active { background: #2c3e50; color: white; }
-.series-20 .b2c-tab-btn#b2c-tab-20 { background: #b3c7d9; color: #2c3e50; }
-.series-30 .b2c-tab-btn#b2c-tab-30 { background: #e6d9c6; color: #2c3e50; }
-.series-40 .b2c-tab-btn#b2c-tab-40 { background: #b8ccb8; color: #2c3e50; }
+.b2c-topbar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: #2C3742; border-bottom: none; display: flex; align-items: center; padding: 0 30px; z-index: 1040; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.b2c-tab-btn { background: transparent; border: none; padding: 8px 18px; font-size: 0.95rem; font-weight: 500; color: rgba(255,255,255,0.6); cursor: pointer; border-radius: 12px; transition: all 0.25s; }
+.b2c-tab-btn.active { background: #B8864B; color: white; }
+.series-20 .b2c-tab-btn#b2c-tab-20 { background: #b3c7d9; color: #4A5A6B; }
+.series-30 .b2c-tab-btn#b2c-tab-30 { background: #e6d9c6; color: #4A5A6B; }
+.series-40 .b2c-tab-btn#b2c-tab-40 { background: #b8ccb8; color: #4A5A6B; }
 /* Responsive Tweaks */
 @media (max-width: 768px) { .masonry-grid { grid-template-columns: repeat(2, 1fr) !important; padding: 10px !important; } .b2c-topbar { height: 60px; padding: 0 10px; } .mode-b2c .main-content { padding-top: 80px !important; } }
 
 /* B2B Professional Topbar Style (Differentiated from B2C) */
-.b2b-topbar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: #1e293b; color: white; z-index: 1050; display: flex; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-bottom: 2px solid #334155; }
+.b2b-topbar { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: #2C3742; color: white; z-index: 1050; display: flex; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-bottom: 2px solid #4A5A6B; }
 .b2b-topbar-inner { max-width: 1400px; margin: 0 auto; width: 100%; display: flex; align-items: center; padding: 0 20px; }
 .b2b-brand { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-right: 50px; }
 .b2b-nav { display: flex; gap: 5px; }
-.b2b-nav-tab { background: transparent; border: none; color: #94a3b8; padding: 0 20px; height: 60px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; }
+.b2b-nav-tab { background: transparent; border: none; color: rgba(255,255,255,0.5); padding: 0 20px; height: 60px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; }
 .b2b-nav-tab:hover { background: rgba(255,255,255,0.05); color: white; }
-.b2b-nav-tab.active { color: white; border-bottom-color: #38bdf8; background: rgba(255,255,255,0.1); }
-.b2c-cart-trigger:hover { background: #34495e !important; transform: scale(1.05); }
+.b2b-nav-tab.active { color: white; border-bottom-color: #B8864B; background: rgba(255,255,255,0.1); }
+.b2c-cart-trigger:hover { background: #B8864B !important; transform: scale(1.05); }
 
 /* Final Layout Fix: Prevent Topbar Overlap */
 .mode-b2c .main-content { padding-top: 100px !important; }
 .mode-b2b .main-content { padding-top: 90px !important; }
+
 @media (max-width: 768px) {
   .mode-b2c .main-content { padding-top: 95px !important; }
   .mode-b2b .main-content { padding-top: 85px !important; }
@@ -7323,13 +7376,13 @@ body.mode-b2b {
 .pane-label { position: absolute; top: 8px; right: 8px; font-size: 10px; color: #999; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 .img-pane img { width: 100%; height: 100%; object-fit: cover; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.05)); }
 .profile-card-info { padding: 15px 20px; text-align: left; }
-.profile-card-info .p-name { font-weight: 400; color: #333; margin-bottom: 5px; font-size: 1.1rem; }
-.profile-card-info .p-price { color: #222 !important; font-weight: 400; font-size: 1.3rem; }
+.profile-card-info .p-name { font-weight: 400; color: #2C3742; margin-bottom: 5px; font-size: 1.1rem; }
+.profile-card-info .p-price { color: #2C3742 !important; font-weight: 500; font-size: 1.3rem; }
 .no-img-placeholder { color: #ccc; font-size: 0.8rem; font-weight: 600; }
 
 /* B2B Thumb Toggle */
 .b2b-thumb-toggle { position: absolute; top: 0; right: 0; width: 22px; height: 22px; background: rgba(255,255,255,0.9); border-radius: 0 6px 0 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #666; cursor: pointer; border-left: 1px solid #eee; border-bottom: 1px solid #eee; z-index: 5; transition: all 0.2s; }
-.b2b-thumb-toggle:hover { background: #2c3e50; color: #fff; }
+.b2b-thumb-toggle:hover { background: #4A5A6B; color: #fff; }
 
 /* Grid Update */
 .mode-b2c .aluminum-grid-container { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)) !important; }
@@ -7407,4 +7460,383 @@ body.mode-b2b {
         color: #555 !important;
         line-height: 1.5 !important;
     }
+}
+
+/* =====================================================================
+   B2B 深色面板 — JS hardcode 顏色 override
+   ===================================================================== */
+
+/* 右欄 cart item 商品名稱各系列亮色 */
+.b2b-analysis-panel .b2b-cart-list [style*="color:#0369a1"],
+.b2b-analysis-panel .b2b-cart-list [style*="color: #0369a1"] { color: #7ab8e8 !important; }
+.b2b-analysis-panel .b2b-cart-list [style*="color:#b45309"],
+.b2b-analysis-panel .b2b-cart-list [style*="color: #b45309"] { color: #e0a860 !important; }
+.b2b-analysis-panel .b2b-cart-list [style*="color:#15803d"],
+.b2b-analysis-panel .b2b-cart-list [style*="color: #15803d"] { color: #6dbf85 !important; }
+.b2b-analysis-panel .b2b-cart-list [style*="color:#555"],
+.b2b-analysis-panel .b2b-cart-list [style*="color: #555"] { color: rgba(255,255,255,0.7) !important; }
+.b2b-analysis-panel .b2b-cart-list [style*="color:#7f8c8d"],
+.b2b-analysis-panel .b2b-cart-list [style*="color: #7f8c8d"] { color: rgba(255,255,255,0.4) !important; }
+.b2b-analysis-panel .b2b-cart-list [style*="color:#aaa"],
+.b2b-analysis-panel .b2b-cart-list [style*="color: #aaa"] { color: rgba(255,255,255,0.28) !important; }
+.b2b-analysis-panel .b2b-cart-list [style*="color:#4A5A6B"],
+.b2b-analysis-panel .b2b-cart-list [style*="color: #4A5A6B"] { color: rgba(255,255,255,0.6) !important; }
+.b2b-analysis-panel .b2b-cart-list [style*="color:#ddd"],
+.b2b-analysis-panel .b2b-cart-list [style*="color: #ddd"] { color: rgba(255,255,255,0.2) !important; }
+.b2b-analysis-panel .b2b-cart-list button:hover { color: rgba(255,80,80,0.8) !important; }
+
+/* AI 排版區 — 外框深色 */
+#b2b-analysis-charts [style*="background:white"],
+#b2b-analysis-charts [style*="background: white"],
+#b2b-analysis-charts [style*="background:#fff"],
+#b2b-analysis-charts [style*="background: #fff"] {
+    background: rgba(36, 48, 57, 0.85) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+    box-shadow: none !important;
+}
+#b2b-analysis-charts [style*="background:#f8f9fa"],
+#b2b-analysis-charts [style*="background: #f8f9fa"] {
+    background: rgba(36, 48, 57, 0.9) !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08) !important;
+}
+#b2b-analysis-charts [style*="color:#555"],
+#b2b-analysis-charts [style*="color: #555"] { color: rgba(255,255,255,0.6) !important; }
+#b2b-analysis-charts [style*="color:#888"],
+#b2b-analysis-charts [style*="color: #888"] { color: rgba(255,255,255,0.4) !important; }
+#b2b-analysis-charts [style*="color:#999"],
+#b2b-analysis-charts [style*="color: #999"] { color: rgba(255,255,255,0.3) !important; }
+#b2b-analysis-charts [style*="color:#4A5A6B"],
+#b2b-analysis-charts [style*="color: #4A5A6B"] { color: rgba(255,255,255,0.85) !important; }
+#b2b-analysis-charts [style*="color:#2980b9"],
+#b2b-analysis-charts [style*="color: #2980b9"] { color: #7ab8e8 !important; }
+#b2b-analysis-charts [style*="color:#34495e"],
+#b2b-analysis-charts [style*="color: #34495e"] { color: rgba(255,255,255,0.75) !important; }
+#b2b-analysis-charts [style*="background:#ecf0f1"],
+#b2b-analysis-charts [style*="background: #ecf0f1"] { background: rgba(255,255,255,0.12) !important; }
+#b2b-analysis-charts [style*="color:#bdc3c7"],
+#b2b-analysis-charts [style*="color: #bdc3c7"] { color: rgba(255,255,255,0.3) !important; }
+#b2b-analysis-charts [style*="border-bottom: 1px dashed"],
+#b2b-analysis-charts [style*="border-bottom:1px dashed"] { border-bottom-color: rgba(255,255,255,0.08) !important; }
+#b2b-analysis-charts [style*="border-top:1px dashed #eee"],
+#b2b-analysis-charts [style*="border-top: 1px dashed #eee"] { border-top-color: rgba(255,255,255,0.08) !important; }
+
+/* detail-input 深色 */
+.b2b-detail-panel .detail-input,
+.b2b-detail-panel .detail-input-lg,
+.b2b-product-detail-card input,
+.b2b-product-detail-card select,
+.b2b-product-detail-card textarea {
+    background: rgba(255,255,255,0.07) !important;
+    border-color: rgba(255,255,255,0.15) !important;
+    color: rgba(255,255,255,0.9) !important;
+}
+.b2b-detail-panel .detail-input:focus,
+.b2b-detail-panel .detail-input-lg:focus {
+    border-color: rgba(100,160,210,0.6) !important;
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.15) !important;
+    background: rgba(255,255,255,0.1) !important;
+}
+.b2b-detail-panel .detail-input-group label,
+.b2b-product-detail-card label { color: rgba(255,255,255,0.5) !important; }
+
+/* detail action bar */
+.b2b-detail-action-bar {
+    background: rgba(36,48,57,0.9) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: none !important;
+}
+
+/* Footer 總額 */
+.b2b-footer .b2b-total { color: rgba(255,255,255,0.6) !important; }
+#b2b-total-price { color: #c9944a !important; }
+
+
+
+/* =====================================================================
+   B2B 左欄 accordion 緊湊化（白底卡片風格）
+   ===================================================================== */
+
+/* 展開內容區塊：白底，融入卡片 */
+.product-accordion-content {
+    padding: 8px 10px 10px !important;
+    margin-top: 4px !important;
+    background: #f8f9fa !important;
+    border: 1px solid #e8e8e8 !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+}
+
+/* input：正常白底黑字，高度縮小 */
+.product-accordion-content input[type="number"],
+.product-accordion-content input[type="text"],
+.product-accordion-content .detail-input,
+.product-accordion-content .input-len,
+.product-accordion-content .input-qty {
+    background: #fff !important;
+    background-color: #fff !important;
+    border: 1px solid #d1d5db !important;
+    color: #333 !important;
+    border-radius: 8px !important;
+    height: 34px !important;
+    font-size: 0.88rem !important;
+    padding: 4px 10px !important;
+    box-sizing: border-box !important;
+    -webkit-appearance: none !important;
+}
+
+.product-accordion-content input::placeholder,
+.product-accordion-content .input-len::placeholder {
+    color: #aaa !important;
+}
+
+.product-accordion-content input:focus {
+    border-color: #7a9ab5 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(122,154,181,0.2) !important;
+}
+
+/* batch-row 間距壓縮 */
+.product-accordion-content .batch-row {
+    margin-bottom: 6px !important;
+    gap: 6px !important;
+}
+
+/* 按鈕行 */
+.product-accordion-content > div[style*="border-top"] {
+    padding-top: 8px !important;
+    margin-top: 4px !important;
+}
+
+/* b2b-thumb 統一大小 */
+.b2b-thumb {
+    width: 52px !important;
+    height: 52px !important;
+}
+
+/* 數量 label 文字色 */
+.product-accordion-content [style*="color:#666"],
+.product-accordion-content [style*="color: #666"] {
+    color: #666 !important;
+}
+
+/* =====================================================================
+   關於我們 手機版：全頁不捲動、圖片保留、文字壓縮
+   ===================================================================== */
+@media (max-width: 768px) {
+
+  /* view-about 排除 content-view 的 padding-bottom */
+  #view-about {
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* 圖片區：固定高度，用 max-height 壓縮，不動 inline min-height */
+  #view-about > div:first-child {
+    height: 32vh !important;
+    max-height: 32vh !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* slideshow 圖片填滿 */
+  #view-about #about-slideshow,
+  #view-about #about-slideshow img,
+  #view-about #about-slideshow .hub-slide {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  /* 內容區：剩餘空間，不捲動，padding 縮小 */
+  #view-about > div:nth-child(2) {
+    flex: 1 !important;
+    overflow: hidden !important;
+    padding: 0 18px !important;
+    align-items: center !important;
+  }
+
+  /* 分隔線間距縮 */
+  #view-about .about-content-fade-in > div:first-child {
+    margin-bottom: 12px !important;
+  }
+
+  /* 左右變上下，間距縮 */
+  #view-about .about-content-fade-in > div:last-child {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  /* 左側標題 */
+  #view-about .about-content-fade-in > div:last-child > div:first-child {
+    width: 100% !important;
+  }
+  #view-about .about-content-fade-in > div:last-child > div:first-child h2 {
+    text-align: center !important;
+    font-size: 1.2rem !important;
+    letter-spacing: 4px !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
+  }
+
+  /* 段落文字縮小、行高收緊 */
+  #view-about p {
+    font-size: 0.76rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 8px !important;
+    letter-spacing: 0.2px !important;
+  }
+
+  /* 社群 icon 行 */
+  #view-about .about-content-fade-in > div:last-child > div:last-child > div {
+    gap: 12px !important;
+    margin-top: 6px !important;
+  }
+
+  .about-social-icon {
+    font-size: 1.15rem !important;
+  }
+}
+/* =====================================================================
+   B2B 手機版左欄：卡片壓縮
+   ===================================================================== */
+@media (max-width: 768px) {
+
+  /* 卡片：縮小圓角、margin，讓畫面更緊湊 */
+  .b2b-product-row {
+    border-radius: 10px !important;
+    margin-bottom: 6px !important;
+    background-color: rgba(255,255,255,0.92) !important;
+  }
+
+  /* 卡片內層 row padding 縮 */
+  .b2b-product-row > div[style*="display:flex"] {
+    padding: 8px 10px !important;
+  }
+
+  /* 圖片縮小 */
+  .b2b-product-row .b2b-thumb,
+  .b2b-product-row .col-img img {
+    width: 46px !important;
+    height: 46px !important;
+  }
+  .b2b-product-row .col-img {
+    flex: 0 0 46px !important;
+    width: 46px !important;
+    height: 46px !important;
+    margin-right: 10px !important;
+  }
+
+  /* 商品名稱字縮小 */
+  .b2b-product-row .col-name > div:first-child {
+    font-size: 0.85rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 2px !important;
+  }
+
+  /* 規格、尺寸標籤縮 */
+  .b2b-product-row .col-name > div:nth-child(2) {
+    font-size: 0.72rem !important;
+    gap: 4px !important;
+  }
+
+  /* 價格區縮小 */
+  .b2b-product-row .col-price {
+    flex: 0 0 70px !important;
+  }
+  .b2b-product-row .col-price > div:first-child {
+    font-size: 0.9rem !important;
+  }
+  .b2b-product-row .col-price > div:nth-child(2) {
+    font-size: 0.7rem !important;
+  }
+
+  /* 展開箭頭縮 */
+  .b2b-product-row .accordion-arrow {
+    margin-top: 4px !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* b2b-content padding 統一對齊 */
+  .b2b-content {
+    padding: 10px 10px 20px 10px !important;
+    gap: 10px !important;
+  }
+
+  /* 左欄、中欄、右欄統一 margin 0，讓 content padding 控制邊距 */
+  .b2b-product-panel,
+  .b2b-detail-panel,
+  .b2b-analysis-panel {
+    margin: 0 !important;
+    border-radius: 12px !important;
+  }
+}
+
+/* =====================================================================
+   B2B 手機版頂欄下白底修正
+   ===================================================================== */
+@media (max-width: 768px) {
+  body.mode-b2b .b2b-main {
+    background: #3D4D5C !important;
+  }
+  body.mode-b2b #b2b-dashboard {
+    background: #3D4D5C !important;
+  }
+}
+
+/* =====================================================================
+   B2B 手機版：全寬對齊，清除多餘 padding/margin
+   ===================================================================== */
+@media (max-width: 768px) {
+
+  /* dashboard 跟 main 全寬無邊距 */
+  #b2b-dashboard,
+  body.mode-b2b #b2b-dashboard,
+  .b2b-main {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* content 全寬，統一 padding */
+  .b2b-content {
+    width: 100% !important;
+    padding: 8px !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 三個面板全寬，無額外 margin */
+  .b2b-product-panel,
+  .b2b-detail-panel,
+  .b2b-analysis-panel {
+    width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* product-list padding 移除（讓 content padding 統一控制） */
+  .b2b-product-list,
+  #b2b-series-list {
+    padding: 0 !important;
+  }
+
+  /* 右側捲軸消除 */
+  .b2b-product-panel {
+    overflow: hidden !important;
+  }
+  .b2b-product-list,
+  #b2b-series-list {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* 隱藏 B2B 左欄系列標題（佔空間，資訊重複） */
+.b2b-series-index-header h2 {
+  display: none !important;
+}
+
+.b2b-series-index-header {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }

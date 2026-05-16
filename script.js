@@ -1,5 +1,5 @@
 // Hardcoded Data (Restored)
-const API_URL = "https://script.google.com/macros/s/AKfycbxEn0_QHCdDmA24QNrXOfFVg2lSlvdt9R7opPpLmOrxEZGxm0L7t73CWneKlaHHo8ZV/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbx2mqPe1ilOWDQ45JYDGJ2KaAUZ9dyH0fT-NwIDOdqUNmz1Dn3-tsL70urJT2cYYI5Q/exec";
 
 // --- [全域重量資料庫] ---
 const weightMap = {
@@ -50,12 +50,12 @@ const rawData = {
     ],
     projects: [
         ["ID", "專案名稱", "描述", "Youtube", "PDF", "情境圖", "完成圖", "step1", "step2", "step3", "step4"],
-        ["LUTU-01", "螃蟹車", "靈活移動的板車平台 - 適合搬運重物或作為移動底座使用", "#", "#", "deco1.png", "2040型.png", "2040型.png", "2040型.png", "2040型.png", "2040型.png"],
-        ["LUTU-03", "側掛衣架", "", "", "", "deco3.png", "", "", "", "", ""],
-        ["LUTU-02", "茶几", "", "", "", "deco2.png", "", "", "", "", ""],
-        ["LUTU-04", "地燈", "", "", "", "deco4.png", "", "", "", "", ""],
-        ["LUTU-05", "手推車", "", "", "", "deco5.png", "", "", "", "", ""],
-        ["LUTU-06", "移動桌腳", "", "", "", "deco6.png", "", "", "", "", ""]
+        ["ALUMIBRO-01", "螃蟹車", "靈活移動的板車平台 - 適合搬運重物或作為移動底座使用", "#", "#", "deco1.png", "2040型.png", "2040型.png", "2040型.png", "2040型.png", "2040型.png"],
+        ["ALUMIBRO-03", "側掛衣架", "", "", "", "deco3.png", "", "", "", "", ""],
+        ["ALUMIBRO-02", "茶几", "", "", "", "deco2.png", "", "", "", "", ""],
+        ["ALUMIBRO-04", "地燈", "", "", "", "deco4.png", "", "", "", "", ""],
+        ["ALUMIBRO-05", "手推車", "", "", "", "deco5.png", "", "", "", "", ""],
+        ["ALUMIBRO-06", "移動桌腳", "", "", "", "deco6.png", "", "", "", "", ""]
     ],
     customCases: [
         ["CASE", "專案名稱", "描述", "PDF", "材料圖", "正面", "側面", "客戶現場"],
@@ -473,8 +473,8 @@ function processData(data) {
                     (row.length > 10 && row[10]) ? { img: row[10], text: '步驟4' } : null
                 ].filter(Boolean)
             }));
-            const idx02 = newProjects.findIndex(p => p.id === 'LUTU-02');
-            const idx03 = newProjects.findIndex(p => p.id === 'LUTU-03');
+            const idx02 = newProjects.findIndex(p => p.id === 'ALUMIBRO-02');
+            const idx03 = newProjects.findIndex(p => p.id === 'ALUMIBRO-03');
             if (idx02 !== -1 && idx03 !== -1 && idx02 < idx03) {
                 [newProjects[idx02], newProjects[idx03]] = [newProjects[idx03], newProjects[idx02]];
             }
@@ -844,12 +844,12 @@ function renderSeries(series) {
             alHtml +=   '</div>'; // end split
             alHtml +=   '<div class="profile-card-info">';
             alHtml +=     '<div class="p-name">' + p.name + '</div>';
-            alHtml +=     `<div class="p-price"><span style="color: #e74c3c;">NT$${p.price}</span><span style="color: #666; font-size: 0.85rem; font-weight: 400; margin-left: 2px;"> /${p.unit === "cm" ? "10mm" : p.unit}</span></div>`;
+            alHtml +=     `<div class="p-price"><span style="color: #2C3742; font-weight: 500;">NT$${p.price}</span><span style="color: #666; font-size: 0.85rem; font-weight: 400; margin-left: 2px;"> /${p.unit === "cm" ? "10mm" : p.unit}</span></div>`;
             alHtml +=     '<div class="inline-action-panel" id="inline-panel-' + p.name + '" style="display:none; border-top: 1px dashed #eee; padding-top: 15px; margin-top: 10px; animation: fadeIn 0.3s;">';
             alHtml +=       '<div style="display:flex; gap:10px; align-items:center;">';
             alHtml +=         '<input type="number" id="inline-len-' + p.name + '" placeholder="長度(mm)" style="flex:1; width:0; padding:8px; border:1px solid #ccc; border-radius:6px; font-family:inherit;" onclick="event.stopPropagation()">';
             alHtml +=         '<input type="number" id="inline-qty-' + p.name + '" value="1" min="1" style="width:60px; padding:8px; border:1px solid #ccc; border-radius:6px; text-align:center; font-family:inherit;" onclick="event.stopPropagation()">';
-            alHtml +=         '<button onclick="event.stopPropagation(); window.addInlineItem(\'' + p.name + '\')" style="background:#2c3e50; color:#fff; padding:8px 15px; border:none; border-radius:6px; cursor:pointer; font-weight:600; white-space:nowrap; transition:all 0.3s;">加入</button>';
+            alHtml +=         '<button onclick="event.stopPropagation(); window.addInlineItem(\'' + p.name + '\')" class="b2c-add-btn" style="background:var(--accent-' + series + '); color:#2C3742; padding:8px 15px; border:none; border-radius:6px; cursor:pointer; font-weight:600; white-space:nowrap; transition:all 0.3s;">加入</button>';
             alHtml +=       '</div>';
             alHtml +=     '</div>';
             alHtml +=   '</div>';
@@ -914,7 +914,7 @@ function renderSeries(series) {
             accHtml +=   '<div class="profile-card-info">';
             accHtml +=     `<div class="p-name">${p.name}</div>`;
             accHtml +=     '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">';
-            accHtml +=       `<div class="p-price"><span style="color: #e74c3c;">NT$${p.price}</span><span style="color: #666; font-size:0.85rem;"> /${p.unit}</span></div>`;
+            accHtml +=       `<div class="p-price"><span style="color: #2C3742; font-weight: 500;">NT$${p.price}</span><span style="color: #666; font-size:0.85rem;"> /${p.unit}</span></div>`;
             
             // 數量控制組
             accHtml +=       '<div class="acc-controls-premium" style="display:flex; align-items:center; gap:4px;">';
@@ -974,7 +974,7 @@ function renderAccessoryList() {
                 <div class="spec-info">
                     <span class="model-badge" style="color:${color};">${item.name}</span>
                     <span style="color:#aaa;"></span>
-                    <span style="color:#e74c3c; font-weight:300;">NT$${Math.round(item.price * item.qty)}</span>
+                    <span style="color:#2C3742; font-weight:500;">NT$${Math.round(item.price * item.qty)}</span>
                 </div>
                 <div class="spec-actions">
                     <span style="margin-right:10px;">數量：${item.qty}</span>
@@ -988,7 +988,7 @@ function renderAccessoryList() {
         let subtotal = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
         html += `
         <div class="spec-row" style="border-top:2px dashed #eee; margin-top:10px; padding-top:10px; justify-content:flex-end;">
-            <div style="font-size:1.1rem; font-weight:300; color:#e74c3c;">
+            <div style="font-size:1.2rem; font-weight:600; color:#B8864B;">
                 配件小計：NT$${Math.round(subtotal)}
             </div>
         </div>`;
@@ -1166,7 +1166,7 @@ function renderSpecList() {
                     <span class="model-badge" style="color:${color};">${item.name}</span>
                     <span>長度 ${Math.round(item.len * 10)} mm</span>
                     <span style="color:#aaa;"></span>
-                    <span style="color:#e74c3c; font-weight:300;">NT$${Math.round(item.price * item.len * item.qty)}</span>
+                    <span style="color:#2C3742; font-weight:500;">NT$${Math.round(item.price * item.len * item.qty)}</span>
                 </div>
                 <div class="spec-actions">
                     <div class="spec-edit">
@@ -1182,7 +1182,7 @@ function renderSpecList() {
         let subtotal = items.reduce((sum, item) => sum + (item.price * item.len * item.qty), 0);
         html += `
         <div class="spec-row" style="border-top:2px dashed #eee; margin-top:10px; padding-top:10px; justify-content:flex-end;">
-            <div style="font-size:1.1rem; font-weight:300; color:#e74c3c;">
+            <div style="font-size:1.2rem; font-weight:600; color:#B8864B;">
                 鋁材小計：NT$${Math.round(subtotal)}
             </div>
         </div>`;
@@ -2239,11 +2239,11 @@ window.handleB2BSearch = function (keyword) {
 
     let html = `
         <div style="padding: 15px 15px 0 15px; flex-shrink:0;">
-            <h2 style="margin-bottom:12px; color:#2c3e50; font-size:1.2rem; font-weight:300; letter-spacing:1px;">
+            <h2 style="margin-bottom:12px; color:#4A5A6B; font-size:1.2rem; font-weight:300; letter-spacing:1px;">
                 <i class="fas fa-search"></i> 搜尋結果 <span style="font-weight:normal; font-size:0.9rem; color:#666;">(${matches.length} 筆)</span>
             </h2>
              <div class="b2b-table-header">
-                <div class="col-img" style="flex:0 0 65px;">圖</div>
+                <div class="col-img" style="flex:0 0 52px;">圖</div>
                 <div class="col-name" style="padding-left:8px;">品名 / 規格</div>
                 <div class="col-price" style="text-align:right; padding-right:8px;">單價</div>
             </div>
@@ -2289,18 +2289,18 @@ window.handleB2BSearch = function (keyword) {
 
         html += `
         <div class="b2b-product-row b2b-series-${seriesPrefix}" data-product-name="${p.name}">
-             <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
+             <div style="display:flex; padding:8px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
                 <div class="col-img" style="flex:0 0 65px; position:relative;">
                     <img src="${imgUrl}" class="b2b-thumb" style="width:65px; height:65px; border-radius:6px; object-fit: cover; cursor:zoom-in; border:1px solid #eee;" onclick="event.stopPropagation(); showLightbox(this.src)">
                     <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:var(--series-color, #999); color:white; font-size:0.7rem; font-weight:600; line-height:1;">${seriesPrefix}</div>
                 </div>
                 <div class="col-name" style="padding-left:15px; min-width:0; flex:1;">
-                    <div style="font-weight:700; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
+                    <div style="font-weight:700; font-size:0.95rem; color:#4A5A6B; line-height:1.2; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
                     <div style="font-size:0.8rem; color:#666; display:flex; align-items:center; gap:8px;">${mainCodeHtml} ${weightHtml}</div>
                     ${subItemsHtml}
                 </div>
                 <div class="col-price" style="flex:0 0 95px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:0.9rem; color:#444;">
-                    <div style="font-weight:700;"><span style="color:#e74c3c; font-size:1rem;">$${priceDisplay}</span><span style="font-size:0.75rem; color:#999; font-weight:normal;"> / ${unitDisplay}</span></div>
+                    <div style="font-weight:700;"><span style="color:#2C3742; font-size:1rem; font-weight:600;">$${priceDisplay}</span><span style="font-size:0.75rem; color:#999; font-weight:normal;"> / ${unitDisplay}</span></div>
                     <i class="fas fa-chevron-down accordion-arrow" style="margin-top:8px; color:var(--series-color, #ddd); transition:transform 0.3s;"></i>
                 </div>
             </div>
@@ -2328,41 +2328,41 @@ function renderProductAccordion(p) {
 
     if (isProfile) {
         html = `
-            <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:14px; margin-top:10px; background:#fff; border-radius:12px; border:1px solid #e8e8e8; box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow:hidden;">
+            <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:8px 10px; margin-top:4px; background:#f8f9fa; border-radius:8px; border:1px solid #e8e8e8; overflow:hidden;">
                  <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
-                     <div class="batch-row" style="display:flex; gap:8px; align-items:stretch; margin-bottom:10px; box-sizing:border-box; width:100%;">
-                          <input type="number" class="detail-input input-len" placeholder="長度(mm)" min="100" step="1" style="flex:1; min-width:0; height:38px; box-sizing:border-box;">
-                          <input type="number" class="detail-input input-qty" value="1" min="1" style="width:56px; flex-shrink:0; height:38px; font-size:1.05rem; font-weight:700; text-align:center; border:1px solid #d1d5db; border-radius:8px; background:#f8f9fa; color:#2c3e50; box-sizing:border-box;">
+                     <div class="batch-row" style="display:flex; gap:6px; align-items:stretch; margin-bottom:6px; box-sizing:border-box; width:100%;">
+                          <input type="number" class="detail-input input-len" placeholder="長度(mm)" min="100" step="1" style="flex:1; min-width:0; height:34px; box-sizing:border-box; font-size:0.88rem;">
+                          <input type="number" class="detail-input input-qty" value="1" min="1" style="width:48px; flex-shrink:0; height:34px; font-size:0.95rem; font-weight:700; text-align:center; border:1px solid #d1d5db; border-radius:8px; background:#fff; color:#333; box-sizing:border-box;">
                      </div>
                  </div>
                  
-                 <div style="display:flex; gap:10px; padding-top:12px; border-top:1px solid rgba(0,0,0,0.05); margin-top:5px;">
-                     <button onclick="event.stopPropagation(); addBatchRow('${rowId}')" class="btn-secondary" style="flex:1; padding:8px; border:1px solid #ccc; background:white; color:#555; border-radius:6px; cursor:pointer; font-size:0.85rem;">
+                 <div style="display:flex; gap:6px; padding-top:8px; border-top:1px solid #eee; margin-top:4px;">
+                     <button onclick="event.stopPropagation(); addBatchRow('${rowId}')" class="btn-secondary" style="flex:1; padding:6px 4px; border:1px solid #ccc; background:white; color:#555; border-radius:6px; cursor:pointer; font-size:0.82rem;">
                          <i class="fas fa-plus"></i> 新增規格
                      </button>
-                     <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="flex:1.5; padding:8px; background:#2c3e50; color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:bold;">
+                     <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="flex:1.5; padding:6px 4px; background:#4A5A6B; color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.82rem; font-weight:bold;">
                          加入清單 <i class="fas fa-arrow-right"></i>
                      </button>
                  </div>
-                 <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:8px; font-weight:bold;">
+                 <div class="add-feedback" style="display:none; text-align:center; font-size:0.75rem; color:#27ae60; margin-top:4px; font-weight:bold;">
                     <i class="fas fa-check"></i> 已加入清單
                 </div>
             </div>`;
     } else {
         html = `
-            <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:14px; margin-top:10px; background:#fff; border-radius:12px; border:1px solid #e8e8e8; box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow:hidden;">
+            <div class="product-accordion-content" onclick="event.stopPropagation()" style="display:none; padding:8px 10px; margin-top:4px; background:#f8f9fa; border-radius:8px; border:1px solid #e8e8e8; overflow:hidden;">
                  <div id="${rowId}" class="batch-input-container" onclick="event.stopPropagation()">
-                     <div class="batch-row" style="display:flex; gap:8px; align-items:stretch; margin-bottom:10px; box-sizing:border-box; width:100%;">
-                          <div style="font-size:0.9rem; color:#666; white-space:nowrap; flex-shrink:0; display:flex; align-items:center;">數量：</div>
-                          <input type="number" class="detail-input input-qty" value="1" min="1" style="flex:1; min-width:0; height:38px; box-sizing:border-box;">
+                     <div class="batch-row" style="display:flex; gap:6px; align-items:center; margin-bottom:6px; box-sizing:border-box; width:100%;">
+                          <div style="font-size:0.85rem; color:#666; white-space:nowrap; flex-shrink:0; display:flex; align-items:center;">數量：</div>
+                          <input type="number" class="detail-input input-qty" value="1" min="1" style="flex:1; min-width:0; height:34px; box-sizing:border-box; font-size:0.88rem;">
                      </div>
                  </div>
-                 <div style="padding-top:12px; border-top:1px solid rgba(0,0,0,0.05); margin-top:10px;">
-                     <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="width:100%; padding:10px; background:#2c3e50; color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:bold;">
+                 <div style="padding-top:8px; border-top:1px solid #eee; margin-top:4px;">
+                     <button onclick="event.stopPropagation(); addToCartBatch('${p.name}', '${rowId}', this)" class="btn-primary" style="width:100%; padding:7px; background:#4A5A6B; color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.82rem; font-weight:bold;">
                          加入清單 <i class="fas fa-plus"></i>
                      </button>
                  </div>
-                  <div class="add-feedback" style="display:none; text-align:center; font-size:0.8rem; color:#27ae60; margin-top:8px; font-weight:bold;">
+                  <div class="add-feedback" style="display:none; text-align:center; font-size:0.75rem; color:#27ae60; margin-top:4px; font-weight:bold;">
                     <i class="fas fa-check"></i> 已加入清單
                 </div>
             </div>`;
@@ -2458,16 +2458,16 @@ window.renderB2BDashboard = function () {
     // 2. Dashboard HTML Structure: Split into Display (Top) and Stats (Bottom)
     let html = `
         <div id="b2b-middle-display" style="padding:10px 10px 0 10px; text-align:center;">
-             <div style="font-size:1.2rem; font-weight:300; margin-bottom:2px; letter-spacing:2px; color:#2c3e50;">
-                LUTU <span class="pro-tag" style="background:#2c3e50; color:white; font-size:0.75rem; padding:1px 5px;">PRO</span> 訂單數據中心
+             <div style="font-size:1.2rem; font-weight:300; margin-bottom:2px; letter-spacing:2px; color:rgba(255,255,255,0.9);">
+                ALUMIBRO <span class="pro-tag" style="background:#B8864B; color:white; font-size:0.75rem; padding:1px 5px;">PRO</span> 訂單數據中心
             </div>
-            <div style="color:#7f8c8d; margin-bottom:5px; font-size:0.8rem;">請從左側選擇商品，或直接匯入 BOM 表</div>
+            <div style="color:rgba(255,255,255,0.4); margin-bottom:5px; font-size:0.8rem;">請從左側選擇商品，或直接匯入 BOM 表</div>
 
         </div>
         
-        <div id="b2b-middle-stats" style="margin-top:5px; border-top:1px solid #eee; padding-top:10px; transition:all 0.3s; display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;">
+        <div id="b2b-middle-stats" style="margin-top:5px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; transition:all 0.3s; display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;">
              <!-- Stats will be injected here by renderAnalysisAndManifest -->
-             <div style="text-align:center; color:#999; font-size:0.9rem;">
+             <div style="text-align:center; color:rgba(255,255,255,0.4); font-size:0.9rem;">
                 <i class="fas fa-chart-pie"></i> 購物車為空，尚無分析數據
              </div>
         </div>
@@ -2494,7 +2494,7 @@ function renderSeriesOverview(series) {
     // Header (Simplified: Direct Flex Children)
     let html = `
         <div class="b2b-series-index-header" style="padding: 15px 15px 0 15px; flex-shrink:0;">
-            <h2 style="margin-bottom:12px; color:#2c3e50; font-size:1.2rem; font-weight:800;"><i class="fas fa-th-list"></i> ${series} 系列</h2>
+            <h2 style="margin-bottom:12px; color:#4A5A6B; font-size:1.2rem; font-weight:800;"><i class="fas fa-th-list"></i> ${series} 系列</h2>
             <div class="b2b-table-header">
                 <div class="col-img" style="flex:0 0 65px;">圖</div>
                 <div class="col-name" style="padding-left:8px;">品名 / 規格</div>
@@ -2552,21 +2552,21 @@ function renderSeriesOverview(series) {
              data-product-name="${p.name}">
              
              <div style="display:flex; padding:12px 10px; cursor:pointer;" onclick="toggleProductAccordion(this.parentElement)">
-                <div class="col-img" style="flex:0 0 65px; position:relative;">
+                <div class="col-img" style="flex:0 0 52px; position:relative;">
                     <img src="${imgUrl}" class="b2b-thumb" id="thumb-${p.id || p.name}" 
                          data-2d="${toggle2dUrl}" data-3d="${toggle3dUrl}" data-current-state="${initialState}"
-                         style="width:65px; height:65px; border-radius:6px; object-fit: cover; cursor:zoom-in; border:1px solid #eee;" 
+                         style="width:52px; height:52px; border-radius:6px; object-fit: cover; cursor:zoom-in; border:1px solid rgba(255,255,255,0.1);" 
                          onclick="event.stopPropagation(); showLightbox(this.src)">
                     <div class="b2b-thumb-toggle" onclick="event.stopPropagation(); toggleB2BThumb('${p.id || p.name}')" title="切換 2D/3D"><i class="fas fa-sync-alt"></i></div>
                     <div style="position:absolute; bottom:0; left:0; padding:1px 4px; border-radius:0 4px 0 0; background:var(--series-color, #999); color:white; font-size:0.75rem; font-weight:600; line-height:1;">${seriesPrefix}</div>
                 </div>
                 <div class="col-name" style="padding-left:15px; min-width:0; flex:1;">
-                    <div style="font-weight:700; font-size:0.95rem; color:#2c3e50; line-height:1.2; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
+                    <div style="font-weight:700; font-size:0.95rem; color:#4A5A6B; line-height:1.2; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${displayName}</div>
                     <div style="font-size:0.8rem; color:#666; display:flex; align-items:center; gap:8px;">${mainCodeHtml} ${weightHtml}</div>
                     ${subItemsHtml}
                 </div>
                 <div class="col-price" style="flex:0 0 95px; display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:0.9rem; color:#444;">
-                    <div style="font-weight:700;"><span style="color:#e74c3c; font-size:1rem;">$${priceDisplay}</span></div>
+                    <div style="font-weight:700;"><span style="color:#2C3742; font-size:1rem; font-weight:600;">$${priceDisplay}</span></div>
                     <div style="font-size:0.75rem; color:#999; font-weight:normal;">/${unitDisplay}</div>
                     <i class="fas fa-chevron-down accordion-arrow" style="margin-top:8px; color:var(--series-color, #ddd); transition:transform 0.3s;"></i>
                 </div>
@@ -2693,7 +2693,7 @@ window.renderProductDisplayToMiddle = function (productName) {
     if (product.img3d) {
         toggleBtnHtml = `
             <button onclick="toggle3DView(this, 'assets/${product.img2d}', 'assets/${product.img3d}')"
-                    style="position:absolute; bottom:20px; right:20px; background:white; border:none; padding:8px 15px; border-radius:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1); font-weight:bold; color:#2c3e50; cursor:pointer;">
+                    style="position:absolute; bottom:20px; right:20px; background:white; border:none; padding:8px 15px; border-radius:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1); font-weight:bold; color:#4A5A6B; cursor:pointer;">
                 <i class="fas fa-cube"></i> 切換 3D
             </button>`;
     }
@@ -2708,10 +2708,10 @@ window.renderProductDisplayToMiddle = function (productName) {
             </div>
             
             <div style="margin-top:30px;">
-                <span style="background:#2c3e50; color:white; padding:4px 12px; border-radius:20px; font-size:0.8rem; letter-spacing:1px;">${product.series} SERIES</span>
-                <h1 style="color:#2c3e50; font-size:1.8rem; margin:15px 0 10px 0;">${product.name}</h1>
+                <span style="background:#4A5A6B; color:white; padding:4px 12px; border-radius:20px; font-size:0.8rem; letter-spacing:1px;">${product.series} SERIES</span>
+                <h1 style="color:#4A5A6B; font-size:1.8rem; margin:15px 0 10px 0;">${product.name}</h1>
                 <div style="color:#7f8c8d; font-size:1rem;">
-                    單價: <span style="color:#e74c3c; font-weight:bold;">$${product.price}</span> / ${product.unit || '個'}
+                    單價: <span style="color:#2C3742; font-weight:bold;">$${product.price}</span> / ${product.unit || '個'}
                 </div>
             </div>
         </div>
@@ -2847,9 +2847,9 @@ function renderProductDetailPanel(p) {
 
     // Series Colors
     const seriesColors = {
-        '20': '#3498db', // Blue
-        '30': '#e67e22', // Orange
-        '40': '#2ecc71'  // Green
+        '20': '#7a9ab5', // Morandi 霧藍灰 (深版)
+        '30': '#b8a48e', // Morandi 奶茶杏 (深版)
+        '40': '#7a9e7a'  // Morandi 鼠尾草綠 (深版)
     };
     const mainColor = seriesColors[p.series] || '#555';
 
@@ -2865,7 +2865,7 @@ function renderProductDetailPanel(p) {
     if (isProfile) {
         inputSection = `
             <div class="b2b-input-card">
-                <label style="display:block; margin-bottom:12px; color:#2c3e50; font-weight:700; font-size:0.95rem;">
+                <label style="display:block; margin-bottom:12px; color:#4A5A6B; font-weight:700; font-size:0.95rem;">
                     <i class="fas fa-tools"></i> 裁切規格 (長度 x 數量)
                 </label>
                 <div id="detail-input-rows">
@@ -2886,7 +2886,7 @@ function renderProductDetailPanel(p) {
     } else {
         inputSection = `
             <div class="b2b-input-card">
-                <label style="display:block; margin-bottom:10px; color:#2c3e50; font-weight:700; font-size:0.95rem;">📦 訂購數量</label>
+                <label style="display:block; margin-bottom:10px; color:#4A5A6B; font-weight:700; font-size:0.95rem;">📦 訂購數量</label>
                 <input type="number" id="detail-qty" class="detail-input" value="1" min="1"
                        style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; font-size:1.2rem; text-align:center; font-weight:bold; box-sizing:border-box;"
                        oninput="calculateLiveSubtotal(${p.price}, false)">
@@ -2927,8 +2927,8 @@ function renderProductDetailPanel(p) {
 
                 <!-- BL: Price -->
                 <div style="position:absolute; bottom:8px; left:8px; background:rgba(255,255,255,0.95); padding:4px 10px; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.1); border:1px solid #eee; display:flex; align-items:baseline; gap:2px;">
-                    <span style="font-size:0.75rem; color:#e74c3c;">NT$</span>
-                    <span style="font-size:1.1rem; font-weight:bold; color:#e74c3c;">${p.price}</span>
+                    <span style="font-size:0.75rem; color:#2C3742;">NT$</span>
+                    <span style="font-size:1.1rem; font-weight:bold; color:#2C3742;">${p.price}</span>
                     <span style="font-size:0.75rem; color:#999;"> / ${unitDisplay}</span>
                 </div>
                 
@@ -2939,7 +2939,7 @@ function renderProductDetailPanel(p) {
 
             <!-- 2. Bottom Info -->
             <div class="b2b-detail-info-main" style="width: 100%; text-align:center;">
-                <h2 style="font-size: 1.35rem; margin: 5px 0 10px 0; color: #2c3e50; line-height:1.2;">
+                <h2 style="font-size: 1.35rem; margin: 5px 0 10px 0; color: #4A5A6B; line-height:1.2;">
                     ${p.name}
                 </h2>
                 <!-- Sub-items List (New) -->
@@ -2963,7 +2963,7 @@ function renderProductDetailPanel(p) {
                         subItemsHtml += `<div style="display:flex; align-items:center; gap:5px; font-size:0.9rem; color:#555; margin-bottom:3px;">
                                     ${codeHtml} 
                                     <span>${cleanPartName}</span> 
-                                    <span style="font-weight:bold; color:#2c3e50;">x${qty}</span>
+                                    <span style="font-weight:bold; color:#4A5A6B;">x${qty}</span>
                                 </div>`;
                     });
                     subItemsHtml += `</div>`;
@@ -2978,11 +2978,11 @@ function renderProductDetailPanel(p) {
 
             <!-- Action Bar (Footer) -->
             <div class="b2b-detail-action-bar">
-                <div id="detail-live-subtotal" style="font-weight:700; color:#2c3e50; font-size:1rem; white-space:nowrap;">
+                <div id="detail-live-subtotal" style="font-weight:700; color:#4A5A6B; font-size:1rem; white-space:nowrap;">
                     <span style="font-size:0.85rem; color:#666; font-weight:normal;">小計:</span> NT$ 0
                 </div>
                 <button onclick="addToCartFromDetail('${p.name}')" class="btn-primary"
-                    style="background:#2c3e50; color:white; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); white-space:nowrap;">
+                    style="background:#4A5A6B; color:white; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); white-space:nowrap;">
                     <i class="fas fa-plus-circle"></i> 加入 BOM
                 </button>
             </div>
@@ -3166,7 +3166,7 @@ window.addToCartFromDetail = function (productName) {
             btn.style.background = '#27ae60';
             setTimeout(() => {
                 btn.innerHTML = originalText;
-                btn.style.background = '#2c3e50';
+                btn.style.background = '#4A5A6B';
             }, 1500);
         }
 
@@ -3185,7 +3185,7 @@ window.addToCartFromDetail = function (productName) {
                 btn.style.background = '#27ae60';
                 setTimeout(() => {
                     btn.innerHTML = originalText;
-                    btn.style.background = '#2c3e50';
+                    btn.style.background = '#4A5A6B';
                 }, 1500);
             }
         } else {
@@ -3356,7 +3356,7 @@ window.addToCartFocus = function (nameOrId) {
     btn.style.background = '#27ae60';
     setTimeout(() => {
         btn.innerHTML = '<i class="fas fa-plus-circle"></i> 加入工單';
-        btn.style.background = '#2c3e50';
+        btn.style.background = '#4A5A6B';
     }, 1000);
 }
 
@@ -3505,9 +3505,9 @@ function renderAnalysisAndManifest() {
             let sBadgeColor = '#999';
             if (item.series) {
                 seriesValue = item.series.split('-')[0];
-                if (seriesValue === '20') sBadgeColor = '#3498db';
-                else if (seriesValue === '30') sBadgeColor = '#e67e22';
-                else if (seriesValue === '40') sBadgeColor = '#2ecc71';
+                if (seriesValue === '20') sBadgeColor = '#b3c7d9';
+                else if (seriesValue === '30') sBadgeColor = '#e6d9c6';
+                else if (seriesValue === '40') sBadgeColor = '#b8ccb8';
             }
 
             listHtml += `
@@ -3530,7 +3530,7 @@ function renderAnalysisAndManifest() {
                         </div>
                      </div>
                      <div style="text-align:right; flex:0 0 80px;">
-                        <div style="font-weight:300; font-size:1rem; color:#2c3e50;">x${item.qty}</div>
+                        <div style="font-weight:300; font-size:1rem; color:#4A5A6B;">x${item.qty}</div>
                         <div style="color:#555; font-size:0.95rem; font-weight:300; letter-spacing:0.5px;">$${Math.round(sub)}</div>
                      </div>
                      <button onclick="removeFromCartB2B('${item.id || index}')" style="background:none; border:none; color:#ddd; cursor:pointer; padding:5px;">
@@ -3578,7 +3578,7 @@ function renderAnalysisAndManifest() {
                     <div style="display:flex; align-items:center; justify-content:space-around;">
                         <div style="text-align:center;">
                             <div style="font-size:0.75rem; color:#888;">預估總重</div>
-                            <div style="font-size:1.2rem; font-weight:300; color:#2c3e50; letter-spacing:1px; line-height: 1.1;">${totalWeight.toFixed(1)} <span style="font-size:0.8rem;">kg</span></div>
+                            <div style="font-size:1.2rem; font-weight:300; color:#4A5A6B; letter-spacing:1px; line-height: 1.1;">${totalWeight.toFixed(1)} <span style="font-size:0.8rem;">kg</span></div>
                         </div>
                          <div style="text-align:center;">
                             <div style="font-size:0.75rem; color:#888;">物流建議</div>
@@ -3630,7 +3630,7 @@ window.exportBOM = function () {
     var encodedUri = encodeURI(csvContent);
     var link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "LUTU_BOM_Listing.csv");
+    link.setAttribute("download", "ALUMIBRO_BOM_Listing.csv");
     document.body.appendChild(link); // Required for FF
     link.click();
 }
@@ -3707,11 +3707,11 @@ function processExcelData(rows) {
         });
     });
 
-    // 3. AI Smart Mapping (Keyword guessing - Improved for LUTU Professional Template)
+    // 3. AI Smart Mapping (Keyword guessing - Improved for ALUMIBRO Professional Template)
     headerRow.forEach((colName, index) => {
         let str = colName.toString().toLowerCase();
 
-        // LUTU Professional Mapping Pattern
+        // ALUMIBRO Professional Mapping Pattern
         if (str.includes('品項') || str.includes('官方') || str.includes('正確名稱') || (str.includes('品名') && !str.includes('類'))) {
             document.getElementById('map-name').value = index;
         }
@@ -3991,7 +3991,7 @@ window.processBOMImport = function processBOMImport() {
     } else if (matchTotal > 0) {
         alert(`識別到 ${matchTotal} 個商品，但因「數量」為空或為 0 而未能匯入。請檢查 Excel 數量欄位是否有填寫，或確認欄位對應是否正確。`);
     } else {
-        alert("匯入失敗，未能識別出任何有效商品。請確認您的品名是否與 LUTU 官方範本一致，或嘗試下載最新範本填寫。");
+        alert("匯入失敗，未能識別出任何有效商品。請確認您的品名是否與 ALUMIBRO 官方範本一致，或嘗試下載最新範本填寫。");
     }
 }
 
@@ -4162,7 +4162,7 @@ window.downloadBOMTemplate = function () {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", "LUTU_BOM_全品項訂購公版.csv");
+    link.setAttribute("download", "ALUMIBRO_BOM_全品項訂購公版.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -4287,7 +4287,7 @@ window.renderCuttingVisualsPreview = function () {
 
     let finalHtml = `
         <div style="background:white; border:1px solid #e0e0e0; border-radius:8px; margin-bottom:0; box-shadow:0 2px 8px rgba(0,0,0,0.05); display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden;">
-            <div style="background:#2c3e50; color:white; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
+            <div style="background:#4A5A6B; color:white; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
                 <div style="font-weight:300; font-size:0.9rem; letter-spacing:1px;"><i class="fas fa-microchip"></i> AI 切割排版模擬</div>
                 <div style="background:#4a6b5a; color:white; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:300; letter-spacing:0.5px;">Smart Plan</div>
             </div>
@@ -4432,7 +4432,7 @@ document.addEventListener('DOMContentLoaded', function () {
 window.copyToClipboard = function (text, btn) {
     navigator.clipboard.writeText(text).then(() => {
         const originalContent = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check"></i> 已複製信箱 (lutu@herald-alu.com)';
+        btn.innerHTML = '<i class="fas fa-check"></i> 已複製信箱 (alumibro@herald-alu.com)';
         btn.classList.add('copy-success');
 
         setTimeout(() => {
@@ -4447,10 +4447,10 @@ window.copyToClipboard = function (text, btn) {
 
 // ---- 客製設計詢問：開啟 Gmail 撰寫視窗 ----
 window.openCustomInquiry = function () {
-    const to = 'lutu@herald-alu.com';
+    const to = 'alumibro@herald-alu.com';
     const emailSubject = '【客製洽詢】公司名稱 / 專案名稱';
     const emailBody =
-`您好，LUTU 鋁圖團隊：
+`您好，ALUMIBRO 鋁材兄弟團隊：
 
 希望洽詢客製化鋁擠型合作，需求概述如下：
 
@@ -4468,7 +4468,7 @@ window.openCustomInquiry = function () {
 【備註】（預算、特殊規格等，選填）
 
 ---
-感謝，期待 LUTU 鋁圖的專業回覆。`;
+感謝，期待 ALUMIBRO 鋁材兄弟的專業回覆。`;
 
     const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
     window.open(gmailUrl, '_blank');
